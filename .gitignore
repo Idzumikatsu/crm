@@ -1,3 +1,26 @@
+# Приватные ключи CI/CD
+key.pem
+*.pem
+
+# Java / Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.iws
+
+# Log-файлы
+*.log
+
+# Docker
+docker-compose.override.yml
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
