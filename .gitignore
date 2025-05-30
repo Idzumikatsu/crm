@@ -1,56 +1,15 @@
-# Приватные ключи CI/CD
-key.pem
-*.pem
-
-# Java / Maven
-target/
+# Maven
+/target/
 !.mvn/wrapper/maven-wrapper.jar
 
 # IDE
-.idea/
+/.idea
 *.iml
-*.iws
 
-# Log-файлы
-*.log
+# SSH keys
+*.pem
+key.pem
 
-# Docker
-docker-compose.override.yml
-
-# Системные файлы
+# System
 .DS_Store
 Thumbs.db
-
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/

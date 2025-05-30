@@ -1,11 +1,4 @@
-# Используем официальный образ OpenJDK
-FROM openjdk:17-jdk-slim
-
-# Копируем jar файл в контейнер
-COPY target/demo-0.0.1-SNAPSHOT.jar /usr/app/demo.jar
-
-# Устанавливаем рабочую директорию
-WORKDIR /usr/app
-
-# Устанавливаем команду для запуска приложения
-ENTRYPOINT ["java", "-jar", "demo.jar"]
+FROM eclipse-temurin:17-jdk-jammy
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
