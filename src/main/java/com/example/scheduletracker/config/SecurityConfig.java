@@ -26,7 +26,7 @@ public class SecurityConfig {
                                 "/api/groups/**",
                                 "/api/lessons/**"
                         ).permitAll()
-                        // всё остальное — под логин
+                        // всё остальное — под логин в
                         .anyRequest().authenticated()
                 )
                 // включаем HTTP Basic для остальных
