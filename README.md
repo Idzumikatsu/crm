@@ -13,8 +13,8 @@
      docker run --name schedule-db -p 5432:5432 -e POSTGRES_DB=schedule \
        -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:15
      ```
-   - В файле `src/main/resources/application.yml` хост базы указан как `db`. 
-     Если запускаете БД локально, измените его на `localhost`.
+   - В `application.yml` адрес БД задаётся через переменную окружения `DB_HOST`.
+     По умолчанию используется `localhost`.
 4. **Сборка и запуск**
    - Сборка: `./mvnw package`
    - Запуск: `./mvnw spring-boot:run`
