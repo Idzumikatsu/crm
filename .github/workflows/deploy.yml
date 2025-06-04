@@ -26,20 +26,27 @@ jobs:
         distribution: temurin
         java-version: 21
 
-    # 3. Собираем JAR без тестов
-    - name: Build JAR
-      run: mvn -B clean package -Dmaven.test.skip=true
+    # 3. Настраиваем прокси для Maven и Git
+    - name: Setup proxy
+      run: scripts/setup-proxy.sh
+      env:
+        PROXY_HOST: ${{ secrets.PROXY_HOST }}
+        PROXY_PORT: ${{ secrets.PROXY_PORT }}
 
-    # 4. Переименовываем артефакт → app.jar (чтобы Dockerfile его нашёл)
-    - name: Prepare artifact
-      run: cp target/*.jar target/app.jar
+    # 4. Собираем JAR без тестов
+      - name: Build JAR
+        run: mvn -B clean package -Dmaven.test.skip=true
 
-    # 5. Копируем Dockerfile и docker-compose.yml на VPS (в корень /root/myapp)
-    - name: Copy infra files to VPS
-      if: ${{ hashFiles('Dockerfile', 'docker-compose.yml') != '' }}
-      uses: appleboy/scp-action@v0.1.4
-      with:
-        host:       ${{ secrets.VPS_HOST }}
+    # 5. Переименовываем артефакт → app.jar (чтобы Dockerfile его нашёл)
+      - name: Prepare artifact
+        run: cp target/*.jar target/app.jar
+
+    # 6. Копируем Dockerfile и docker-compose.yml на VPS (в корень /root/myapp)
+      - name: Copy infra files to VPS
+        if: ${{ hashFiles('Dockerfile', 'docker-compose.yml') != '' }}
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
         passphrase: ${{ secrets.VPS_PASSPHRASE }}
@@ -49,12 +56,12 @@ jobs:
         target: /root/myapp
         rm:     true
 
-    # 6. Копируем сам app.jar на VPS
-    - name: Copy app.jar to VPS
-      uses: appleboy/scp-action@v0.1.4
-      with:
-        host:       ${{ secrets.VPS_HOST }}
-        username:   ${{ secrets.VPS_USER }}
+    # 7. Копируем сам app.jar на VPS
+      - name: Copy app.jar to VPS
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host:       ${{ secrets.VPS_HOST }}
+          username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
         passphrase: ${{ secrets.VPS_PASSPHRASE }}
         # port:     ${{ secrets.VPS_PORT }}
@@ -62,9 +69,9 @@ jobs:
         target:     /root/myapp/app.jar
         rm:         true
 
-    # 7. Собираем Docker-образ и перезапускаем контейнер через SSH
-    - name: Docker Compose up
-      uses: appleboy/ssh-action@v1.0.0
+    # 8. Собираем Docker-образ и перезапускаем контейнер через SSH
+      - name: Docker Compose up
+        uses: appleboy/ssh-action@v1.0.0
       with:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
