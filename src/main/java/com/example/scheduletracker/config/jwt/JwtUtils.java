@@ -25,9 +25,8 @@ public class JwtUtils {
 
     public io.jsonwebtoken.Claims parse(String token) {
         return Jwts.parser()
-                .verifyWith((SecretKey) key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .setSigningKey(key)
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
