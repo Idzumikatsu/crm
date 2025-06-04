@@ -43,18 +43,18 @@
 - [x] Страница `profile.html`.
 
 ### 5.4 Manager Dashboard
-- [ ] REST: `GET /api/manager/teachers` и `/api/manager/students`.
-- [ ] UI для назначения студентов преподавателям (modal, Alpine.js).
-- [ ] `POST /api/manager/assign` для обновления связей.
-- [ ] Отображение расписания через FullCalendar.
+- [x] REST: `GET /api/manager/teachers` и `/api/manager/students`.
+- [x] UI для назначения студентов преподавателям (modal, Alpine.js).
+- [x] `POST /api/manager/assign` для обновления связей.
+- [x] Отображение расписания через FullCalendar.
 
 ### 5.5 Teacher Dashboard
-- [ ] REST для получения и изменения собственных уроков.
-- [ ] Календарь занятий через FullCalendar.
-- [ ] Форма создания и редактирования урока.
+- [x] REST для получения и изменения собственных уроков.
+- [x] Календарь занятий через FullCalendar.
+- [x] Форма создания и редактирования урока.
 
 ## Milestone 7: Manager Dashboard — Назначение студентов
-- Задачи совпадают с пунктами 5.4 и пока не выполнены.
+- Задачи совпадают с пунктами 5.4 и выполнены.
 
 ## Milestone 8: Testing & Deployment
 
