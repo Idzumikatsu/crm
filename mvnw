@@ -32,6 +32,11 @@
 set -euf
 [ "${MVNW_VERBOSE-}" != debug ] || set -x
 
+# Ensure Maven proxy settings are generated
+if [ -x "$(dirname "$0")/scripts/setup-proxy.sh" ]; then
+  "$(dirname "$0")/scripts/setup-proxy.sh"
+fi
+
 # The default environment may define proxy variables pointing to a host
 # that isn't resolvable. Unset such variables so Maven can connect
 # directly when no proxy is available.
