@@ -33,9 +33,9 @@ jobs:
         PROXY_HOST: ${{ secrets.PROXY_HOST }}
         PROXY_PORT: ${{ secrets.PROXY_PORT }}
 
-    # 4. Собираем JAR без тестов
-    - name: Build JAR
-      run: mvn -B clean package -Dmaven.test.skip=true
+    # 4. Запускаем тесты и собираем JAR
+    - name: Build with tests
+      run: mvn -B clean package
 
     # 5. Переименовываем артефакт → app.jar (чтобы Dockerfile его нашёл)
     - name: Prepare artifact
