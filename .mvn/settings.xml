@@ -9,5 +9,12 @@
       <host>proxy</host>
       <port>8080</port>
     </proxy>
+    <proxy>
+      <id>proxy-https</id>
+      <active>true</active>
+      <protocol>https</protocol>
+      <host>proxy</host>
+      <port>8080</port>
+    </proxy>
   </proxies>
 </settings>
