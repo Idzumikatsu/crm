@@ -48,7 +48,9 @@ jobs:
           git config --global https.proxy $HTTPS_PROXY
 
       - name: Build with Maven
-        run: ./mvnw clean package -DskipTests
+        env:
+          MAVEN_OPTS: "-Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Dhttps.proxyHost=$PROXY_HOST -Dhttps.proxyPort=$PROXY_PORT"
+        run: ./mvnw -s .mvn/settings.xml clean package -DskipTests
 
       - name: Prepare SSH key
         env:
