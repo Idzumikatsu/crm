@@ -6,6 +6,12 @@
 /.idea
 *.iml
 
+# Node
+client/node_modules/
+server/node_modules/
+client/package-lock.json
+server/package-lock.json
+
 # SSH keys
 *.pem
 .mvn/settings.xml
