@@ -1,0 +1,19 @@
+{
+  "name": "crm-client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.23.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "jest": "^29.6.0"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "test": "jest"
+  }
+}
