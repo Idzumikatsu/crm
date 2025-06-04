@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LessonServiceImplTest {
@@ -47,5 +47,17 @@ class LessonServiceImplTest {
 
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).getTeacher().getId());
+    }
+
+    @Test
+    void updateStatusChangesEntity() {
+        Lesson lesson = Lesson.builder().id(1L).teacher(t1).group(g1)
+                .dateTime(LocalDateTime.now()).duration(60).status(Lesson.Status.SCHEDULED).build();
+        when(repo.findById(1L)).thenReturn(java.util.Optional.of(lesson));
+        when(repo.save(any(Lesson.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Lesson updated = service.updateStatus(1L, Lesson.Status.CONFIRMED);
+
+        assertEquals(Lesson.Status.CONFIRMED, updated.getStatus());
     }
 }

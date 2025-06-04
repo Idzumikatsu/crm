@@ -10,9 +10,10 @@
     <div class="bg-white p-8 rounded shadow-md w-96 text-center">
         <h1 id="greeting" class="text-2xl font-bold mb-4"></h1>
         <p id="username" class="mb-4"></p>
-        <form method="post" action="/logout">
+        <form method="post" action="/logout" class="mb-2">
             <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded" type="submit">Выйти</button>
         </form>
+        <div id="links" class="mb-4"></div>
         <div class="mt-6 text-left">
             <h2 class="font-semibold mb-2">Ближайшие занятия</h2>
             <ul id="lessons" class="list-disc list-inside text-sm"></ul>
@@ -28,6 +29,12 @@
             .then(r => r.json())
             .then(u => {
                 document.getElementById('username').innerText = 'Вы вошли как ' + u.username;
+                const links = document.getElementById('links');
+                if(u.role === 'TEACHER') {
+                    links.innerHTML = '<a href="teacher.html" class="text-blue-500 underline">Кабинет преподавателя</a>';
+                } else if(u.role === 'MANAGER') {
+                    links.innerHTML = '<a href="manager.html" class="text-blue-500 underline">Кабинет менеджера</a>';
+                }
             });
 
         fetch('/api/lessons')

@@ -19,6 +19,11 @@ public class Lesson {
     @Column(nullable = false)
     private Integer duration; // в минутах
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private Status status = Status.SCHEDULED;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
@@ -26,4 +31,10 @@ public class Lesson {
     @ManyToOne(optional = false)
     @JoinColumn(name = "group_id")
     private Group group;
+
+    public enum Status {
+        SCHEDULED,
+        CONFIRMED,
+        CANCELED
+    }
 }

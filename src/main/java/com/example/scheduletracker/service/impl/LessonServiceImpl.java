@@ -50,4 +50,11 @@ public class LessonServiceImpl implements LessonService {
                 .filter(l -> groupId == null || (l.getGroup() != null && groupId.equals(l.getGroup().getId())))
                 .toList();
     }
+
+    @Override
+    public Lesson updateStatus(Long id, Lesson.Status status) {
+        Lesson lesson = repo.findById(id).orElseThrow();
+        lesson.setStatus(status);
+        return repo.save(lesson);
+    }
 }

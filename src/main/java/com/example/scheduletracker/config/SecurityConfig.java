@@ -26,6 +26,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/favicon.ico",
                                 "/login.html",
+                                "/teacher.html",
+                                "/manager.html",
                                 "/api/teachers/**",
                                 "/api/groups/**",
                                 "/api/lessons/**"
