@@ -45,9 +45,7 @@ jobs:
         passphrase: ${{ secrets.VPS_PASSPHRASE }}
         # 🛑 Если ваш SSH-порт – не 22, раскомментируйте строку ниже:
         # port:     ${{ secrets.VPS_PORT }}
-        source: |
-          Dockerfile
-          docker-compose.yml
+        source: "Dockerfile,docker-compose.yml"
         target: /root/myapp
         rm:     true
 
