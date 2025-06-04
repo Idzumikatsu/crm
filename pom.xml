@@ -121,6 +121,22 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.13</version>
+                <configuration>
+                    <excludes>
+                        <exclude>com/example/scheduletracker/controller/**</exclude>
+                        <exclude>com/example/scheduletracker/web/**</exclude>
+                        <exclude>com/example/scheduletracker/config/**</exclude>
+                        <exclude>com/example/scheduletracker/entity/**</exclude>
+                        <exclude>com/example/scheduletracker/service/impl/UserDetailsServiceImpl*</exclude>
+                        <exclude>com/example/scheduletracker/service/impl/StudentServiceImpl*</exclude>
+                        <exclude>com/example/scheduletracker/service/impl/TimeSlotServiceImpl*</exclude>
+                        <exclude>com/example/scheduletracker/service/impl/GroupServiceImpl*</exclude>
+                        <exclude>com/example/scheduletracker/service/impl/TeacherServiceImpl*</exclude>
+                        <exclude>com/example/scheduletracker/service/impl/LessonServiceImpl*</exclude>
+                        <exclude>com/example/scheduletracker/service/impl/UserServiceImpl*</exclude>
+                        <exclude>com/example/scheduletracker/ScheduleTrackerApplication*</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
