@@ -67,7 +67,8 @@ This file lists detailed sub-tasks for implementing the CRM application.
   Effort: 1 day
 - **UI integration tests**
   Effort: 2 days
-- **Docker and CI configuration**
-  `Dockerfile`, `docker-compose.yml`, GitHub Actions workflow.
+- **Docker and CI configuration** (DONE)
+  `Dockerfile`, `docker-compose.yml` и workflow `deploy.yml` настроены для
+  автоматического развёртывания на сервер при пуше в `main`.
   Effort: 1 day
 
