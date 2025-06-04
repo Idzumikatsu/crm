@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Студенты</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.4/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+<h1 class="text-2xl font-bold mb-4">Студенты</h1>
+<div class="mb-4">
+    <input id="name" class="border px-2 py-1" placeholder="Имя"/>
+    <button id="add" class="bg-green-500 text-white px-2 py-1">Добавить</button>
+</div>
+<table class="table-auto w-full" id="tbl">
+    <thead>
+    <tr><th class="px-4 py-2">ID</th><th class="px-4 py-2">Имя</th><th></th></tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<script>
+function load(){
+  fetch('/api/students')
+    .then(r=>r.json())
+    .then(list=>{
+      const tbody=document.querySelector('#tbl tbody');
+      tbody.innerHTML='';
+      list.forEach(s=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td class="border px-4 py-2">${s.id}</td>`+
+          `<td class="border px-4 py-2">${s.name}</td>`+
+          `<td class="border px-4 py-2"><button data-id="${s.id}" class="del bg-red-500 text-white px-2 py-1">Удалить</button></td>`;
+        tbody.appendChild(tr);
+      });
+    });
+}
+load();
+document.getElementById('add').onclick=()=>{
+  const name=document.getElementById('name').value.trim();
+  if(!name) return;
+  fetch('/api/students',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name})})
+    .then(load);
+};
+document.addEventListener('click',e=>{
+  if(e.target.classList.contains('del')){
+    const id=e.target.dataset.id;
+    fetch('/api/students/'+id,{method:'DELETE'}).then(load);
+  }
+});
+</script>
+</body>
+</html>

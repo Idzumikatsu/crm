@@ -19,4 +19,14 @@ public class WebController {
     public String teacher() {
         return "teacher";
     }
+
+    @GetMapping("/teachers")
+    public String teachers() {
+        return "teachers";
+    }
+
+    @GetMapping("/students")
+    public String students() {
+        return "students";
+    }
 }
