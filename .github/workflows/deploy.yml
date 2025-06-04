@@ -15,10 +15,14 @@ jobs:
     steps:
       - name: Configure proxy variables
         run: |
+          # Detect proxy settings either from provided secrets or existing
+          # environment variables. GitHub runners might expose the proxy
+          # variables in lowercase, so handle both cases.
           if [ -z "$PROXY_HOST" ] || [ -z "$PROXY_PORT" ]; then
-            if [ -n "$HTTP_PROXY" ]; then
-              PROXY_HOST=$(printf %s "$HTTP_PROXY" | cut -d/ -f3 | cut -d: -f1)
-              PROXY_PORT=$(printf %s "$HTTP_PROXY" | cut -d: -f3)
+            proxy_var="${HTTP_PROXY:-${http_proxy:-}}"
+            if [ -n "$proxy_var" ]; then
+              PROXY_HOST=$(printf %s "$proxy_var" | cut -d/ -f3 | cut -d: -f1)
+              PROXY_PORT=$(printf %s "$proxy_var" | cut -d: -f3)
             else
               echo "::error::PROXY_HOST or PROXY_PORT is not configured" >&2
               exit 1
