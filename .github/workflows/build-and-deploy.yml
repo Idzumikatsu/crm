@@ -14,20 +14,17 @@ jobs:
     steps:
       - name: Configure proxy variables
         run: |
-          if [ -z "$PROXY_HOST" ] || [ -z "$PROXY_PORT" ]; then
-            proxy_var="${HTTP_PROXY:-${http_proxy:-}}"
-            if [ -n "$proxy_var" ]; then
-              PROXY_HOST=$(printf %s "$proxy_var" | cut -d/ -f3 | cut -d: -f1)
-              PROXY_PORT=$(printf %s "$proxy_var" | cut -d: -f3)
-            else
-              echo "::error::PROXY_HOST or PROXY_PORT is not configured" >&2
-              exit 1
-            fi
+          # Only export proxy environment variables when both PROXY_HOST and
+          # PROXY_PORT are provided.  When either is missing we simply skip
+          # proxy setup so the job continues without failing.
+          if [ -n "$PROXY_HOST" ] && [ -n "$PROXY_PORT" ]; then
+            echo "http_proxy=http://$PROXY_HOST:$PROXY_PORT" >> "$GITHUB_ENV"
+            echo "https_proxy=http://$PROXY_HOST:$PROXY_PORT" >> "$GITHUB_ENV"
+            echo "PROXY_HOST=$PROXY_HOST" >> "$GITHUB_ENV"
+            echo "PROXY_PORT=$PROXY_PORT" >> "$GITHUB_ENV"
+          else
+            echo "Proxy variables not set, skipping proxy configuration"
           fi
-          echo "HTTP_PROXY=http://$PROXY_HOST:$PROXY_PORT" >> "$GITHUB_ENV"
-          echo "HTTPS_PROXY=http://$PROXY_HOST:$PROXY_PORT" >> "$GITHUB_ENV"
-          echo "PROXY_HOST=$PROXY_HOST" >> "$GITHUB_ENV"
-          echo "PROXY_PORT=$PROXY_PORT" >> "$GITHUB_ENV"
 
       - uses: actions/checkout@v3
 
@@ -38,16 +35,18 @@ jobs:
           java-version: '21'
 
       - name: Configure git proxy
+        if: env.PROXY_HOST && env.PROXY_PORT
         run: |
           git config --global http.proxy $HTTP_PROXY
           git config --global https.proxy $HTTPS_PROXY
 
       - name: Generate Maven settings
+        if: env.PROXY_HOST && env.PROXY_PORT
         run: envsubst < .mvn/settings.xml.in > .mvn/settings.xml
 
       - name: Build and test with Maven
         env:
-          MAVEN_OPTS: "-Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Dhttps.proxyHost=$PROXY_HOST -Dhttps.proxyPort=$PROXY_PORT"
+          MAVEN_OPTS: ${{ env.PROXY_HOST && env.PROXY_PORT && format('-Dhttp.proxyHost={0} -Dhttp.proxyPort={1} -Dhttps.proxyHost={0} -Dhttps.proxyPort={1}', env.PROXY_HOST, env.PROXY_PORT) }}
         run: ./mvnw -s .mvn/settings.xml -B verify
 
       - name: Deploy
