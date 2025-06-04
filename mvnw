@@ -32,6 +32,19 @@
 set -euf
 [ "${MVNW_VERBOSE-}" != debug ] || set -x
 
+# The default environment may define proxy variables pointing to a host
+# that isn't resolvable. Unset such variables so Maven can connect
+# directly when no proxy is available.
+for var in https_proxy HTTPS_PROXY http_proxy HTTP_PROXY; do
+  proxy=$(eval echo "\${$var-}")
+  if [ -n "$proxy" ]; then
+    host=$(printf %s "$proxy" | cut -d/ -f3 | cut -d: -f1)
+    if ! getent hosts "$host" >/dev/null 2>&1; then
+      unset "$var"
+    fi
+  fi
+done
+
 # Configure Maven to use proxy settings from environment variables if not already set
 if [ -z "${MAVEN_OPTS-}" ]; then
   if [ -n "${https_proxy-}${HTTPS_PROXY-}" ]; then
