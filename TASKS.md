@@ -29,18 +29,18 @@
 ## Milestone 5: Веб-интерфейс (Thymeleaf + Tailwind CSS + Alpine.js)
 
 ### 5.1 Базовая структура
-- [ ] Настроить Tailwind (`tailwind.config.js`, сборка `styles.css`).
-- [ ] Создать Thymeleaf-фрагменты `head`, `navbar`, `footer`.
-- [ ] Общий шаблон `layout.html`.
+- [x] Настроить Tailwind (`tailwind.config.js`, сборка `styles.css`).
+- [x] Создать Thymeleaf-фрагменты `head`, `navbar`, `footer`.
+- [x] Общий шаблон `layout.html`.
 
 ### 5.2 Страница входа
 - [x] Шаблон `login.html`.
 - [x] Контроллер `WebController.login()`.
-- [ ] Редиректы после входа в зависимости от роли.
+- [x] Редиректы после входа в зависимости от роли.
 
 ### 5.3 Навигация и профиль
-- [ ] Фрагмент `navbar` с учётом роли пользователя.
-- [ ] Страница `profile.html`.
+- [x] Фрагмент `navbar` с учётом роли пользователя.
+- [x] Страница `profile.html`.
 
 ### 5.4 Manager Dashboard
 - [ ] REST: `GET /api/manager/teachers` и `/api/manager/students`.

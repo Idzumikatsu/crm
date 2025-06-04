@@ -10,6 +10,11 @@ public class WebController {
         return "login";
     }
 
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
+    }
+
     @GetMapping("/manager")
     public String manager() {
         return "manager";
