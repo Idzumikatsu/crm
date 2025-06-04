@@ -59,3 +59,30 @@ docker run --rm -it --network app-network \
 - преподаватель: `teacher`/`teacher`
 
 
+
+## Node/React CRM prototype
+
+### Running tests
+
+```bash
+cd server && npm test
+cd ../client && npm test
+```
+
+### Starting applications
+
+**Server**
+
+```bash
+cd server
+JWT_SECRET=devsecret npm start
+```
+
+**Client**
+
+```bash
+cd client
+npm start
+```
+
+Set environment variables `JWT_SECRET` and optional `DATABASE_URL` for the server.

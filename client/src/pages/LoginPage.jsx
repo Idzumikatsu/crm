@@ -1,23 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import LoginForm from '../components/LoginForm';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const submit = async (e) => {
-    e.preventDefault();
-    await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
+  const navigate = useNavigate();
+  const onSuccess = (token) => {
+    localStorage.setItem('token', token);
+    navigate('/dashboard');
   };
 
-  return (
-    <form onSubmit={submit}>
-      <input value={username} onChange={e => setUsername(e.target.value)} placeholder="username" />
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="password" />
-      <button type="submit">Login</button>
-    </form>
-  );
+  return <LoginForm onSuccess={onSuccess} />;
 }
