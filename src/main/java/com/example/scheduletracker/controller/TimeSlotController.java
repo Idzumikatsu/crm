@@ -1,9 +1,8 @@
 package com.example.scheduletracker.controller;
 
-import com.example.scheduletracker.entity.AvailabilitySlot;
-import com.example.scheduletracker.service.AvailabilitySlotService;
+import com.example.scheduletracker.entity.TimeSlot;
+import com.example.scheduletracker.service.TimeSlotService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,13 +10,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/availability")
+@RequestMapping("/api/time-slots")
 @RequiredArgsConstructor
-public class AvailabilitySlotController {
-    private final AvailabilitySlotService svc;
+public class TimeSlotController {
+    private final TimeSlotService svc;
 
     @GetMapping
-    public List<AvailabilitySlot> all(@RequestParam(required = false) Long teacherId) {
+    public List<TimeSlot> all(@RequestParam(required = false) Long teacherId) {
         if (teacherId != null) {
             return svc.findByTeacherId(teacherId);
         }
@@ -25,19 +24,19 @@ public class AvailabilitySlotController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AvailabilitySlot> get(@PathVariable Long id) {
+    public ResponseEntity<TimeSlot> get(@PathVariable Long id) {
         return svc.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public AvailabilitySlot create(@RequestBody AvailabilitySlot slot) {
+    public TimeSlot create(@RequestBody TimeSlot slot) {
         return svc.save(slot);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AvailabilitySlot> update(@PathVariable Long id, @RequestBody AvailabilitySlot slot) {
+    public ResponseEntity<TimeSlot> update(@PathVariable Long id, @RequestBody TimeSlot slot) {
         return svc.findById(id)
                 .map(existing -> {
                     slot.setId(id);

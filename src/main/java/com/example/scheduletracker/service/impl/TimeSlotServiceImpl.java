@@ -1,10 +1,10 @@
 package com.example.scheduletracker.service.impl;
 
-import com.example.scheduletracker.entity.AvailabilitySlot;
+import com.example.scheduletracker.entity.TimeSlot;
 import com.example.scheduletracker.entity.Teacher;
-import com.example.scheduletracker.repository.AvailabilitySlotRepository;
+import com.example.scheduletracker.repository.TimeSlotRepository;
 import com.example.scheduletracker.repository.TeacherRepository;
-import com.example.scheduletracker.service.AvailabilitySlotService;
+import com.example.scheduletracker.service.TimeSlotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,29 +13,29 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AvailabilitySlotServiceImpl implements AvailabilitySlotService {
-    private final AvailabilitySlotRepository repo;
+public class TimeSlotServiceImpl implements TimeSlotService {
+    private final TimeSlotRepository repo;
     private final TeacherRepository teacherRepository;
 
     @Override
-    public AvailabilitySlot save(AvailabilitySlot slot) {
+    public TimeSlot save(TimeSlot slot) {
         return repo.save(slot);
     }
 
     @Override
-    public List<AvailabilitySlot> findAll() {
+    public List<TimeSlot> findAll() {
         return repo.findAll();
     }
 
     @Override
-    public List<AvailabilitySlot> findByTeacherId(Long teacherId) {
+    public List<TimeSlot> findByTeacherId(Long teacherId) {
         Teacher t = teacherRepository.findById(teacherId).orElse(null);
         if (t == null) return List.of();
         return repo.findByTeacher(t);
     }
 
     @Override
-    public Optional<AvailabilitySlot> findById(Long id) {
+    public Optional<TimeSlot> findById(Long id) {
         return repo.findById(id);
     }
 
