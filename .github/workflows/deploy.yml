@@ -47,6 +47,10 @@ jobs:
           git config --global http.proxy $HTTP_PROXY
           git config --global https.proxy $HTTPS_PROXY
 
+      - name: Generate Maven settings
+        run: |
+          envsubst < .mvn/settings.xml.in > .mvn/settings.xml
+
       - name: Build with Maven
         env:
           MAVEN_OPTS: "-Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Dhttps.proxyHost=$PROXY_HOST -Dhttps.proxyPort=$PROXY_PORT"
