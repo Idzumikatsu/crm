@@ -35,6 +35,18 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .userDetailsService(userDetailsService)
                 .httpBasic(httpBasic -> {})
+                .formLogin(fl -> fl
+                        .loginPage("/login")
+                        .successHandler((req,res,auth) -> {
+                            var roles = auth.getAuthorities();
+                            if (roles.stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"))) {
+                                res.sendRedirect("/manager");
+                            } else {
+                                res.sendRedirect("/teacher");
+                            }
+                        })
+                        .permitAll()
+                )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint((req,res,ex2) -> res.sendError(401)))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -1,0 +1,17 @@
+<nav th:fragment="navbar" class="bg-gray-800 text-white p-4"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <div class="container mx-auto flex gap-4 items-center">
+        <a href="/" class="hover:underline">Главная</a>
+        <a href="/manager" class="hover:underline"
+           sec:authorize="hasRole('MANAGER')">Менеджер</a>
+        <a href="/teacher" class="hover:underline"
+           sec:authorize="hasRole('TEACHER')">Преподаватель</a>
+        <a href="/profile" class="ml-auto hover:underline"
+           sec:authorize="isAuthenticated()">Профиль</a>
+        <form method="post" action="/logout" sec:authorize="isAuthenticated()">
+            <button class="hover:underline ml-4" type="submit">Выйти</button>
+        </form>
+        <a href="/login" class="ml-auto hover:underline"
+           sec:authorize="!isAuthenticated()">Войти</a>
+    </div>
+</nav>
