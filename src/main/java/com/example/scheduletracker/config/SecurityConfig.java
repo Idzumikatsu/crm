@@ -26,7 +26,6 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/favicon.ico",
                                 "/login.html",
-                                "/", // если хотите, чтобы корень был публичным
                                 "/api/teachers/**",
                                 "/api/groups/**",
                                 "/api/lessons/**"

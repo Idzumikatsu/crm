@@ -32,6 +32,23 @@
 set -euf
 [ "${MVNW_VERBOSE-}" != debug ] || set -x
 
+# Configure Maven to use proxy settings from environment variables if not already set
+if [ -z "${MAVEN_OPTS-}" ]; then
+  if [ -n "${https_proxy-}${HTTPS_PROXY-}" ]; then
+    proxy=${https_proxy-${HTTPS_PROXY}}
+    host=$(printf %s "$proxy" | cut -d/ -f3 | cut -d: -f1)
+    port=$(printf %s "$proxy" | cut -d: -f3)
+    MAVEN_OPTS="${MAVEN_OPTS-} -Dhttps.proxyHost=$host -Dhttps.proxyPort=$port"
+  fi
+  if [ -n "${http_proxy-}${HTTP_PROXY-}" ]; then
+    proxy=${http_proxy-${HTTP_PROXY}}
+    host=$(printf %s "$proxy" | cut -d/ -f3 | cut -d: -f1)
+    port=$(printf %s "$proxy" | cut -d: -f3)
+    MAVEN_OPTS="${MAVEN_OPTS-} -Dhttp.proxyHost=$host -Dhttp.proxyPort=$port"
+  fi
+  export MAVEN_OPTS
+fi
+
 # OS specific support.
 native_path() { printf %s\\n "$1"; }
 case "$(uname)" in
@@ -144,6 +161,8 @@ MAVEN_HOME="${MAVEN_USER_HOME}/wrapper/dists/${distributionUrlNameMain-}/$(hash_
 
 exec_maven() {
   unset MVNW_VERBOSE MVNW_USERNAME MVNW_PASSWORD MVNW_REPOURL || :
+  MAVEN_CONFIG="${MAVEN_CONFIG:-.mvn}"
+  export MAVEN_CONFIG
   exec "$MAVEN_HOME/bin/$MVN_CMD" "$@" || die "cannot exec $MAVEN_HOME/bin/$MVN_CMD"
 }
 
