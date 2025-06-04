@@ -77,7 +77,7 @@ class LessonServiceImplTest {
     @Test
     void saveOverlappingThrows() {
         LocalDateTime dt = LocalDateTime.now();
-        TimeSlot slot = TimeSlot.builder().teacher(t1).start(dt.minusMinutes(30)).end(dt.plusMinutes(90)).build();
+        TimeSlot slot = TimeSlot.builder().teacher(t1).start(dt.minusMinutes(30)).endTime(dt.plusMinutes(90)).build();
         when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
         Lesson existing = Lesson.builder().id(2L).teacher(t1).group(g1).dateTime(dt).duration(60).build();
         when(repo.findByTeacher(t1)).thenReturn(List.of(existing));
@@ -91,7 +91,7 @@ class LessonServiceImplTest {
     @Test
     void saveValidLessonPersists() {
         LocalDateTime dt = LocalDateTime.now();
-        TimeSlot slot = TimeSlot.builder().teacher(t1).start(dt.minusMinutes(10)).end(dt.plusMinutes(70)).build();
+        TimeSlot slot = TimeSlot.builder().teacher(t1).start(dt.minusMinutes(10)).endTime(dt.plusMinutes(70)).build();
         when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
         when(repo.findByTeacher(t1)).thenReturn(List.of());
         when(repo.save(any(Lesson.class))).thenAnswer(invocation -> invocation.getArgument(0));
