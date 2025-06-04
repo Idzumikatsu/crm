@@ -72,6 +72,16 @@ docker compose up --build
 
 Новые пользователи могут зарегистрироваться через POST `/api/auth/register`,
 передав `username`, `password` и опциональное `role` в теле запроса.
+### REST API
+Основные эндпоинты:
+- `POST /api/auth/login` и `POST /api/auth/register`
+- CRUD для преподавателей `/api/teachers`
+- CRUD для студентов `/api/students`
+- CRUD для групп `/api/groups`
+- Управление слотами преподавателей `/api/time-slots`
+- Работа с занятиями `/api/lessons`
+- Получение данных пользователя `/api/users`
+
 
 ## API документация
 

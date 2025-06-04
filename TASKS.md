@@ -28,10 +28,10 @@ This file lists detailed sub-tasks for implementing the CRM application.
   Similar updates for manager role.
   Effort: 2 days
 
-## Milestone 3: TimeSlot Management
+## Milestone 3: TimeSlot Management (DONE)
 - **Entity and Repository**  
-  Implement `TimeSlot` entity.  
-  CRUD in `AvailabilitySlotController` (rename to `TimeSlotController`).  
+  Implement `TimeSlot` entity.(DONE)
+  CRUD in `TimeSlotController` (DONE)
   Effort: 2 days
 
 ## Milestone 4: Lesson Scheduling Logic
