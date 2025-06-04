@@ -9,41 +9,46 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      NODE_ENV: test
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PROXY_HOST: ${{ secrets.PROXY_HOST }}
+      PROXY_PORT: ${{ secrets.PROXY_PORT }}
     steps:
+      - name: Configure proxy variables
+        run: |
+          if [ -z "$PROXY_HOST" ] || [ -z "$PROXY_PORT" ]; then
+            proxy_var="${HTTP_PROXY:-${http_proxy:-}}"
+            if [ -n "$proxy_var" ]; then
+              PROXY_HOST=$(printf %s "$proxy_var" | cut -d/ -f3 | cut -d: -f1)
+              PROXY_PORT=$(printf %s "$proxy_var" | cut -d: -f3)
+            else
+              echo "::error::PROXY_HOST or PROXY_PORT is not configured" >&2
+              exit 1
+            fi
+          fi
+          echo "HTTP_PROXY=http://$PROXY_HOST:$PROXY_PORT" >> "$GITHUB_ENV"
+          echo "HTTPS_PROXY=http://$PROXY_HOST:$PROXY_PORT" >> "$GITHUB_ENV"
+          echo "PROXY_HOST=$PROXY_HOST" >> "$GITHUB_ENV"
+          echo "PROXY_PORT=$PROXY_PORT" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
         with:
-          node-version: 16
+          distribution: 'temurin'
+          java-version: '21'
 
-      - name: Install server dependencies
+      - name: Configure git proxy
         run: |
-          cd server
-          npm install
+          git config --global http.proxy $HTTP_PROXY
+          git config --global https.proxy $HTTPS_PROXY
 
-      - name: Run server tests
-        run: |
-          cd server
-          npm test -- --ci --reporters=default
+      - name: Generate Maven settings
+        run: envsubst < .mvn/settings.xml.in > .mvn/settings.xml
 
-      - name: Install client dependencies
-        run: |
-          cd client
-          npm install
-
-      - name: Run client tests
-        run: |
-          cd client
-          npm test -- --watchAll=false
-
-      - name: Build client
-        run: |
-          cd client
-          npm run build
+      - name: Build and test with Maven
+        env:
+          MAVEN_OPTS: "-Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Dhttps.proxyHost=$PROXY_HOST -Dhttps.proxyPort=$PROXY_PORT"
+        run: ./mvnw -s .mvn/settings.xml -B verify
 
       - name: Deploy
         run: echo "Deployment not yet configured"
