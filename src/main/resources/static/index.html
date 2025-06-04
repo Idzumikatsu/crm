@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добро пожаловать</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.4/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded shadow-md w-96 text-center">
+        <h1 id="greeting" class="text-2xl font-bold mb-4"></h1>
+        <p id="username" class="mb-4"></p>
+        <form method="post" action="/logout">
+            <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded" type="submit">Выйти</button>
+        </form>
+    </div>
+    <script>
+        fetch('/api/hello')
+            .then(r => r.text())
+            .then(text => {
+                document.getElementById('greeting').innerText = text;
+            });
+        fetch('/api/users/me')
+            .then(r => r.json())
+            .then(u => {
+                document.getElementById('username').innerText = 'Вы вошли как ' + u.username;
+            });
+    </script>
+</body>
+</html>
