@@ -23,8 +23,8 @@
 - [x] Сущности `Teacher` и `Student`.
 - [x] Таблица-связка `TeacherStudent`.
 - [x] Настроить связи `@ManyToOne` и коллекции в `Teacher`/`Student`.
-- [ ] SQL‑миграции через Flyway/Liquibase.
-- [ ] Интеграционный тест схемы.
+- [x] SQL‑миграции через Flyway/Liquibase.
+- [x] Интеграционный тест схемы.
 
 ## Milestone 5: Веб-интерфейс (Thymeleaf + Tailwind CSS + Alpine.js)
 
