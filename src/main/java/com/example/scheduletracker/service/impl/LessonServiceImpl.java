@@ -40,4 +40,14 @@ public class LessonServiceImpl implements LessonService {
     public List<Lesson> findBetween(LocalDateTime from, LocalDateTime to) {
         return repo.findByDateTimeBetween(from, to);
     }
+
+    @Override
+    public List<Lesson> search(LocalDateTime from, LocalDateTime to, Long teacherId, Long groupId) {
+        return repo.findAll().stream()
+                .filter(l -> from == null || !l.getDateTime().isBefore(from))
+                .filter(l -> to == null || !l.getDateTime().isAfter(to))
+                .filter(l -> teacherId == null || (l.getTeacher() != null && teacherId.equals(l.getTeacher().getId())))
+                .filter(l -> groupId == null || (l.getGroup() != null && groupId.equals(l.getGroup().getId())))
+                .toList();
+    }
 }

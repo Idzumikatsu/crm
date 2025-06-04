@@ -12,4 +12,15 @@ public interface LessonService {
     Optional<Lesson> findById(Long id);
     void deleteById(Long id);
     List<Lesson> findBetween(LocalDateTime from, LocalDateTime to);
+
+    /**
+     * Search lessons by optional filters. Any {@code null} parameter is ignored.
+     *
+     * @param from  start of the period (inclusive)
+     * @param to    end of the period (inclusive)
+     * @param teacherId filter by teacher id
+     * @param groupId   filter by group id
+     * @return list of lessons matching all provided filters
+     */
+    List<Lesson> search(LocalDateTime from, LocalDateTime to, Long teacherId, Long groupId);
 }

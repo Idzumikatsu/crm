@@ -22,10 +22,12 @@ public class LessonController {
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
             @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to)
-    {
-        if (from != null && to != null) {
-            return svc.findBetween(from, to);
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to,
+            @RequestParam(required = false) Long teacherId,
+            @RequestParam(required = false) Long groupId
+    ) {
+        if (from != null || to != null || teacherId != null || groupId != null) {
+            return svc.search(from, to, teacherId, groupId);
         }
         return svc.findAll();
     }
