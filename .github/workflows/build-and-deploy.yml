@@ -1,0 +1,86 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure proxy variables
+        run: |
+          PH="${{ secrets.PROXY_HOST }}"
+          PP="${{ secrets.PROXY_PORT }}"
+          [ -z "$PH" ] && PH="$PROXY_HOST"
+          [ -z "$PP" ] && PP="$PROXY_PORT"
+          if [ -z "$PH" ] || [ -z "$PP" ]; then
+            echo "PROXY_HOST or PROXY_PORT is not configured"
+            exit 1
+          fi
+          echo "PROXY_HOST=$PH" >> "$GITHUB_ENV"
+          echo "PROXY_PORT=$PP" >> "$GITHUB_ENV"
+          echo "HTTP_PROXY=http://$PH:$PP" >> "$GITHUB_ENV"
+          echo "HTTPS_PROXY=http://$PH:$PP" >> "$GITHUB_ENV"
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Configure git proxy
+        run: |
+          git config --global http.proxy "http://$PROXY_HOST:$PROXY_PORT"
+          git config --global https.proxy "http://$PROXY_HOST:$PROXY_PORT"
+
+      - name: Generate Maven settings
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF2
+          <settings>
+            <proxies>
+              <proxy>
+                <id>proxy</id>
+                <active>true</active>
+                <protocol>http</protocol>
+                <host>$PROXY_HOST</host>
+                <port>$PROXY_PORT</port>
+              </proxy>
+            </proxies>
+          </settings>
+          EOF2
+
+      - name: Build with Maven
+        run: mvn -B clean package
+
+      - name: Prepare SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Add VPS server to known_hosts
+        run: |
+          HOST="${{ secrets.VPS_HOST }}"
+          if [ -z "$HOST" ]; then
+            HOST="${{ secrets.SSH_HOST }}"
+          fi
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
+
+      - name: Deploy artifact to VPS
+        run: |
+          HOST="${{ secrets.VPS_HOST }}"
+          if [ -z "$HOST" ]; then
+            HOST="${{ secrets.SSH_HOST }}"
+          fi
+          USER="${{ secrets.VPS_USER }}"
+          if [ -z "$USER" ]; then
+            USER="${{ secrets.SSH_USER }}"
+          fi
+          scp -o StrictHostKeyChecking=yes -i ~/.ssh/id_rsa target/*.jar "$USER@$HOST:~/app.jar"
+
