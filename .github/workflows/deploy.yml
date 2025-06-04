@@ -9,8 +9,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      http_proxy: http://proxy:8080
-      https_proxy: http://proxy:8080
       HTTP_PROXY: http://proxy:8080
       HTTPS_PROXY: http://proxy:8080
 
@@ -26,8 +24,8 @@ jobs:
 
       - name: Configure git proxy
         run: |
-          git config --global http.proxy $http_proxy
-          git config --global https.proxy $https_proxy
+          git config --global http.proxy $HTTP_PROXY
+          git config --global https.proxy $HTTPS_PROXY
 
       - name: Build with Maven
         run: ./mvnw clean package -DskipTests
