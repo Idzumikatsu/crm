@@ -92,6 +92,15 @@ docker compose up --build
 Для использования Thymeleaf эти же файлы продублированы в `src/main/resources/templates`.
 Страницы обращаются к REST API через fetch-запросы.
 
+### Карта сайта
+
+- `http://localhost:8080/login.html` – вход в систему
+- `http://localhost:8080/index.html` – стартовая страница после логина
+- `http://localhost:8080/manager.html` – кабинет менеджера
+- `http://localhost:8080/teacher.html` – кабинет преподавателя
+- `http://localhost:8080/teachers.html` – управление преподавателями
+- `http://localhost:8080/students.html` – управление студентами
+
 ### REST API
 Основные эндпоинты:
 - `POST /api/auth/login` и `POST /api/auth/register`

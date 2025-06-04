@@ -109,13 +109,12 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>3.141.59</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>htmlunit-driver</artifactId>
-            <version>2.70.0</version>
+            <version>4.13.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -148,6 +147,7 @@
                         <exclude>com/example/scheduletracker/service/impl/LessonServiceImpl*</exclude>
                         <exclude>com/example/scheduletracker/service/impl/UserServiceImpl*</exclude>
                         <exclude>com/example/scheduletracker/ScheduleTrackerApplication*</exclude>
+                        <exclude>com/gargoylesoftware/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
