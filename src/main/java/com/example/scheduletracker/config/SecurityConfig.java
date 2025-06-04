@@ -34,6 +34,8 @@ public class SecurityConfig {
                 )
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .userDetailsService(userDetailsService)
+                .httpBasic(httpBasic -> {})
+                .exceptionHandling(ex -> ex.authenticationEntryPoint((req,res,ex2) -> res.sendError(401)))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

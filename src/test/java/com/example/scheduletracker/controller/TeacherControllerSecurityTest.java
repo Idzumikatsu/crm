@@ -1,6 +1,10 @@
 package com.example.scheduletracker.controller;
 
 import com.example.scheduletracker.service.TeacherService;
+import com.example.scheduletracker.config.SecurityConfig;
+import org.springframework.context.annotation.Import;
+import com.example.scheduletracker.config.jwt.JwtUtils;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(TeacherController.class)
 @AutoConfigureMockMvc
+@Import(SecurityConfig.class)
 class TeacherControllerSecurityTest {
 
     @Autowired
@@ -22,6 +27,10 @@ class TeacherControllerSecurityTest {
 
     @MockBean
     private TeacherService svc;
+    @MockBean
+    private JwtUtils utils;
+    @MockBean
+    private UserDetailsService userDetailsService;
 
     @Test
     @DisplayName("GET /api/teachers без авторизации возвращает 401")
