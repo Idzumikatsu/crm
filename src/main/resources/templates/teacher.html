@@ -3,6 +3,12 @@
       th:replace="layout :: layout('Кабинет преподавателя', ~{::section})">
 <section class="p-8">
     <h1 class="text-2xl font-bold mb-4">Мои занятия</h1>
+    <div class="mb-4">
+        <input type="datetime-local" id="dt" class="border" />
+        <input type="number" id="duration" class="border" placeholder="мин" />
+        <input type="number" id="group" class="border" placeholder="group id" />
+        <button id="create" class="bg-blue-500 text-white px-2 py-1">Создать</button>
+    </div>
     <table class="table-auto w-full" id="lesson-table">
         <thead>
             <tr>
@@ -15,8 +21,10 @@
         <tbody></tbody>
     </table>
 
+    <div id="calendar" class="mt-8"></div>
+
 <script>
-fetch('/api/lessons?teacherId=1')
+fetch('/api/teacher/lessons?teacherId=1')
   .then(r => r.json())
   .then(data => {
     const body = document.querySelector('#lesson-table tbody');
@@ -41,10 +49,37 @@ document.addEventListener('click', e => {
   }
 });
 
+document.getElementById('create').addEventListener('click', () => {
+  const dt=document.getElementById('dt').value;
+  const duration=document.getElementById('duration').value;
+  const group=document.getElementById('group').value;
+  fetch('/api/lessons', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({teacher:{id:1}, group:{id:+group}, dateTime:dt, duration:+duration})
+  }).then(() => location.reload());
+});
+
 function updateStatus(id, status) {
   fetch(`/api/lessons/${id}/status?status=${status}`, {method:'PATCH'})
     .then(() => location.reload());
 }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('calendar');
+  const calendar = new FullCalendar.Calendar(el, {
+    initialView:'dayGridMonth',
+    events(info, success){
+      fetch(`/api/teacher/lessons?teacherId=1`)
+        .then(r=>r.json())
+        .then(data => success(data.map(l=>({title:l.group.name,start:l.dateTime}))));
+    }
+  });
+  calendar.render();
+});
 </script>
 </section>
 </html>
