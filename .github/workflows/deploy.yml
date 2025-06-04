@@ -1,6 +1,6 @@
 # Requires secrets:
 #   VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_PASSPHRASE
-#   (optional) VPS_PORT – если используется нестандартный SSH-порт
+#   (optional) VPS_PORT – если SSH-порт не 22
 
 name: Deploy to VPS
 
@@ -30,26 +30,28 @@ jobs:
     - name: Build JAR
       run: mvn -B clean package -Dmaven.test.skip=true
 
-    # 4. Переименовываем артефакт → app.jar (проще COPY в Dockerfile)
+    # 4. Переименовываем артефакт → app.jar (чтобы Dockerfile его нашёл)
     - name: Prepare artifact
       run: cp target/*.jar target/app.jar
 
-    # 5. Копируем инфраструктурные файлы (Dockerfile, compose-файл) на VPS
+    # 5. Копируем Dockerfile и docker-compose.yml на VPS (в корень /root/myapp)
     - name: Copy infra files to VPS
+      if: ${{ hashFiles('Dockerfile', 'docker-compose.yml') != '' }}
       uses: appleboy/scp-action@v0.1.4
       with:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
         passphrase: ${{ secrets.VPS_PASSPHRASE }}
-        # port:     ${{ secrets.VPS_PORT }}   # раскомментируйте, если не 22
+        # 🛑 Если ваш SSH-порт – не 22, раскомментируйте строку ниже:
+        # port:     ${{ secrets.VPS_PORT }}
         source: |
           Dockerfile
           docker-compose.yml
         target: /root/myapp
-        rm: true
+        rm:     true
 
-    # 6. Копируем собранный JAR на VPS
+    # 6. Копируем сам app.jar на VPS
     - name: Copy app.jar to VPS
       uses: appleboy/scp-action@v0.1.4
       with:
@@ -57,12 +59,12 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
         passphrase: ${{ secrets.VPS_PASSPHRASE }}
-        # port:     ${{ secrets.VPS_PORT }}   # раскомментируйте, если не 22
-        source:  target/app.jar
-        target:  /root/myapp/app.jar
-        rm:      true
+        # port:     ${{ secrets.VPS_PORT }}
+        source:     target/app.jar
+        target:     /root/myapp/app.jar
+        rm:         true
 
-    # 7. Пересобираем образ и перезапускаем контейнер
+    # 7. Собираем Docker-образ и перезапускаем контейнер через SSH
     - name: Docker Compose up
       uses: appleboy/ssh-action@v1.0.0
       with:
@@ -70,7 +72,7 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
         passphrase: ${{ secrets.VPS_PASSPHRASE }}
-        # port:     ${{ secrets.VPS_PORT }}   # раскомментируйте, если не 22
+        # port:     ${{ secrets.VPS_PORT }}
         script: |
           set -e
           cd /root/myapp
