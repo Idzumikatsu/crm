@@ -42,7 +42,7 @@ This file lists detailed sub-tasks for implementing the CRM application.
   Effort: 3 days
 
 ## Milestone 5: Веб-интерфейс на Thymeleaf
-- **Статические страницы**
+- **Статические страницы** (DONE)
   Создать шаблоны `login.html`, `manager.html`, `teacher.html` под `src/main/resources/templates`.
   Effort: 2 days
 - **Формы и контроллеры**
