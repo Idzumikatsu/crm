@@ -9,8 +9,10 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      HTTP_PROXY: http://proxy:8080
-      HTTPS_PROXY: http://proxy:8080
+      PROXY_HOST: ${{ secrets.PROXY_HOST }}
+      PROXY_PORT: ${{ secrets.PROXY_PORT }}
+      HTTP_PROXY: http://${{ secrets.PROXY_HOST }}:${{ secrets.PROXY_PORT }}
+      HTTPS_PROXY: http://${{ secrets.PROXY_HOST }}:${{ secrets.PROXY_PORT }}
 
     steps:
       - name: Checkout code
