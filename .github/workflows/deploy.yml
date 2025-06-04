@@ -1,4 +1,7 @@
-# Requires secrets: VPS_HOST, VPS_USER, VPS_SSH_KEY, (optional) VPS_PORT
+# Requires secrets:
+#   VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_PASSPHRASE
+#   (optional) VPS_PORT  – если не задан, actions возьмут 22
+
 name: Deploy to VPS
 
 on:
@@ -10,41 +13,51 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
+      # 1. Клонируем репозиторий
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Ставим JDK 21
       - name: Setup Temurin JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: temurin
+          java-version: 21
 
+      # 3. Собираем JAR без тестов
       - name: Build JAR
         run: mvn -B clean package -Dmaven.test.skip=true
 
+      # 4. Переименовываем артефакт → app.jar (удобно для COPY в Dockerfile)
       - name: Prepare artifact
         run: cp target/*.jar target/app.jar
 
+      # 5. Передаём JAR на VPS
       - name: Copy to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT }}
-          source: "target/app.jar"
-          target: "/root/myapp"
+          host:       ${{ secrets.VPS_HOST }}
+          username:   ${{ secrets.VPS_USER }}
+          key:        ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port:       ${{ secrets.VPS_PORT || 22 }}
+          source:     "target/app.jar"
+          target:     "/root/myapp"
+          rm:         true               # очищаем runner после копирования
 
+      # 6. Пересобираем образ и рестартим контейнер
       - name: Docker Compose up
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT }}
+          host:       ${{ secrets.VPS_HOST }}
+          username:   ${{ secrets.VPS_USER }}
+          key:        ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port:       ${{ secrets.VPS_PORT || 22 }}
           script: |
+            set -e
             cd /root/myapp
             docker compose build --no-cache
             docker compose up -d
-
