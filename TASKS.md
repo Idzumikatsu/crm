@@ -19,13 +19,13 @@ This file lists detailed sub-tasks for implementing the CRM application.
   Effort: 1 day
 
 ## Milestone 2: CRUD for Teachers & Students
-- **Teacher CRUD endpoints**  
-  Modify `TeacherController` to restrict by role.  
-  Files: `TeacherController.java`, service implementations.  
-  Tests: controller tests.  
+- **Teacher CRUD endpoints** (DONE)
+  Modify `TeacherController` to restrict by role.
+  Files: `TeacherController.java`, service implementations.
+  Tests: controller tests.
   Effort: 2 days
-- **Student CRUD endpoints**  
-  Similar updates for manager role.  
+- **Student CRUD endpoints** (DONE)
+  Similar updates for manager role.
   Effort: 2 days
 
 ## Milestone 3: TimeSlot Management

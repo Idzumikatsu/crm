@@ -4,6 +4,7 @@ import com.example.scheduletracker.entity.Student;
 import com.example.scheduletracker.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/students")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('MANAGER')")
 public class StudentController {
     private final StudentService svc;
 
