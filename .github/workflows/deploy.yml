@@ -8,6 +8,11 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      http_proxy: http://proxy:8080
+      https_proxy: http://proxy:8080
+      HTTP_PROXY: http://proxy:8080
+      HTTPS_PROXY: http://proxy:8080
 
     steps:
       - name: Checkout code
@@ -19,8 +24,13 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Configure git proxy
+        run: |
+          git config --global http.proxy $http_proxy
+          git config --global https.proxy $https_proxy
+
       - name: Build with Maven
-        run: mvn clean package -DskipTests
+        run: ./mvnw clean package -DskipTests
 
       - name: Prepare SSH key
         env:
