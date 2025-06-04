@@ -1,15 +1,15 @@
 #!/bin/sh
-set -e
 # Generate Maven proxy settings from environment
-# Create settings.xml only when both host and port are provided
-if [ -n "$PROXY_HOST" ] && [ -n "$PROXY_PORT" ]; then
-  mkdir -p .mvn
-  envsubst < .mvn/settings.xml.in > .mvn/settings.xml
-  echo "Generated .mvn/settings.xml for $PROXY_HOST:$PROXY_PORT"
-else
-  rm -f .mvn/settings.xml
-  echo "Proxy variables not set, skipping .mvn/settings.xml generation"
-fi
+set -e
+
+# Use default proxy values when none are provided
+PROXY_HOST="${PROXY_HOST:-proxy}"
+PROXY_PORT="${PROXY_PORT:-8080}"
+export PROXY_HOST PROXY_PORT
+
+mkdir -p .mvn
+envsubst < .mvn/settings.xml.in > .mvn/settings.xml
+echo "Generated .mvn/settings.xml for $PROXY_HOST:$PROXY_PORT"
 # Configure git proxy if variables are present
 if [ -n "$HTTP_PROXY" ]; then
   git config --global http.proxy "$HTTP_PROXY"
