@@ -21,5 +21,10 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    public enum Role { ADMIN, STUDENT }
+    public enum Role {
+        ADMIN,
+        STUDENT,
+        TEACHER,
+        MANAGER
+    }
 }

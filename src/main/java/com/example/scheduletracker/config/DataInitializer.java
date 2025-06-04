@@ -17,12 +17,19 @@ public class DataInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         if (userRepository.count() == 0) {
-            User admin = User.builder()
-                    .username("admin")
-                    .password(passwordEncoder.encode("admin"))
-                    .role(User.Role.ADMIN)
+            User manager = User.builder()
+                    .username("manager")
+                    .password(passwordEncoder.encode("manager"))
+                    .role(User.Role.MANAGER)
                     .build();
-            userRepository.save(admin);
+            userRepository.save(manager);
+
+            User teacher = User.builder()
+                    .username("teacher")
+                    .password(passwordEncoder.encode("teacher"))
+                    .role(User.Role.TEACHER)
+                    .build();
+            userRepository.save(teacher);
         }
     }
 }
