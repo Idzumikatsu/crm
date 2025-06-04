@@ -14,7 +14,8 @@
        -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:15
      ```
    - В `application.yml` адрес БД задаётся через переменную окружения `DB_HOST`.
-     По умолчанию используется `localhost`.
+     По умолчанию используется `localhost`. Если профиль `postgres` не активирован,
+     используется встроенная база H2.
 4. **Сборка и запуск**
    - Сборка: `./mvnw package`
    - Запуск: `./mvnw spring-boot:run`
