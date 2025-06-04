@@ -11,10 +11,17 @@ jobs:
     env:
       PROXY_HOST: ${{ secrets.PROXY_HOST }}
       PROXY_PORT: ${{ secrets.PROXY_PORT }}
-      HTTP_PROXY: http://${{ secrets.PROXY_HOST }}:${{ secrets.PROXY_PORT }}
-      HTTPS_PROXY: http://${{ secrets.PROXY_HOST }}:${{ secrets.PROXY_PORT }}
 
     steps:
+      - name: Configure proxy variables
+        run: |
+          if [ -z "$PROXY_HOST" ] || [ -z "$PROXY_PORT" ]; then
+            echo "::error::PROXY_HOST or PROXY_PORT is not configured" >&2
+            exit 1
+          fi
+          echo "HTTP_PROXY=http://$PROXY_HOST:$PROXY_PORT" >> "$GITHUB_ENV"
+          echo "HTTPS_PROXY=http://$PROXY_HOST:$PROXY_PORT" >> "$GITHUB_ENV"
+
       - name: Checkout code
         uses: actions/checkout@v3
 
