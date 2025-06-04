@@ -59,4 +59,9 @@ public class LessonController {
         svc.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Lesson> updateStatus(@PathVariable Long id, @RequestParam Lesson.Status status) {
+        return ResponseEntity.ok(svc.updateStatus(id, status));
+    }
 }

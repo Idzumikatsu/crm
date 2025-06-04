@@ -13,6 +13,8 @@ public interface LessonService {
     void deleteById(Long id);
     List<Lesson> findBetween(LocalDateTime from, LocalDateTime to);
 
+    Lesson updateStatus(Long id, Lesson.Status status);
+
     /**
      * Search lessons by optional filters. Any {@code null} parameter is ignored.
      *
