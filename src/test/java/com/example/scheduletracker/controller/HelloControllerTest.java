@@ -18,9 +18,9 @@ class HelloControllerTest {
     private MockMvc mvc;
 
     @Test
-    @DisplayName("GET / возвращает приветствие")
+    @DisplayName("GET /api/hello возвращает приветствие")
     void shouldReturnGreeting() throws Exception {
-        mvc.perform(get("/"))
+        mvc.perform(get("/api/hello"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Привет"));
     }
