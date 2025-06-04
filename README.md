@@ -33,14 +33,18 @@
 
 ## Запуск в Docker
 
-Чтобы контейнер приложения смог подключиться к базе данных, при запуске нужно
-передать адрес сервиса PostgreSQL через переменную окружения `DB_HOST`. Если вы
-создавали контейнер БД по примеру выше, его имя `schedule-db`, поэтому команда
-будет такой:
+Приложение использует профиль `postgres`, поэтому его нужно активировать
+через переменную `SPRING_PROFILES_ACTIVE`. Также контейнеру требуется адрес
+сервиса PostgreSQL в переменной `DB_HOST`. Если вы создавали контейнер БД по
+примеру выше, его имя `schedule-db`. Для связи контейнеров понадобится сеть
+`app-network`; создайте её при необходимости командой `docker network create
+app-network`. Запуск приложения выглядит так:
 
 ```bash
 docker run --rm -it --network app-network \
-  -e DB_HOST=schedule-db --name my-java-app my-java-app
+  -e DB_HOST=schedule-db \
+  -e SPRING_PROFILES_ACTIVE=postgres \
+  --name my-java-app my-java-app
 ```
 
 
