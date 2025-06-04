@@ -41,4 +41,15 @@ class AuthControllerTest {
         mvc.perform(post("/api/auth/login").contentType("application/json").content("{\"username\":\"u\",\"password\":\"p\"}"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void registerCreatesUser() throws Exception {
+        when(userService.findByUsername("new")).thenReturn(java.util.Optional.empty());
+        when(userService.save(any())).thenReturn(User.builder().id(1L).build());
+
+        mvc.perform(post("/api/auth/register")
+                        .contentType("application/json")
+                        .content("{\"username\":\"new\",\"password\":\"p\"}"))
+                .andExpect(status().isCreated());
+    }
 }

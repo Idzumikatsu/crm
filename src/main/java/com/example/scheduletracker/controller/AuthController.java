@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,5 +31,22 @@ public class AuthController {
         User user = userService.findByUsername(username).orElseThrow();
         String token = jwtUtils.generateToken(username, user.getRole().name());
         return ResponseEntity.ok(Map.of("token", token));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<Void> register(@RequestBody Map<String, String> payload) {
+        String username = payload.get("username");
+        Optional<User> existing = userService.findByUsername(username);
+        if (existing.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        String roleName = payload.getOrDefault("role", "STUDENT");
+        User user = User.builder()
+                .username(username)
+                .password(payload.get("password"))
+                .role(User.Role.valueOf(roleName.toUpperCase()))
+                .build();
+        userService.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
