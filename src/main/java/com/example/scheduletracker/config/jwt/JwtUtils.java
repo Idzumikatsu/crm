@@ -23,6 +23,9 @@ public class JwtUtils {
     }
 
     public io.jsonwebtoken.Claims parse(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return Jwts.parser()
+                .setSigningKey(key)
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
