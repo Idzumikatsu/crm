@@ -15,14 +15,14 @@
 - [x] `UserDetailsServiceImpl`.
 - [x] Сущности `User` и `Role`, репозиторий `UserRepository`.
 - [x] `AuthController` с эндпоинтами `/login` и `/register`.
-- [ ] DTO: `LoginRequest`, `SignupRequest`, `JwtResponse` (пока используются `Map`).
+- [x] DTO: `LoginRequest`, `SignupRequest`, `JwtResponse` (пока используются `Map`).
 - [x] Бин `PasswordEncoder`.
 - [x] Тесты `AuthControllerTest`.
 
 ### 1.3 Сущности и миграции
 - [x] Сущности `Teacher` и `Student`.
 - [x] Таблица-связка `TeacherStudent`.
-- [ ] Настроить связи `@ManyToOne` и коллекции в `Teacher`/`Student`.
+- [x] Настроить связи `@ManyToOne` и коллекции в `Teacher`/`Student`.
 - [ ] SQL‑миграции через Flyway/Liquibase.
 - [ ] Интеграционный тест схемы.
 
