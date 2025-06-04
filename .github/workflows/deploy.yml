@@ -16,11 +16,18 @@ jobs:
       - name: Configure proxy variables
         run: |
           if [ -z "$PROXY_HOST" ] || [ -z "$PROXY_PORT" ]; then
-            echo "::error::PROXY_HOST or PROXY_PORT is not configured" >&2
-            exit 1
+            if [ -n "$HTTP_PROXY" ]; then
+              PROXY_HOST=$(printf %s "$HTTP_PROXY" | cut -d/ -f3 | cut -d: -f1)
+              PROXY_PORT=$(printf %s "$HTTP_PROXY" | cut -d: -f3)
+            else
+              echo "::error::PROXY_HOST or PROXY_PORT is not configured" >&2
+              exit 1
+            fi
           fi
           echo "HTTP_PROXY=http://$PROXY_HOST:$PROXY_PORT" >> "$GITHUB_ENV"
           echo "HTTPS_PROXY=http://$PROXY_HOST:$PROXY_PORT" >> "$GITHUB_ENV"
+          echo "PROXY_HOST=$PROXY_HOST" >> "$GITHUB_ENV"
+          echo "PROXY_PORT=$PROXY_PORT" >> "$GITHUB_ENV"
 
       - name: Checkout code
         uses: actions/checkout@v3
