@@ -1,73 +1,73 @@
 # Project Task Breakdown
 
-This file lists detailed sub-tasks for implementing the CRM application.
-
 ## Milestone 1: Project Setup & Authentication
-- **Setup Spring Boot project**  
-  Files: `pom.xml`, `src/**`  
-  Effort: 1 day
-- **Configure JWT authentication**  
-  Add `JwtUtils` helper, `JwtFilter`, update `SecurityConfig`.
-  Create `AuthController` с `POST /api/auth/login` и `POST /api/auth/register`.
-  Files: `src/main/java/com/example/scheduletracker/config/*`, `src/main/java/com/example/scheduletracker/controller/AuthController.java`.  
-  Tests: `AuthControllerTest`.  
-  Effort: 2 days
-- **Initial entities and migrations**  
-  Create `TeacherStudent` join entity.  
-  Ensure `User`, `Teacher`, `Student` tables exist via JPA/Hibernate ddl-auto or migrations.  
-  Files: `src/main/java/com/example/scheduletracker/entity/*`.  
-  Effort: 1 day
 
-## Milestone 2: CRUD for Teachers & Students
-- **Teacher CRUD endpoints** (DONE)
-  Modify `TeacherController` to restrict by role.
-  Files: `TeacherController.java`, service implementations.
-  Tests: controller tests.
-  Effort: 2 days
-- **Student CRUD endpoints** (DONE)
-  Similar updates for manager role.
-  Effort: 2 days
+### 1.1 Инициализация проекта
+- [x] Создать Maven-проект и указать `groupId`/`artifactId`.
+- [x] Подключить зависимости: web, security, data-jpa, jjwt, драйвер БД, тестовые библиотеки.
+- [x] Добавить `application.yml` с настройками БД, JPA и JWT.
+- [x] Убедиться, что приложение стартует.
 
-## Milestone 3: TimeSlot Management (DONE)
-- **Entity and Repository**  
-  Implement `TimeSlot` entity.(DONE)
-  CRUD in `TimeSlotController` (DONE)
-  Effort: 2 days
+### 1.2 JWT-аутентификация
+- [x] Класс `JwtUtils` для генерации и проверки токенов.
+- [x] Фильтр `JwtFilter`.
+- [x] Конфигурация безопасности с подключением фильтра и правилами доступа.
+- [x] `UserDetailsServiceImpl`.
+- [x] Сущности `User` и `Role`, репозиторий `UserRepository`.
+- [x] `AuthController` с эндпоинтами `/login` и `/register`.
+- [ ] DTO: `LoginRequest`, `SignupRequest`, `JwtResponse` (пока используются `Map`).
+- [x] Бин `PasswordEncoder`.
+- [x] Тесты `AuthControllerTest`.
 
-## Milestone 4: Lesson Scheduling Logic
-- **Lesson endpoints with validation** (DONE)
-  Ensure lessons cannot overlap teacher slots.
-  Files: `LessonServiceImpl.java`, repository query methods.
-  Tests for business rules.
-  Effort: 3 days
+### 1.3 Сущности и миграции
+- [x] Сущности `Teacher` и `Student`.
+- [x] Таблица-связка `TeacherStudent`.
+- [ ] Настроить связи `@ManyToOne` и коллекции в `Teacher`/`Student`.
+- [ ] SQL‑миграции через Flyway/Liquibase.
+- [ ] Интеграционный тест схемы.
 
-## Milestone 5: Веб-интерфейс на Thymeleaf
-- **Статические страницы** (DONE)
-  Создать шаблоны `login.html`, `manager.html`, `teacher.html` под `src/main/resources/templates`.
-  Effort: 2 days
-- **Формы и контроллеры**
-  Обработчики входа и базовые страницы управления расписанием.
-  Effort: 3 days
+## Milestone 5: Веб-интерфейс (Thymeleaf + Tailwind CSS + Alpine.js)
 
-- **Управление преподавателями и студентами** (DONE)
-  Отдельные страницы для CRUD операций.
-  Effort: 3 days
-- **Календарь занятий**
-  Вывод расписания на страницах преподавателя и менеджера.
-  Effort: 3 days
+### 5.1 Базовая структура
+- [ ] Настроить Tailwind (`tailwind.config.js`, сборка `styles.css`).
+- [ ] Создать Thymeleaf-фрагменты `head`, `navbar`, `footer`.
+- [ ] Общий шаблон `layout.html`.
 
-## Milestone 7: Manager Dashboard
-- **Назначение студентов**
-  Возможность привязывать студентов к преподавателям через веб-интерфейс.
-  Effort: 2 days
+### 5.2 Страница входа
+- [x] Шаблон `login.html`.
+- [x] Контроллер `WebController.login()`.
+- [ ] Редиректы после входа в зависимости от роли.
+
+### 5.3 Навигация и профиль
+- [ ] Фрагмент `navbar` с учётом роли пользователя.
+- [ ] Страница `profile.html`.
+
+### 5.4 Manager Dashboard
+- [ ] REST: `GET /api/manager/teachers` и `/api/manager/students`.
+- [ ] UI для назначения студентов преподавателям (modal, Alpine.js).
+- [ ] `POST /api/manager/assign` для обновления связей.
+- [ ] Отображение расписания через FullCalendar.
+
+### 5.5 Teacher Dashboard
+- [ ] REST для получения и изменения собственных уроков.
+- [ ] Календарь занятий через FullCalendar.
+- [ ] Форма создания и редактирования урока.
+
+## Milestone 7: Manager Dashboard — Назначение студентов
+- Задачи совпадают с пунктами 5.4 и пока не выполнены.
 
 ## Milestone 8: Testing & Deployment
-- **Backend tests reaching 80% coverage**
-  Effort: 1 day
-- **UI integration tests**
-  Effort: 2 days
-- **Docker and CI configuration** (DONE)
-  `Dockerfile`, `docker-compose.yml` и workflow `deploy.yml` настроены для
-  автоматического развёртывания на сервер при пуше в `main`.
-  Effort: 1 day
 
+### 8.1 Backend
+- [x] Подключён `jacoco-maven-plugin`.
+- [ ] Дописать unit‑тесты сервисов.
+- [ ] Интеграционные тесты контроллеров.
+- [ ] Проверить отчёт Jacoco и довести покрытие до 80 %.
+
+### 8.2 UI Integration Tests
+- [ ] Настроить Selenium/Cypress.
+- [ ] Тест логина.
+- [ ] Тесты доступа по ролям.
+- [ ] Тест менеджерской панели.
+- [ ] Тест страницы преподавателя.
+- [ ] Запуск UI‑тестов в CI.

@@ -3,6 +3,9 @@ package com.example.scheduletracker.controller;
 import com.example.scheduletracker.config.jwt.JwtUtils;
 import com.example.scheduletracker.entity.User;
 import com.example.scheduletracker.service.UserService;
+import com.example.scheduletracker.dto.LoginRequest;
+import com.example.scheduletracker.dto.SignupRequest;
+import com.example.scheduletracker.dto.JwtResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 
@@ -23,27 +25,27 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest req) {
         Authentication auth = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(payload.get("username"), payload.get("password"))
+                new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword())
         );
         String username = auth.getName();
         User user = userService.findByUsername(username).orElseThrow();
         String token = jwtUtils.generateToken(username, user.getRole().name());
-        return ResponseEntity.ok(Map.of("token", token));
+        return ResponseEntity.ok(new JwtResponse(token, username, user.getRole().name()));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody Map<String, String> payload) {
-        String username = payload.get("username");
+    public ResponseEntity<Void> register(@RequestBody SignupRequest req) {
+        String username = req.getUsername();
         Optional<User> existing = userService.findByUsername(username);
         if (existing.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        String roleName = payload.getOrDefault("role", "STUDENT");
+        String roleName = Optional.ofNullable(req.getRole()).orElse("STUDENT");
         User user = User.builder()
                 .username(username)
-                .password(payload.get("password"))
+                .password(req.getPassword())
                 .role(User.Role.valueOf(roleName.toUpperCase()))
                 .build();
         userService.save(user);
