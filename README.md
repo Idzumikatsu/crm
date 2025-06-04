@@ -27,6 +27,9 @@
      `PROXY_HOST` и `PROXY_PORT` (а также `HTTP_PROXY` и `HTTPS_PROXY`
      вида `http://<host>:<port>`), чтобы Maven и Git могли
      подключаться к удалённым репозиториям.
+   - Скопируйте файл `.mvn/settings.xml.in` в `.mvn/settings.xml`,
+     подставив значения этих переменных. Проще всего сделать это
+     командой `envsubst < .mvn/settings.xml.in > .mvn/settings.xml`.
    - Если проект собирается через GitHub Actions, эти значения
      необходимо задать как секреты репозитория `PROXY_HOST` и
      `PROXY_PORT`.

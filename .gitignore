@@ -8,6 +8,7 @@
 
 # SSH keys
 *.pem
+.mvn/settings.xml
 key.pem
 
 # System

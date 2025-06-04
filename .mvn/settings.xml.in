@@ -4,8 +4,8 @@
       <id>env-proxy</id>
       <active>true</active>
       <protocol>http</protocol>
-      <host>${env.PROXY_HOST}</host>
-      <port>${env.PROXY_PORT}</port>
+      <host>$PROXY_HOST</host>
+      <port>$PROXY_PORT</port>
       <nonProxyHosts>localhost|127.0.0.1|::1</nonProxyHosts>
     </proxy>
   </proxies>
