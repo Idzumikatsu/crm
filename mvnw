@@ -46,6 +46,7 @@ if [ -z "${MAVEN_OPTS-}" ]; then
     port=$(printf %s "$proxy" | cut -d: -f3)
     MAVEN_OPTS="${MAVEN_OPTS-} -Dhttp.proxyHost=$host -Dhttp.proxyPort=$port"
   fi
+  MAVEN_OPTS="${MAVEN_OPTS-} -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv6Addresses=false"
   export MAVEN_OPTS
 fi
 
