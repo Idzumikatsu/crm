@@ -50,6 +50,13 @@ docker run --rm -it --network app-network \
   --name my-java-app my-java-app
 ```
 
+Для удобства можно воспользоваться `docker-compose.yml`, который поднимет
+PostgreSQL и само приложение одной командой:
+
+```bash
+docker compose up --build
+```
+
 
 ## Учетные записи
 
@@ -58,31 +65,13 @@ docker run --rm -it --network app-network \
 - менеджер: `manager`/`manager`
 - преподаватель: `teacher`/`teacher`
 
+Новые пользователи могут зарегистрироваться через POST `/api/auth/register`,
+передав `username`, `password` и опциональное `role` в теле запроса.
+
+## API документация
+
+После запуска приложения документация Swagger доступна по адресу
+`/swagger-ui.html`. Там перечислены все доступные REST эндпоинты.
 
 
-## Node/React CRM prototype
 
-### Running tests
-
-```bash
-cd server && npm test
-cd ../client && npm test
-```
-
-### Starting applications
-
-**Server**
-
-```bash
-cd server
-JWT_SECRET=devsecret npm start
-```
-
-**Client**
-
-```bash
-cd client
-npm start
-```
-
-Set environment variables `JWT_SECRET` and optional `DATABASE_URL` for the server.

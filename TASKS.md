@@ -7,8 +7,8 @@ This file lists detailed sub-tasks for implementing the CRM application.
   Files: `pom.xml`, `src/**`  
   Effort: 1 day
 - **Configure JWT authentication**  
-  Add `JwtUtils` helper, `JwtFilter`, update `SecurityConfig`.  
-  Create `AuthController` with `POST /api/auth/login`.  
+  Add `JwtUtils` helper, `JwtFilter`, update `SecurityConfig`.
+  Create `AuthController` с `POST /api/auth/login` и `POST /api/auth/register`.
   Files: `src/main/java/com/example/scheduletracker/config/*`, `src/main/java/com/example/scheduletracker/controller/AuthController.java`.  
   Tests: `AuthControllerTest`.  
   Effort: 2 days
@@ -41,46 +41,33 @@ This file lists detailed sub-tasks for implementing the CRM application.
   Tests for business rules.  
   Effort: 3 days
 
-## Milestone 5: Front-end Setup
-- **Initialize React project under `/client`**  
-  `package.json`, `src/index.jsx`, `App.jsx`.  
-  Routing with React Router.  
-  Effort: 1 day
-- **Authentication flow**  
-  Context or Redux store for auth.  
-  Login form that posts to `/api/auth/login` and stores JWT.  
-  Tests with React Testing Library.  
+## Milestone 5: Веб-интерфейс на Thymeleaf
+- **Статические страницы**
+  Создать шаблоны `login.html`, `manager.html`, `teacher.html` под `src/main/resources/templates`.
   Effort: 2 days
+- **Формы и контроллеры**
+  Обработчики входа и базовые страницы управления расписанием.
+  Effort: 3 days
 
-## Milestone 6: Teacher Dashboard
-- **Student list component**  
-  `StudentList.jsx`.  
-  Effort: 1 day
-- **Time slot management**  
-  `TimeSlotForm.jsx`, `TimeSlotList.jsx`.  
-  Effort: 2 days
-- **Calendar integration**  
-  Use `react-big-calendar` to display lessons.  
-  Drag & drop support.  
+## Milestone 6: Дополнительные функции UI
+- **Управление преподавателями и студентами**
+  Отдельные страницы для CRUD операций.
+  Effort: 3 days
+- **Календарь занятий**
+  Вывод расписания на страницах преподавателя и менеджера.
   Effort: 3 days
 
 ## Milestone 7: Manager Dashboard
-- **Teacher/Student management pages**  
-  `TeacherTable.jsx`, `StudentTable.jsx`.  
-  Effort: 3 days
-- **Assignment UI**  
-  Component for assigning students to teachers.  
+- **Назначение студентов**
+  Возможность привязывать студентов к преподавателям через веб-интерфейс.
   Effort: 2 days
-- **Filtering calendar**  
-  Dropdown filters in manager view.  
-  Effort: 1 day
 
 ## Milestone 8: Testing & Deployment
-- **Backend tests reaching 80% coverage**  
+- **Backend tests reaching 80% coverage**
   Effort: 1 day
-- **Frontend component & e2e tests**  
+- **UI integration tests**
   Effort: 2 days
-- **Docker and CI configuration**  
-  `Dockerfile`, `docker-compose.yml`, GitHub Actions workflow.  
+- **Docker and CI configuration**
+  `Dockerfile`, `docker-compose.yml`, GitHub Actions workflow.
   Effort: 1 day
 
