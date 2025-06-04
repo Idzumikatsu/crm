@@ -35,11 +35,13 @@ jobs:
           ssh-keyscan -H 95.164.2.48 >> ~/.ssh/known_hosts
 
       - name: Deploy to VPS
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
         run: |
           scp -i key.pem target/scheduletracker-0.0.1-SNAPSHOT.jar Dockerfile root@95.164.2.48:/proj/
-          ssh -i key.pem root@95.164.2.48 << 'EOF'
+          ssh -i key.pem root@95.164.2.48 << EOF
             docker stop my-java-app || true
             docker rm my-java-app  || true
             docker build -t my-java-app /proj/
-            docker run -d -p 8080:8080 --name my-java-app my-java-app
+            docker run -d -p 8080:8080 --network app-network -e DB_HOST=${DB_HOST:-schedule-db} --name my-java-app my-java-app
           EOF
