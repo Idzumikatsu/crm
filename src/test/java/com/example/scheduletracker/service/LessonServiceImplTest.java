@@ -3,7 +3,9 @@ package com.example.scheduletracker.service;
 import com.example.scheduletracker.entity.Group;
 import com.example.scheduletracker.entity.Lesson;
 import com.example.scheduletracker.entity.Teacher;
+import com.example.scheduletracker.entity.TimeSlot;
 import com.example.scheduletracker.repository.LessonRepository;
+import com.example.scheduletracker.repository.TimeSlotRepository;
 import com.example.scheduletracker.service.impl.LessonServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,8 @@ class LessonServiceImplTest {
 
     @Mock
     private LessonRepository repo;
+    @Mock
+    private TimeSlotRepository slotRepo;
 
     private LessonService service;
 
@@ -31,7 +35,7 @@ class LessonServiceImplTest {
 
     @BeforeEach
     void setup() {
-        service = new LessonServiceImpl(repo);
+        service = new LessonServiceImpl(repo, slotRepo);
         t1 = Teacher.builder().id(1L).name("T1").build();
         t2 = Teacher.builder().id(2L).name("T2").build();
         g1 = Group.builder().id(1L).name("G1").build();
@@ -59,5 +63,42 @@ class LessonServiceImplTest {
         Lesson updated = service.updateStatus(1L, Lesson.Status.CONFIRMED);
 
         assertEquals(Lesson.Status.CONFIRMED, updated.getStatus());
+    }
+
+    @Test
+    void saveOutsideSlotThrows() {
+        Lesson lesson = Lesson.builder().teacher(t1).group(g1)
+                .dateTime(LocalDateTime.now()).duration(60).build();
+        when(slotRepo.findByTeacher(t1)).thenReturn(List.of());
+
+        assertThrows(IllegalArgumentException.class, () -> service.save(lesson));
+    }
+
+    @Test
+    void saveOverlappingThrows() {
+        LocalDateTime dt = LocalDateTime.now();
+        TimeSlot slot = TimeSlot.builder().teacher(t1).start(dt.minusMinutes(30)).end(dt.plusMinutes(90)).build();
+        when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
+        Lesson existing = Lesson.builder().id(2L).teacher(t1).group(g1).dateTime(dt).duration(60).build();
+        when(repo.findByTeacher(t1)).thenReturn(List.of(existing));
+
+        Lesson newLesson = Lesson.builder().teacher(t1).group(g1)
+                .dateTime(dt.plusMinutes(30)).duration(60).build();
+
+        assertThrows(IllegalStateException.class, () -> service.save(newLesson));
+    }
+
+    @Test
+    void saveValidLessonPersists() {
+        LocalDateTime dt = LocalDateTime.now();
+        TimeSlot slot = TimeSlot.builder().teacher(t1).start(dt.minusMinutes(10)).end(dt.plusMinutes(70)).build();
+        when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
+        when(repo.findByTeacher(t1)).thenReturn(List.of());
+        when(repo.save(any(Lesson.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Lesson lesson = Lesson.builder().teacher(t1).group(g1).dateTime(dt).duration(60).build();
+
+        Lesson saved = service.save(lesson);
+        assertEquals(dt, saved.getDateTime());
     }
 }

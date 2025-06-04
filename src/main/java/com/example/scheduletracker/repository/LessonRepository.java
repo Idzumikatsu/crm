@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
     List<Lesson> findByDateTimeBetween(LocalDateTime from, LocalDateTime to);
+
+    List<Lesson> findByTeacher(com.example.scheduletracker.entity.Teacher teacher);
 }

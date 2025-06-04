@@ -2,7 +2,9 @@
 package com.example.scheduletracker.service.impl;
 
 import com.example.scheduletracker.entity.Lesson;
+import com.example.scheduletracker.entity.TimeSlot;
 import com.example.scheduletracker.repository.LessonRepository;
+import com.example.scheduletracker.repository.TimeSlotRepository;
 import com.example.scheduletracker.service.LessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,33 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LessonServiceImpl implements LessonService {
     private final LessonRepository repo;
+    private final TimeSlotRepository slotRepo;
 
     @Override
     public Lesson save(Lesson lesson) {
+        var start = lesson.getDateTime();
+        var end = start.plusMinutes(lesson.getDuration());
+
+        // check that lesson fits teacher time slots
+        List<TimeSlot> slots = slotRepo.findByTeacher(lesson.getTeacher());
+        boolean withinSlot = slots.stream()
+                .anyMatch(s -> !s.getStart().isAfter(start) && !s.getEnd().isBefore(end));
+        if (!withinSlot) {
+            throw new IllegalArgumentException("Lesson time outside teacher slots");
+        }
+
+        // check overlap with existing lessons of the teacher
+        List<Lesson> existing = repo.findByTeacher(lesson.getTeacher());
+        boolean overlaps = existing.stream()
+                .anyMatch(l -> {
+                    var s = l.getDateTime();
+                    var e = s.plusMinutes(l.getDuration());
+                    return s.isBefore(end) && e.isAfter(start) && !l.getId().equals(lesson.getId());
+                });
+        if (overlaps) {
+            throw new IllegalStateException("Lesson overlaps existing lesson");
+        }
+
         return repo.save(lesson);
     }
 

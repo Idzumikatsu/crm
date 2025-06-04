@@ -35,10 +35,10 @@ This file lists detailed sub-tasks for implementing the CRM application.
   Effort: 2 days
 
 ## Milestone 4: Lesson Scheduling Logic
-- **Lesson endpoints with validation**  
-  Ensure lessons cannot overlap teacher slots.  
-  Files: `LessonServiceImpl.java`, repository query methods.  
-  Tests for business rules.  
+- **Lesson endpoints with validation** (DONE)
+  Ensure lessons cannot overlap teacher slots.
+  Files: `LessonServiceImpl.java`, repository query methods.
+  Tests for business rules.
   Effort: 3 days
 
 ## Milestone 5: Веб-интерфейс на Thymeleaf

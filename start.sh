@@ -2,7 +2,10 @@
 # Скрипт запуска приложения в зависимости от типа проекта
 set -e
 
-if [ -f package.json ]; then
+if [ -f pom.xml ]; then
+  echo "Запускается Spring Boot приложение"
+  exec ./mvnw spring-boot:run
+elif [ -f package.json ]; then
   echo "Запускается Node.js приложение"
   exec npm start
 elif [ -f requirements.txt ]; then
