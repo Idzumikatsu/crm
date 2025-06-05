@@ -75,7 +75,7 @@
 ## Milestone 9: Nginx Integration
 
 ### 9.1 Reverse Proxy Setup
-- [ ] Создать конфигурацию `nginx/nginx.conf` с проксированием на контейнер `app`.
-- [ ] Добавить сервис `nginx` в `docker-compose.yml` и пробросить порт `80`.
-- [ ] Обновить инструкцию в `README.md` о запуске через Nginx.
-- [ ] Проверить работу команды `docker compose up`.
+- [x] Создать конфигурацию `nginx/nginx.conf` с проксированием на контейнер `app`.
+- [x] Добавить сервис `nginx` в `docker-compose.yml` и пробросить порт `80`.
+- [x] Обновить инструкцию в `README.md` о запуске через Nginx.
+- [x] Проверить работу команды `docker compose up`.
