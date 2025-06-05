@@ -65,7 +65,7 @@ docker run --rm -it --network app-network \
 ```
 
 Для удобства можно воспользоваться `docker-compose.yml`, который поднимет
-PostgreSQL и само приложение одной командой:
+PostgreSQL, само приложение и Nginx в роли обратного прокси:
 
 ```bash
 docker compose up --build
@@ -96,12 +96,12 @@ docker compose up --build
 
 ### Карта сайта
 
-- `http://localhost:8080/login.html` – вход в систему
-- `http://localhost:8080/index.html` – стартовая страница после логина
-- `http://localhost:8080/manager.html` – кабинет менеджера
-- `http://localhost:8080/teacher.html` – кабинет преподавателя
-- `http://localhost:8080/teachers.html` – управление преподавателями
-- `http://localhost:8080/students.html` – управление студентами
+- `http://localhost/login.html` – вход в систему
+- `http://localhost/index.html` – стартовая страница после логина
+- `http://localhost/manager.html` – кабинет менеджера
+- `http://localhost/teacher.html` – кабинет преподавателя
+- `http://localhost/teachers.html` – управление преподавателями
+- `http://localhost/students.html` – управление студентами
 
 ### REST API
 Основные эндпоинты:
