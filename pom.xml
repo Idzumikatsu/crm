@@ -51,17 +51,23 @@
             <version>42.6.0</version>
             <scope>runtime</scope>
         </dependency>
-        <!-- H2 for development/testing -->
+        <!-- H2 Database for tests -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <scope>test</scope>
         </dependency>
         <!-- Flyway migrations -->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <version>${flyway.version}</version>
+        </dependency>
+
+        <!-- JDBC Template Starter for JdbcTemplate in tests -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <!-- Security -->
         <dependency>

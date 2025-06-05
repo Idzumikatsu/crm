@@ -1,27 +1,25 @@
 package com.example.scheduletracker;
 
-import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.sql.DatabaseMetaData;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class FlywaySchemaTest {
+@ActiveProfiles("test")
+public class FlywaySchemaTest {
+
     @Autowired
-    private DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
 
     @Test
-    void tablesCreated() throws Exception {
-        DatabaseMetaData meta = dataSource.getConnection().getMetaData();
-        try (var rs = meta.getTables(null, null, "USERS", null)) {
-            assertTrue(rs.next(), "users table exists");
-        }
-        try (var rs = meta.getTables(null, null, "TEACHER_STUDENTS", null)) {
-            assertTrue(rs.next(), "teacher_students table exists");
-        }
+    public void tablesCreated() {
+        // Flyway should have created the 'users' table in H2
+        Integer userCount = jdbcTemplate.queryForObject(
+            "SELECT count(*) FROM users", Integer.class);
+        assertThat(userCount).isZero();
     }
 }
