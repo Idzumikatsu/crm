@@ -94,6 +94,9 @@ docker compose logs app
 docker compose up -d
 ```
 
+После запуска метрики Nginx доступны на `http://localhost:9113/metrics`.
+Экспортер считывает данные со страницы `/nginx_status` внутри контейнера.
+
 
 
 ## Учетные записи
