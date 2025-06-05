@@ -20,6 +20,8 @@
 
     <properties>
         <java.version>21</java.version>
+        <!-- Use a newer Flyway that supports PostgreSQL 15.13 -->
+        <flyway.version>11.9.1</flyway.version>
     </properties>
 
     <dependencies>
