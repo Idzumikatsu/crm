@@ -13,9 +13,11 @@
      docker run --name schedule-db -p 5432:5432 -e POSTGRES_DB=schedule \
       -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:15.3
      ```
-   - В `application.yml` адрес БД задаётся через переменную окружения `DB_HOST`.
-     По умолчанию используется `localhost`. Если профиль `postgres` не активирован,
-     используется встроенная база H2.
+    - В `application.yml` адрес БД задаётся через переменную окружения `DB_HOST`.
+      По умолчанию используется `localhost`. Если профиль `postgres` не активирован,
+      используется встроенная база H2.
+    - Для миграций используется Flyway **11.9.1**, что обеспечивает поддержку
+      PostgreSQL 15.3.
 4. **Сборка и запуск**
    - Сборка: `./mvnw package`
    - Запуск: `./mvnw spring-boot:run`
