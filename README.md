@@ -11,7 +11,7 @@
    - Быстрый вариант через Docker:
      ```bash
      docker run --name schedule-db -p 5432:5432 -e POSTGRES_DB=schedule \
-       -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:15
+      -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:15.3
      ```
    - В `application.yml` адрес БД задаётся через переменную окружения `DB_HOST`.
      По умолчанию используется `localhost`. Если профиль `postgres` не активирован,

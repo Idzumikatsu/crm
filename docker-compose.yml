@@ -1,7 +1,8 @@
 version: '3.8'
 services:
   db:
-    image: postgres:15
+    # Pin patch version recognized by Flyway
+    image: postgres:15.3
     environment:
       POSTGRES_DB: schedule
       POSTGRES_USER: postgres
