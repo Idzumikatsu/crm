@@ -2,7 +2,7 @@
 set -e
 host=${DB_HOST:-localhost}
 port=${DB_PORT:-5432}
-for i in {1..30}; do
+for i in {1..60}; do
   if echo > /dev/tcp/$host/$port >/dev/null 2>&1; then
     exec "$@"
   fi
