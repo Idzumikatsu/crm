@@ -9,7 +9,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.5.0</version>
-        <relativePath>maven-parents/spring-boot-starter-parent-3.5.0.pom</relativePath>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.example</groupId>
@@ -20,8 +20,8 @@
 
     <properties>
         <java.version>21</java.version>
-        <!-- Use a newer Flyway that supports PostgreSQL 15.13 -->
-        <flyway.version>11.9.1</flyway.version>
+        <!-- Жёстко зафиксировать версию Flyway -->
+        <flyway.version>10.5.0</flyway.version>
     </properties>
 
     <dependencies>
@@ -48,6 +48,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <version>42.6.0</version>
             <scope>runtime</scope>
         </dependency>
         <!-- H2 for development/testing -->
@@ -175,6 +176,14 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>${flyway.version}</version>
+                <configuration>
+                    <!-- Миграции выполняются автоматически через Spring Boot -->
                 </configuration>
             </plugin>
         </plugins>
