@@ -4,7 +4,7 @@
 
 name: Deploy to VPS
 
-on:
+"on":
   push:
     branches: [ main ]
   pull_request:
@@ -55,6 +55,17 @@ jobs:
         target: /root/myapp
         rm:     true
 
+    # 6.5. Убеждаемся, что каталог существует (на случай пропуска предыдущего шага)
+    - name: Ensure target directory
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host:       ${{ secrets.VPS_HOST }}
+        username:   ${{ secrets.VPS_USER }}
+        password:   ${{ secrets.VPS_PASSWORD }}
+        # port:     ${{ secrets.VPS_PORT }}
+        script: |
+          mkdir -p /root/myapp
+
     # 7. Копируем сам app.jar на VPS
     - name: Copy app.jar to VPS
       uses: appleboy/scp-action@v0.1.4
@@ -64,8 +75,8 @@ jobs:
         password:   ${{ secrets.VPS_PASSWORD }}
         # port:     ${{ secrets.VPS_PORT }}
         source:     target/app.jar
-        target:     /root/myapp/app.jar
-        rm:         true
+        target:     /root/myapp
+        strip_components: 1
 
     # 8. Собираем Docker-образ и перезапускаем контейнер через SSH
     - name: Docker Compose up
@@ -85,3 +96,5 @@ jobs:
           docker compose down --remove-orphans
           docker compose build --no-cache
           docker compose up -d
+          docker compose ps
+          docker compose logs app --tail=20
