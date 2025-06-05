@@ -1,81 +1,13 @@
-# Project Task Breakdown
+# Development Plan
 
-## Milestone 1: Project Setup & Authentication
+## Milestone 10: Documentation
+- [ ] Keep README in sync with infrastructure files.
+- [ ] Describe Tailwind build step and required Node version.
 
-### 1.1 Инициализация проекта
-- [x] Создать Maven-проект и указать `groupId`/`artifactId`.
-- [x] Подключить зависимости: web, security, data-jpa, jjwt, драйвер БД, тестовые библиотеки.
-- [x] Добавить `application.yml` с настройками БД, JPA и JWT.
-- [x] Убедиться, что приложение стартует.
+## Milestone 11: Testing
+- [ ] Enable UI tests in CI or provide headless driver configuration.
+- [ ] Maintain Jacoco coverage above 80%.
 
-### 1.2 JWT-аутентификация
-- [x] Класс `JwtUtils` для генерации и проверки токенов.
-- [x] Фильтр `JwtFilter`.
-- [x] Конфигурация безопасности с подключением фильтра и правилами доступа.
-- [x] `UserDetailsServiceImpl`.
-- [x] Сущности `User` и `Role`, репозиторий `UserRepository`.
-- [x] `AuthController` с эндпоинтами `/login` и `/register`.
-- [x] DTO: `LoginRequest`, `SignupRequest`, `JwtResponse` (пока используются `Map`).
-- [x] Бин `PasswordEncoder`.
-- [x] Тесты `AuthControllerTest`.
-
-### 1.3 Сущности и миграции
-- [x] Сущности `Teacher` и `Student`.
-- [x] Таблица-связка `TeacherStudent`.
-- [x] Настроить связи `@ManyToOne` и коллекции в `Teacher`/`Student`.
-- [x] SQL‑миграции через Flyway/Liquibase.
-- [x] Интеграционный тест схемы.
-
-## Milestone 5: Веб-интерфейс (Thymeleaf + Tailwind CSS + Alpine.js)
-
-### 5.1 Базовая структура
-- [x] Настроить Tailwind (`tailwind.config.js`, сборка `styles.css`).
-- [x] Создать Thymeleaf-фрагменты `head`, `navbar`, `footer`.
-- [x] Общий шаблон `layout.html`.
-
-### 5.2 Страница входа
-- [x] Шаблон `login.html`.
-- [x] Контроллер `WebController.login()`.
-- [x] Редиректы после входа в зависимости от роли.
-
-### 5.3 Навигация и профиль
-- [x] Фрагмент `navbar` с учётом роли пользователя.
-- [x] Страница `profile.html`.
-
-### 5.4 Manager Dashboard
-- [x] REST: `GET /api/manager/teachers` и `/api/manager/students`.
-- [x] UI для назначения студентов преподавателям (modal, Alpine.js).
-- [x] `POST /api/manager/assign` для обновления связей.
-- [x] Отображение расписания через FullCalendar.
-
-### 5.5 Teacher Dashboard
-- [x] REST для получения и изменения собственных уроков.
-- [x] Календарь занятий через FullCalendar.
-- [x] Форма создания и редактирования урока.
-
-## Milestone 7: Manager Dashboard — Назначение студентов
-- Задачи совпадают с пунктами 5.4 и выполнены.
-
-## Milestone 8: Testing & Deployment
-
-### 8.1 Backend
-- [x] Подключён `jacoco-maven-plugin`.
-- [x] Дописать unit‑тесты сервисов.
-- [x] Интеграционные тесты контроллеров.
-- [x] Проверить отчёт Jacoco и довести покрытие до 80 %.
-
-### 8.2 UI Integration Tests
-- [x] Настроить Selenium/Cypress.
-- [x] Тест логина.
-- [x] Тесты доступа по ролям.
-- [x] Тест менеджерской панели.
-- [x] Тест страницы преподавателя.
-- [x] Запуск UI‑тестов в CI.
-
-## Milestone 9: Nginx Integration
-
-### 9.1 Reverse Proxy Setup
-- [x] Создать конфигурацию `nginx/nginx.conf` с проксированием на контейнер `app`.
-- [x] Добавить сервис `nginx` в `docker-compose.yml` и пробросить порт `80`.
-- [x] Обновить инструкцию в `README.md` о запуске через Nginx.
-- [x] Проверить работу команды `docker compose up`.
+## Milestone 12: Features
+- [ ] Persist database volume in docker-compose.
+- [ ] Add export of schedules to iCalendar format.
