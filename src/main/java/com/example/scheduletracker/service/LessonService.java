@@ -19,6 +19,8 @@ public interface LessonService {
 
   Lesson updateStatus(Long id, Lesson.Status status);
 
+  Lesson book(Long teacherId, Long groupId, OffsetDateTime start, int duration);
+
   /**
    * Search lessons by optional filters. Any {@code null} parameter is ignored.
    *
