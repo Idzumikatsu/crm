@@ -1,180 +1,163 @@
 # AGENTS
 
-> **Кредо агента:** «Не просто писать код, а улучшать систему при каждом изменении». Каждый агент — инженер уровня *top‑1 %*, стремящийся к безупречному качеству, прозрачности и надёжности.
+> **Миссия агента:** *«При каждом коммите система становится лучше — чище, надёжнее, понятнее».*  
+> Каждый агент — инженер уровня **top‑1 %**, который следует мировым best‑practices, пишет автотесты, документирует решения и отвечает за результат.
 
 ---
 
-## 1. Назначение файла
+## 1 Назначение файла
 
-`AGENTS.md` задаёт **единообразные правила** для всех, кто вносит изменения в репозиторий. Здесь собраны:
-
-* требования к коду, тестам и документации;
-* архитектурные принципы и правила безопасности;
-* стандарты CI/CD и выпуска версий;
-* чек‑листы качества — независимо от персоналий.
-
-Документ должен оставаться **коротким, но исчерпывающим**. Обнаружили устаревшее правило — исправляйте сразу.
+`AGENTS.md` описывает **единые правила** разработки и сопровождения монорепозитория *CRM Calendar*.  
+Это «соглашение о качестве» — если какое‑либо правило перестало работать, измените документ немедленно.
 
 ---
 
-## 2. Технологический стек проекта
+## 2 Технологический стек (синхронизирован с *Blueprint v0.4*)
 
-| Слой / задача          | Технология / библиотека                        | Мин. версия | Назначение / комментарий                                        |
-|------------------------|------------------------------------------------|-------------|-----------------------------------------------------------------|
-| Язык                   | **Java 21 LTS**                                | 21          | Loom, record‑классы, pattern‑matching.                          |
-| Сборка                 | **Maven 3.9.9** (`./mvnw`)                    | 3.9         | Reproducible builds, Enforcer, Wrapper.                         |
-| Core‑Framework         | **Spring Boot 3.5.x**                         | 3.5         | Актуальный LTS, AOT, CRaC‑ready.                                |
-| SSR / шаблоны          | **Thymeleaf 3.2** + Extras Security 6          | —           | Рендеринг UI на сервере.                                        |
-| REST‑документация      | SpringDoc OpenAPI‑Starter 2.8.x               | —           | Swagger UI на `/swagger-ui.html`.                               |
-| Валидация              | Jakarta Bean Validation 3                     | —           | Проверка DTO и форм.                                            |
-| Persistency            | Spring Data JPA + Hibernate 6                 | —           | ORM.                                                            |
-| Миграции схемы         | **Flyway 11.9.1**                             | 11.9        | Контролируемая эволюция БД.                                     |
-| БД продакшн            | **PostgreSQL 15.3**                           | 15          | Основное хранилище.                                             |
-| БД dev / тесты         | **H2 2.x** (in‑mem)                           | 2           | Быстрые изолированные тесты.                                    |
-| Аутентификация JWT     | **JJWT 0.12.6**                               | —           | Access / refresh‑токены, `HS256`.                               |
-| CSS‑фреймворк          | Tailwind CSS (via Node **18 LTS+**)            | 18+         | Адаптивная вёрстка, `npm run build`.                            |
-| UI‑тесты (E2E)         | **Selenium 4.13** + HtmlUnit Driver           | 4.13        | Headless‑браузерные сценарии.                                   |
-| Контейнеризация        | Docker 27.5 + Compose                         | 27          | Прод‑ и dev‑среда едины.                                        |
-| Обратный прокси        | **NGINX 1.26** (контейнер) + Prom exporter     | —           | TLS‑терминация, статический контент, метрики Nginx.             |
-| CI/CD                  | GitHub Actions                                | —           | Build → Test → Docker publish → Deploy VPS.                     |
+| Слой / задача        | Технология / библиотека                        | Мин. версия | Назначение / примечание                                     |
+|----------------------|------------------------------------------------|-------------|-------------------------------------------------------------|
+| Build‑tool           | **Gradle Kotlin DSL**                          | 8.x         | Быстрые инкрементальные сборки, скрипты KTS без XML.         |
+| Язык                 | **Java 21**                                    | 21 (LTS)    | Records, pattern‑matching → **без Lombok**.                  |
+| Core‑Framework       | **Spring Boot 3.3.x**                          | 3.3         | Jakarta EE 10, Native image ready.                          |
+| Объект‑маппинг       | **MapStruct 1.6**                              | 1.6         | Компиляция DTO ↔ Entity.                                    |
+| Схема БД / миграции  | **Flyway 9.x**                                 | 9           | Версионируемые SQL‑скрипты для PostgreSQL.                  |
+| БД (prod)            | **PostgreSQL 15**                              | 15          | GIN, `tstzrange`, partitioning.                             |
+| БД (tests)           | Testcontainers Postgres 15 / H2 (`MEM`)        | 1.19        | Изолированные интеграционные тесты.                         |
+| Аутентификация       | JWT (RS256) + TOTP 2FA                         | —           | Stateless, Telegram OTP fallback.                           |
+| REST Doc             | SpringDoc OpenAPI‑Starter 2                    | 2           | Swagger UI → `/swagger-ui.html`.                            |
+| Frontend             | **React 18 + Vite 5 + TypeScript 5**           | 18 / 5      | SPA в каталоге `frontend/`.                                 |
+| UI kit / CSS         | **shadcn/ui + Tailwind CSS 3.4**               | 3.4         | Headless компоненты + утилитарные стили.                    |
+| Календарь            | **FullCalendar 6** (`timeGrid` модуль)        | 6           | Drag‑n‑drop, ресурсы/оси.                                   |
+| Контейнеризация      | Docker Compose (dev) → k3s + Helm (prod)       | 27 / 1.30   | Локальная среда ↔ кластер.                                  |
+| CI/CD                | **GitHub Actions** → GHCR → Helm promote       | —           | Прямой pipeline из репозитория в prod.                      |
+| Observability        | **Prometheus + Grafana + Loki**                | —           | Метрики, дашборды, логи в одном OSS‑стеки.                  |
 
-> **Обновления:** патчи безопасности — немедленно; минорные версии — не реже одного раза в квартал.
+> **Принцип обновлений:** security‑patch — немедленно; minor — раз в квартал; major — по плану.  
 
 ---
 
-## 3. Архитектурные принципы
+## 3 Архитектура
 
 ```
-┌───────────────┐     ┌────────────────┐
-│  REST + SSR   │ ←→ │  Controllers   │  (DTO / ViewModels)
-└───────────────┘     └────────────────┘
-          ↓ Service layer
-┌───────────────────────────────────────┐
-│               Domain                 │  (Entities, VOs, Policies)
-└───────────────────────────────────────┘
-          ↓ Infrastructure
-┌──────────────┐     ┌────────────────┐
-│ Repositories │     │ Integrations   │  (external REST, SMTP …)
-└──────────────┘     └────────────────┘
+┌───────────────────────────┐
+│       React SPA           │  (Vite, TS)
+└───────────────────────────┘
+             │ REST / JWT
+┌───────────────────────────┐
+│ Spring Boot API (hexagon) │
+│  ├─ Web Layer (DTO)       │
+│  ├─ Service Layer         │
+│  ├─ Domain (Entities/VO)  │
+│  └─ Persistence (JPA)     │
+└───────────────────────────┘
+             │
+┌───────────────────────────┐
+│ PostgreSQL 15             │
+└───────────────────────────┘
 ```
 
-* **Контроллеры:** минимум логики — валидация, маппинг DTO ↔ Domain, выбор view.
-* **Сервисы:** чистая бизнес‑логика, не зависящая от Spring.
-* **Domain:** неизменяемые Value Objects, инварианты внутри агрегатов.
-* **Infrastructure:** адаптеры БД, файлов, внешних API. Общение через интерфейсы.
+* **Web‑layer** — контроллеры + валидация DTO.  
+* **Service** — бизнес‑правила, транзакции.  
+* **Domain** — модели с инвариантами, неизменяемые Value Objects.  
+* **Persistence** — JPA + Flyway, запросы сложнее 3 `JOIN` → native SQL.  
 
 ---
 
-## 4. Workflow разработки
+## 4 Workflow разработки
 
-1. **Понимание задачи** — прочтите код, схемы, `README.md` и тесты.
-2. **Design Doc** (если > 30 мин) — Discussion или draft PR.
-3. **Ветка**: `feature/<issue-id>-<slug>`, `bugfix/…`, `hotfix/…`, `chore/…`.
-4. **TDD**: `Red → Green → Refactor`, покрытие: строки ≥ 90 %, ветви ≥ 80 %.
-5. **Коммиты** — Conventional Commits (`feat:`, `fix:`, `docs:` …).
-6. **Pull Request** в `main`: описание *что* сделано и *почему*, ссылка на задачу.
-7. **Review**: ≥ 1 approval + зелёный CI. Комментарии — шанс улучшить код.
-8. **Squash & Merge**: история чистая, один коммит описывает изменение.
-9. **Deploy**: GitHub Actions собирает образ, заливает на VPS, перезапускает `docker compose`.
-
----
-
-## 5. Стандарты кода
-
-* **Стиль:** Google Java Style + Spotless (`mvn spotless:check` в CI).
-* **Null‑safety:** `@NonNull`, `Optional` — никаких необъяснимых `null`.
-* **Lombok:** `@Builder`, `@Value` — **только** для DTO и конфигураций.
-* **Логирование:** SLF4J + Logback; `DEBUG` в dev, `INFO` в prod; без `System.out`.
-* **Обработка ошибок:** checked‑исключения — часть контракта; `@ControllerAdvice` для REST.
-* **Security:** Spring Security 6, BCrypt 12; `@PreAuthorize` на публичных методах сервиса.
-* **Performance:** избегать N+1; сложные запросы — `@Query(nativeQuery = true)` или `@EntityGraph`.
+1. **Понимание** задачи → читаем код, `Blueprint`, ADR, тесты.  
+2. **Design Doc** (если > 30 мин) публикуем в Discussion или Draft PR.  
+3. **Ветка**: `feature/<issue-id>-slug`, `bugfix/…`, `chore/…`.  
+4. **TDD**: `red → green → refactor`, target: lines ≥ 90 %, branches ≥ 80 %.  
+5. **Коммиты**: Conventional Commits (`feat:`, `fix:`, `docs:` …).  
+6. **Pull Request** в `main`: описание что/почему + чек‑лист.  
+7. **Review**: ≥ 1 approval + зелёный CI; замечания — шанс улучшить.  
+8. **Squash & Merge** → GitHub Actions (build → docker → deploy Helm).  
+9. **Tag** semver (`v0.4.0`) + CHANGELOG.
 
 ---
 
-## 6. Тестирование
+## 5 Стандарты кода (Java)
 
-| Уровень          | Инструменты                                           | Особенности                                  |
-|------------------|-------------------------------------------------------|---------------------------------------------|
-| Unit             | JUnit 5, Mockito                                      | Given‑When‑Then, 100 % isolation.           |
-| Integration      | Spring Boot Test, H2 in‑mem                           | Профиль `h2`, миграции Flyway перед стартом |
-| API (REST)       | MockMvc, RestAssured, Spring‑Security‑Test            | Статусы, схемы, headers.                    |
-| UI (E2E)         | **Selenium 4** + HtmlUnit driver                      | Headless, tag `@e2e`, запуск по флагу.      |
-| Coverage         | JaCoCo 0.8.13                                         | Отчёт публикует CI.                         |
+* **Стиль** — Google Java Style, enforced Spotless (`./gradlew spotlessCheck`).  
+* **Null‑safety** — `@NonNull`, `Optional`, никаких «магических» `null`.  
+* **Records** вместо Lombok.  
+* **Логирование** — SLF4J + Logback, `DEBUG`/`INFO`; никаких `printStackTrace()`.  
+* **Ошибка‑handling** — checked исключения = часть контракта; `@ControllerAdvice` для REST.  
+* **Security** — Spring Security 6, BCrypt 12, `@PreAuthorize`.  
+* **Performance** — избегать N+1; сложные запросы = `@Query(nativeQuery = true)`.  
 
-> **Примечание:** Testcontainers пока не используется; добавим при переходе на интеграционные тесты с PostgreSQL.
+### Frontend
 
----
-
-## 7. Документация
-
-* **Javadoc** — на публичные API.
-* **README.md** — bootstrap проекта.
-* **Swagger UI** — `http://<host>/swagger-ui.html`.
-* **Диаграммы** — `docs/` (PlantUML / Mermaid).
-* **CHANGELOG.md** — формат *Keep a Changelog*, версия = Git‑тег.
+* ESLint + Prettier (`npm run lint` в CI).  
+* React functional components, hooks.  
+* TanStack Query для data‑fetch.  
+* Cypress e2e (`npm run e2e`).  
 
 ---
 
-## 8. Безопасность
+## 6 Тестирование
 
-* `mvn org.owasp:dependency-check-maven:check` — CVE‑скан.
-* Секреты — только GitHub Secrets (CI) или AWS Parameter Store (prod).
-* Все входные данные валидируются Bean Validation.
-* HTTPS‑терминация — Nginx (конфиг `nginx/nginx.conf`).
-
----
-
-## 9. Обсервабилити
-
-* **NGINX Prometheus Exporter** публикует метрики на `/metrics` (порт 9113).  
-* Мониторинг приложения (Micrometer / Actuator) — **roadmap**.
+| Уровень        | Инструменты                                    | Цель                                  |
+| -------------- | ---------------------------------------------- | ------------------------------------- |
+| Unit (Java)    | JUnit 5 + Mockito                              | 80 % бизнес‑логики                    |
+| Integration    | Testcontainers PostgreSQL 15                   | CRUD, пересечение тайм‑слотов         |
+| Contract /API  | Spring MockMvc + Rest‑Assured                  | Основные REST‑флоу                    |
+| E2E (web)      | **Cypress**                                    | Букинг, редактирование шаблонов       |
+| Load           | k6                                             | p95 < 250 мс @ 2k RPS read            |
+| Security       | OWASP ZAP docker                               | Ночные сканы, 0 blocker‑issues        |
 
 ---
 
-## 10. Деплой
+## 7 CI/CD Pipeline (core шаги)
 
-* **`main`** — единственный prod‑бранч.
-* CI: `mvn clean package` → Docker build → push `ghcr.io/...` → SSH‑deploy VPS.
-* Rollback: `docker compose ls` → `docker compose up -d app:<prev_tag>`.
+1. **backend**: `./gradlew test bootBuildImage`.  
+2. **frontend**: `npm ci && npm run build` → nginx runtime image.  
+3. **deploy**: Helm chart → k3s cluster; rollback = `helm rollback crm <rev>`.
+
+Полная конфигурация — в `/.github/workflows/build-test-deploy.yaml` (*см. Blueprint*).
 
 ---
 
-## 11. Чек‑листы
+## 8 Чек‑листы
 
 ### Перед коммитом
 
-- [ ] Убедитесь, что `./mvnw test` локально **зелёный**.
-- [ ] Форматирование + Spotless OK.
-- [ ] Нет `TODO/FIXME` без ссылки на issue.
-- [ ] Commit message — Conventional Commit, на английском.
+- [ ] Локальные тесты `./gradlew test` / `npm test` зелёные.  
+- [ ] Нет `TODO/FIXME` без ссылки на Issue.  
+- [ ] Spotless / ESLint без ошибок.  
 
-### Перед Pull Request
+### Перед PR
 
-- [ ] Все проверки CI **зелёные**.
-- [ ] Описано *что* и *почему* изменено.
-- [ ] Обновлена документация / схемы / миграции.
-- [ ] Нет секретов или конфиденциальных данных в diff.
+- [ ] CI **зелёный** (`backend`, `frontend`).  
+- [ ] Описаны *что* и *почему* изменено.  
+- [ ] Обновлена документация / миграции.  
+- [ ] Нет секретов в diff.  
 
 ### Перед релизом
 
-- [ ] CHANGELOG обновлён, версия — semver tag.
-- [ ] Миграции прошли на staging.
-- [ ] Smoke‑тесты (UI + REST) зелёные.
-- [ ] Создана резервная копия БД.
+- [ ] CHANGELOG обновлён, semver‑тег создан.  
+- [ ] Миграции прошли на staging.  
+- [ ] k6 / Cypress smoke — OK.  
+- [ ] Бэкап БД сохранён.  
 
 ---
 
-## 12. Служебные скрипты
+## 9 Скрипты
 
-| Скрипт               | Назначение                                             |
-|----------------------|---------------------------------------------------------|
-| `start.sh`           | Локальный запуск (Maven Wrapper).                       |
-| `wait-for-db.sh`     | Ожидание готовности Postgres перед стартом приложения.  |
-| `scripts/setup-proxy.sh` | Настройка Maven/Git под корпоративный proxy.       |
+| Скрипт                     | Назначение                                      |
+|----------------------------|-------------------------------------------------|
+| `scripts/start-dev.sh`     | Запуск `docker‑compose.dev.yml`.                |
+| `scripts/wait-for-db.sh`   | Ожидание Postgres в контейнере.                 |
+| `scripts/setup-proxy.sh`   | Настройка Gradle / npm под корпоративный proxy. |
 
 ---
 
-## 13. Как улучшить этот документ
+## 10 Как обновить AGENTS.md
 
-Нашли несоответствие или идею — откройте Issue с лейблом `doc` **или** создайте PR.  
-Документ живёт, пока мы его улучшаем.
+Увидели расхождение с **Blueprint v0.4** или кодом?  
+Откройте Issue с лейблом `doc` **или** пришлите PR → быстрый review + merge.
+
+---
+
+*Документ синхронизирован: 06 Jun 2025, соответствие проверено по **CRM Calendar – Implementation Blueprint v0.4***  
