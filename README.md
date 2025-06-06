@@ -5,7 +5,7 @@
 1. **Java 21**
    - Установите JDK 21. На Linux можно установить пакет `openjdk-21-jdk`.
 2. **Gradle**
-   - Используйте Gradle 8.14 или запускайте через прилагаемый скрипт `./gradlew`.
+   - Используйте Gradle 8.14 или запускайте через прилагаемый скрипт `./backend/gradlew`.
 3. **PostgreSQL**
    - Приложение ожидает базу `schedule` с пользователем `postgres` и паролем `postgres`.
    - Быстрый вариант через Docker:
@@ -19,9 +19,9 @@
     - Для миграций используется Flyway **11.9.1**, что обеспечивает поддержку
       PostgreSQL 15.3.
 4. **Сборка и запуск**
-   - Сборка: `./gradlew build`
-   - Запуск: `./gradlew bootRun`
-   - Для упрощения можно использовать скрипт `./start.sh`, который
+   - Сборка: `./backend/gradlew build`
+   - Запуск: `./backend/gradlew bootRun`
+   - Для упрощения можно использовать скрипт `./backend/start.sh`, который
      автоматически вызывает Gradle Wrapper и запускает приложение.
    - Приложение слушает порт `8080`. Убедитесь, что этот порт свободен
      перед запуском, иначе старт завершится ошибкой.
@@ -30,10 +30,15 @@
    - В проект подключен модуль `spring-boot-starter-validation`,
      поэтому запросы валидируются через Bean Validation.
 5. **Запуск тестов**
-   - Выполните `./gradlew test`.
+   - Выполните `./backend/gradlew test`.
 
 6. **Сборка CSS**
-   - Для обновления стилей Tailwind выполните `npm run build` (требуется Node.js 18+).
+   - Для обновления стилей Tailwind выполните:
+     ```bash
+     cd backend
+     npm run build
+     cd ..
+     ```
 
 7. **Прокси**
    - Для получения зависимостей может потребоваться сетевой прокси.
@@ -69,14 +74,15 @@ docker run --rm -it --network app-network \
   --name my-java-app my-java-app
 ```
 
-Для удобства можно воспользоваться `docker-compose.yml`, который поднимет
-PostgreSQL, само приложение и Nginx в роли обратного прокси. Перед запуском
-убедитесь, что в корне проекта есть `app.jar`:
+Для удобства можно воспользоваться `infra/docker-compose.dev.yml`, который
+поднимет PostgreSQL, само приложение и Nginx в роли обратного прокси. Перед
+запуском убедитесь, что в каталоге `backend/` есть `app.jar`:
 
 ```bash
 ./gradlew build
 cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
-docker compose up --build
+cd ..
+docker compose -f infra/docker-compose.dev.yml up --build
 ```
 
 ### Проверка сервиса
@@ -91,7 +97,7 @@ docker compose logs app
 ```
 Частая причина ошибки 502/503 — приложение не смогло подключиться к базе. Запустите контейнеры повторно:
 ```bash
-docker compose up -d
+docker compose -f infra/docker-compose.dev.yml up -d
 ```
 
 После запуска метрики Nginx доступны на `http://localhost:9113/metrics`.
@@ -159,7 +165,7 @@ docker compose up -d
 - `VPS_PORT` – SSH‑порт, если отличается от `22`;
 - `PROXY_HOST` и `PROXY_PORT` – при необходимости использовать сетевой прокси.
 
-Workflow собирает JAR, копирует его и файлы инфраструктуры на сервер и запускает `docker compose up -d`.
+Workflow собирает JAR, копирует его и файлы инфраструктуры на сервер и запускает `docker compose -f infra/docker-compose.dev.yml up -d`.
 Сервер должен иметь установленный Docker версии **27.5.1** или новее (API 1.47), так как деплой тестировался на этой версии.
 После успешного завершения всех проверок Pull Request в `main` автоматически сливается через auto-merge.
 
