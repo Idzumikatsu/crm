@@ -20,7 +20,7 @@ export const TeacherCalendar = () => {
       .then((data: Lesson[]) => {
         setEvents(
           data.map((l) => ({
-            id: l.id,
+            id: String(l.id),
             title: l.group?.name ?? 'Lesson',
             start: l.dateTime,
             end: new Date(new Date(l.dateTime).getTime() + l.duration * 60000).toISOString(),
