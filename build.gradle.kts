@@ -26,6 +26,8 @@ dependencies {
     implementation(libs.org.springframework.boot.spring.boot.starter.jdbc)
     implementation(libs.org.springframework.boot.spring.boot.starter.security)
     implementation(libs.org.springframework.boot.spring.boot.starter.validation)
+    implementation(libs.org.springframework.boot.spring.boot.starter.quartz)
+    implementation(libs.org.springframework.boot.spring.boot.starter.mail)
     implementation(libs.org.mapstruct.mapstruct)
     annotationProcessor(libs.org.mapstruct.mapstruct.processor)
     testAnnotationProcessor(libs.org.mapstruct.mapstruct.processor)
