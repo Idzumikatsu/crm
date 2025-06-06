@@ -20,13 +20,17 @@ public class User {
   @Column(nullable = false)
   private Role role;
 
+  @Column(name = "two_fa_secret")
+  private String twoFaSecret;
+
   public User() {}
 
-  public User(Long id, String username, String password, Role role) {
+  public User(Long id, String username, String password, Role role, String twoFaSecret) {
     this.id = id;
     this.username = username;
     this.password = password;
     this.role = role;
+    this.twoFaSecret = twoFaSecret;
   }
 
   public Long getId() {
@@ -61,6 +65,14 @@ public class User {
     this.role = role;
   }
 
+  public String getTwoFaSecret() {
+    return twoFaSecret;
+  }
+
+  public void setTwoFaSecret(String twoFaSecret) {
+    this.twoFaSecret = twoFaSecret;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -70,6 +82,7 @@ public class User {
     private String username;
     private String password;
     private Role role;
+    private String twoFaSecret;
 
     public Builder id(Long id) {
       this.id = id;
@@ -91,8 +104,13 @@ public class User {
       return this;
     }
 
+    public Builder twoFaSecret(String twoFaSecret) {
+      this.twoFaSecret = twoFaSecret;
+      return this;
+    }
+
     public User build() {
-      return new User(id, username, password, role);
+      return new User(id, username, password, role, twoFaSecret);
     }
   }
 

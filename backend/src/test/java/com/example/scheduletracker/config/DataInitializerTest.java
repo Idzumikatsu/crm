@@ -17,12 +17,13 @@ class DataInitializerTest {
 
   @Mock private UserRepository repo;
   @Mock private PasswordEncoder encoder;
+  @Mock private com.example.scheduletracker.service.security.TotpService totpService;
 
   private DataInitializer initializer;
 
   @BeforeEach
   void setup() {
-    initializer = new DataInitializer(repo, encoder);
+    initializer = new DataInitializer(repo, encoder, totpService);
   }
 
   @Test

@@ -90,8 +90,8 @@ audit_log(id bigserial, entity, entity_id, action, old_json, new_json, actor_id,
 | 2 | **Booking service**     | Codex | 5 h | `LessonService.book(...)` with slot lock; 409 on conflict ✅ DONE |
 | 3 | **Reminder engine**     | Codex | 3 h | Quartz per lesson; channels email/TG; payload merge ✅ DONE |
 | 4 | **Analytics API**       | Codex | 4 h | Materialized view, POI XLSX export, Google Sheets push ✅ DONE |
-| 5 | **Security 2FA**        | Codex | 3 h | TOTP secret provisioning, QR gen, login flow                   |
-| 6 | **Audit log AOP**       | Codex | 2 h | `@Track` annotation → diff capture JSON-Patch                  |
+| 5 | **Security 2FA**        | Codex | 3 h | TOTP secret provisioning, QR gen, login flow ✅ DONE |
+| 6 | **Audit log AOP**       | Codex | 2 h | `@Track` annotation → diff capture JSON-Patch ✅ DONE |
 
 *Code stubs for each delivered in `backend/src/main/java/...`*
 
