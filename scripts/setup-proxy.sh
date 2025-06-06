@@ -16,6 +16,14 @@ if [ -n "$PROXY_HOST" ] && [ -n "$PROXY_PORT" ]; then
   mkdir -p .mvn
   envsubst < .mvn/settings.xml.in > .mvn/settings.xml
   echo "Generated .mvn/settings.xml for $PROXY_HOST:$PROXY_PORT"
+  cat > gradle.properties <<EOF
+org.gradle.configuration-cache=true
+systemProp.http.proxyHost=$PROXY_HOST
+systemProp.http.proxyPort=$PROXY_PORT
+systemProp.https.proxyHost=$PROXY_HOST
+systemProp.https.proxyPort=$PROXY_PORT
+EOF
+  echo "Generated gradle.properties for $PROXY_HOST:$PROXY_PORT"
 else
   mkdir -p .mvn
   cat > .mvn/settings.xml <<EOF
@@ -25,6 +33,8 @@ else
 </settings>
 EOF
   echo "Proxy variables not set; generated empty .mvn/settings.xml"
+  echo "org.gradle.configuration-cache=true" > gradle.properties
+  echo "Proxy variables not set; generated default gradle.properties"
 fi
 # Configure git proxy if variables are present
 if [ -n "$HTTP_PROXY" ]; then

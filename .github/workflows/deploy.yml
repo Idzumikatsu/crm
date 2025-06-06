@@ -35,11 +35,13 @@ jobs:
 
     # 4. Запускаем тесты и собираем JAR
     - name: Build with tests
-      run: mvn -B clean package
+      run: ./gradlew build
 
     # 5. Переименовываем артефакт → app.jar (чтобы Dockerfile его нашёл)
     - name: Prepare artifact
-      run: cp target/*.jar target/app.jar
+      run: |
+        mkdir -p build
+        cp build/libs/*.jar build/app.jar
 
     - name: Generate test TLS certificate
       run: |
@@ -93,7 +95,7 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         password:   ${{ secrets.VPS_PASSWORD }}
         # port:     ${{ secrets.VPS_PORT }}
-        source:     target/app.jar
+        source:     build/app.jar
         target:     /root/myapp
         strip_components: 1
 

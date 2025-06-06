@@ -27,7 +27,7 @@
 
 | ID       | Step                                                                               | Effort | Outcome                                                                        |
 | -------- | ---------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------ |
-| **BE‑0** | *Maven → Gradle* automated via `gradle init`, remove `pom.xml`, adjust GH Actions. | 3 h    | Builds green under Gradle Kotlin DSL.                                          |
+| **BE‑0** | *Maven → Gradle* automated via `gradle init`, remove `pom.xml`, adjust GH Actions. | 3 h    | Builds green under Gradle Kotlin DSL. ✅ DONE                                          |
 | **BE‑1** | Remove Lombok                                                                      | 5 h    | Replace with Java records / explicit constructors; `./mvnw` deleted.           |
 | **BE‑2** | Upgrade to Java 21 + Spring Boot 3.3                                               | 2 h    | Module path, Jakarta packages.                                                 |
 | **BE‑3** | Introduce MapStruct mappers                                                        | 2 h    | `*Mapper.java` for DTOs.                                                       |

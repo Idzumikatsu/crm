@@ -2,8 +2,11 @@
 # Скрипт запуска приложения в зависимости от типа проекта
 set -e
 
-if [ -f pom.xml ]; then
-  echo "Запускается Spring Boot приложение"
+if [ -f build.gradle.kts ] || [ -f build.gradle ]; then
+  echo "Запускается Spring Boot приложение (Gradle)"
+  exec ./gradlew bootRun
+elif [ -f pom.xml ]; then
+  echo "Запускается Spring Boot приложение (Maven)"
   exec ./mvnw spring-boot:run
 elif [ -f package.json ]; then
   echo "Запускается Node.js приложение"
