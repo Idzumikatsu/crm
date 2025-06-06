@@ -1,9 +1,9 @@
-// Lesson.java
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/** Lesson entity. */
 @Entity
 @Table(name = "lessons")
 public class Lesson {
@@ -15,7 +15,7 @@ public class Lesson {
   private LocalDateTime dateTime;
 
   @Column(nullable = false)
-  private Integer duration; // в минутах
+  private Integer duration; // minutes
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)

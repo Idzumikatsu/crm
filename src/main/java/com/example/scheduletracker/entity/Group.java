@@ -1,8 +1,8 @@
-// Group.java
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
 
+/** Group of students. */
 @Entity
 @Table(name = "groups")
 public class Group {

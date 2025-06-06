@@ -29,7 +29,8 @@ class GroupServiceImplTest {
 
   @Test
   void saveDelegatesToRepo() {
-    Group g = Group.builder().name("G1").build();
+    Group g = new Group();
+    g.setName("G1");
     when(repo.save(any(Group.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     Group saved = service.save(g);
@@ -40,7 +41,7 @@ class GroupServiceImplTest {
 
   @Test
   void findByIdReturnsData() {
-    Group g = Group.builder().id(1L).name("G1").build();
+    Group g = new Group(1L, "G1", null);
     when(repo.findById(1L)).thenReturn(Optional.of(g));
 
     Optional<Group> result = service.findById(1L);
@@ -51,7 +52,7 @@ class GroupServiceImplTest {
 
   @Test
   void findAllReturnsList() {
-    when(repo.findAll()).thenReturn(List.of(Group.builder().build()));
+    when(repo.findAll()).thenReturn(List.of(new Group()));
 
     List<Group> result = service.findAll();
 

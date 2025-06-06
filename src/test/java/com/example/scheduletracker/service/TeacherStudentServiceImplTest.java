@@ -27,7 +27,7 @@ class TeacherStudentServiceImplTest {
 
   @Test
   void saveReturnsRepoResult() {
-    TeacherStudent ts = TeacherStudent.builder().build();
+    TeacherStudent ts = new TeacherStudent();
     when(repo.save(any(TeacherStudent.class))).thenReturn(ts);
 
     TeacherStudent result = service.save(ts);

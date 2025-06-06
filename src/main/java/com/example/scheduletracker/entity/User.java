@@ -1,8 +1,8 @@
-// User.java
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
 
+/** User of the system. */
 @Entity
 @Table(name = "users")
 public class User {

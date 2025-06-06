@@ -3,6 +3,7 @@ package com.example.scheduletracker.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/** Time slot for teacher availability. */
 @Entity
 @Table(name = "time_slots")
 public class TimeSlot {

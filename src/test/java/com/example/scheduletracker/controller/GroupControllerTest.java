@@ -29,7 +29,7 @@ class GroupControllerTest {
   @Test
   @DisplayName("GET /api/groups возвращает список групп")
   void allReturnsGroups() throws Exception {
-    Group g = Group.builder().id(1L).name("G1").build();
+    Group g = new Group(1L, "G1", null);
     when(svc.findAll()).thenReturn(List.of(g));
 
     mvc.perform(get("/api/groups"))

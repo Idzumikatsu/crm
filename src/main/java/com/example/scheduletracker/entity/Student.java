@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/** Student entity. */
 @Entity
 @Table(name = "students")
 public class Student {

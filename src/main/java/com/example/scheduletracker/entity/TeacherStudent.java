@@ -2,6 +2,7 @@ package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
 
+/** Assignment of teacher to student. */
 @Entity
 @Table(name = "teacher_students")
 public class TeacherStudent {
@@ -84,6 +85,7 @@ public class TeacherStudent {
 
   @Embeddable
   public static class Id implements java.io.Serializable {
+
     @Column(name = "teacher_id")
     private Long teacherId;
 

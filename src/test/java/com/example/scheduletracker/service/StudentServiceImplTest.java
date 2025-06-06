@@ -27,7 +27,7 @@ class StudentServiceImplTest {
 
   @Test
   void findAllReturnsRepoData() {
-    Student s = Student.builder().id(1L).name("Bob").email("b@example.com").build();
+    Student s = new Student(1L, "Bob", "b@example.com");
     when(repo.findAll()).thenReturn(List.of(s));
 
     List<Student> result = service.findAll();

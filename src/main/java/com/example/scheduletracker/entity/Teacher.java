@@ -1,10 +1,10 @@
-// Teacher.java
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/** Teacher entity. */
 @Entity
 @Table(name = "teachers")
 public class Teacher {
