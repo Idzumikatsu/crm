@@ -30,9 +30,9 @@
 | **BE‑0** | *Maven → Gradle* automated via `gradle init`, remove `pom.xml`, adjust GH Actions. | 3 h    | Builds green under Gradle Kotlin DSL. ✅ DONE                                          |
 | **BE‑1** | Remove Lombok                | 5 h    | Replace with Java records / explicit constructors; `./mvnw` deleted. ✅ DONE |
 | **BE-2** | Upgrade to Java 21 + Spring Boot 3.3 | 2 h | Module path, Jakarta packages. ✅ DONE |
-| **BE‑3** | Introduce MapStruct mappers                                                        | 2 h    | `*Mapper.java` for DTOs.                                                       |
+| **BE‑3** | Introduce MapStruct mappers                | 2 h    | `*Mapper.java` for DTOs. ✅ DONE |
 | **BE‑4** | TimeZone refactor                                                                  | 4 h    | Replace `LocalDateTime` with `OffsetDateTime`, store UTC; Flyway `V2__tz.sql`. |
-| **FE‑0** | Scaffold React SPA in `frontend/`                                                  | 1 h    | Vite dev server up.                                                            |
+| **FE‑0** | Scaffold React SPA in `frontend/`                | 1 h    | Vite dev server up. ✅ DONE |
 
 ---
 
