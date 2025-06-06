@@ -1,7 +1,7 @@
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /** Time slot for teacher availability. */
 @Entity
@@ -16,14 +16,14 @@ public class TimeSlot {
   private Teacher teacher;
 
   @Column(nullable = false)
-  private LocalDateTime start;
+  private OffsetDateTime start;
 
   @Column(name = "end_time", nullable = false)
-  private LocalDateTime endTime;
+  private OffsetDateTime endTime;
 
   public TimeSlot() {}
 
-  public TimeSlot(Long id, Teacher teacher, LocalDateTime start, LocalDateTime endTime) {
+  public TimeSlot(Long id, Teacher teacher, OffsetDateTime start, OffsetDateTime endTime) {
     this.id = id;
     this.teacher = teacher;
     this.start = start;
@@ -46,19 +46,19 @@ public class TimeSlot {
     this.teacher = teacher;
   }
 
-  public LocalDateTime getStart() {
+  public OffsetDateTime getStart() {
     return start;
   }
 
-  public void setStart(LocalDateTime start) {
+  public void setStart(OffsetDateTime start) {
     this.start = start;
   }
 
-  public LocalDateTime getEndTime() {
+  public OffsetDateTime getEndTime() {
     return endTime;
   }
 
-  public void setEndTime(LocalDateTime endTime) {
+  public void setEndTime(OffsetDateTime endTime) {
     this.endTime = endTime;
   }
 
@@ -69,8 +69,8 @@ public class TimeSlot {
   public static class Builder {
     private Long id;
     private Teacher teacher;
-    private LocalDateTime start;
-    private LocalDateTime endTime;
+    private OffsetDateTime start;
+    private OffsetDateTime endTime;
 
     public Builder id(Long id) {
       this.id = id;
@@ -82,12 +82,12 @@ public class TimeSlot {
       return this;
     }
 
-    public Builder start(LocalDateTime start) {
+    public Builder start(OffsetDateTime start) {
       this.start = start;
       return this;
     }
 
-    public Builder endTime(LocalDateTime endTime) {
+    public Builder endTime(OffsetDateTime endTime) {
       this.endTime = endTime;
       return this;
     }

@@ -3,7 +3,7 @@ package com.example.scheduletracker.controller;
 
 import com.example.scheduletracker.entity.Lesson;
 import com.example.scheduletracker.service.LessonService;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +21,9 @@ public class LessonController {
   @GetMapping
   public List<Lesson> all(
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-          LocalDateTime from,
+          OffsetDateTime from,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-          LocalDateTime to,
+          OffsetDateTime to,
       @RequestParam(required = false) Long teacherId,
       @RequestParam(required = false) Long groupId) {
     if (from != null || to != null || teacherId != null || groupId != null) {

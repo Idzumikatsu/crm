@@ -10,7 +10,7 @@ import com.example.scheduletracker.entity.TimeSlot;
 import com.example.scheduletracker.repository.LessonRepository;
 import com.example.scheduletracker.repository.TimeSlotRepository;
 import com.example.scheduletracker.service.impl.LessonServiceImpl;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,8 +40,8 @@ class LessonServiceImplTest {
 
   @Test
   void searchByTeacherFiltersResults() {
-    Lesson l1 = new Lesson(1L, LocalDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
-    Lesson l2 = new Lesson(2L, LocalDateTime.now(), 60, Lesson.Status.SCHEDULED, t2, g1);
+    Lesson l1 = new Lesson(1L, OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
+    Lesson l2 = new Lesson(2L, OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t2, g1);
     when(repo.findAll()).thenReturn(List.of(l1, l2));
 
     List<Lesson> result = service.search(null, null, 1L, null);
@@ -52,7 +52,7 @@ class LessonServiceImplTest {
 
   @Test
   void updateStatusChangesEntity() {
-    Lesson lesson = new Lesson(1L, LocalDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
+    Lesson lesson = new Lesson(1L, OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
     when(repo.findById(1L)).thenReturn(java.util.Optional.of(lesson));
     when(repo.save(any(Lesson.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -63,7 +63,7 @@ class LessonServiceImplTest {
 
   @Test
   void saveOutsideSlotThrows() {
-    Lesson lesson = new Lesson(null, LocalDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
+    Lesson lesson = new Lesson(null, OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
     when(slotRepo.findByTeacher(t1)).thenReturn(List.of());
 
     assertThrows(IllegalArgumentException.class, () -> service.save(lesson));
@@ -71,7 +71,7 @@ class LessonServiceImplTest {
 
   @Test
   void saveOverlappingThrows() {
-    LocalDateTime dt = LocalDateTime.now();
+    OffsetDateTime dt = OffsetDateTime.now();
     TimeSlot slot = new TimeSlot(null, t1, dt.minusMinutes(30), dt.plusMinutes(90));
     when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
     Lesson existing = new Lesson(2L, dt, 60, Lesson.Status.SCHEDULED, t1, g1);
@@ -84,7 +84,7 @@ class LessonServiceImplTest {
 
   @Test
   void saveValidLessonPersists() {
-    LocalDateTime dt = LocalDateTime.now();
+    OffsetDateTime dt = OffsetDateTime.now();
     TimeSlot slot = new TimeSlot(null, t1, dt.minusMinutes(10), dt.plusMinutes(70));
     when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
     when(repo.findByTeacher(t1)).thenReturn(List.of());
