@@ -1,12 +1,9 @@
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.Set;
 import java.util.HashSet;
-
-import com.example.scheduletracker.entity.TeacherStudent;
+import java.util.Set;
+import lombok.*;
 
 @Entity
 @Table(name = "students")
@@ -16,17 +13,17 @@ import com.example.scheduletracker.entity.TeacherStudent;
 @AllArgsConstructor
 @Builder
 public class Student {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false)
-    private String name;
+  @Column(nullable = false)
+  private String name;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+  @Column(nullable = false, unique = true)
+  private String email;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private Set<TeacherStudent> teacherStudents = new HashSet<>();
+  @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+  @Builder.Default
+  private Set<TeacherStudent> teacherStudents = new HashSet<>();
 }

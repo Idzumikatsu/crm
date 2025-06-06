@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class TeacherStudentServiceImpl implements TeacherStudentService {
-    private final TeacherStudentRepository repo;
-    @Override
-    public TeacherStudent save(TeacherStudent ts) {
-        return repo.save(ts);
-    }
+  private final TeacherStudentRepository repo;
+
+  @Override
+  public TeacherStudent save(TeacherStudent ts) {
+    return repo.save(ts);
+  }
 }

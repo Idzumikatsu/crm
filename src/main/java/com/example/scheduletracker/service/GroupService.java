@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GroupService {
-    Group save(Group group);
-    List<Group> findAll();
-    Optional<Group> findById(Long id);
-    void deleteById(Long id);
+  Group save(Group group);
+
+  List<Group> findAll();
+
+  Optional<Group> findById(Long id);
+
+  void deleteById(Long id);
 }
