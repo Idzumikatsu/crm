@@ -28,6 +28,7 @@ public class TeacherStudent {
   @Setter
   @NoArgsConstructor
   @AllArgsConstructor
+  @EqualsAndHashCode
   public static class Id implements java.io.Serializable {
     @Column(name = "teacher_id")
     private Long teacherId;
