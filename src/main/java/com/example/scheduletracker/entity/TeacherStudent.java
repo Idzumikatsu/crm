@@ -3,7 +3,6 @@ package com.example.scheduletracker.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 @Entity
 @Table(name = "teacher_students")
 @Getter
@@ -12,25 +11,28 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class TeacherStudent {
-    @EmbeddedId
-    private Id id;
+  @EmbeddedId private Id id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("teacherId")
-    @JoinColumn(name = "teacher_id", nullable = false)
-    private Teacher teacher;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @MapsId("teacherId")
+  @JoinColumn(name = "teacher_id", nullable = false)
+  private Teacher teacher;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("studentId")
-    @JoinColumn(name = "student_id", nullable = false)
-    private Student student;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @MapsId("studentId")
+  @JoinColumn(name = "student_id", nullable = false)
+  private Student student;
 
-    @Embeddable
-    @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-    public static class Id implements java.io.Serializable {
-        @Column(name = "teacher_id")
-        private Long teacherId;
-        @Column(name = "student_id")
-        private Long studentId;
-    }
+  @Embeddable
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class Id implements java.io.Serializable {
+    @Column(name = "teacher_id")
+    private Long teacherId;
+
+    @Column(name = "student_id")
+    private Long studentId;
+  }
 }

@@ -41,6 +41,11 @@ jobs:
     - name: Prepare artifact
       run: cp target/*.jar target/app.jar
 
+    - name: Generate test TLS certificate
+      run: |
+        mkdir -p nginx/certs
+        openssl req -x509 -newkey rsa:2048 -nodes -keyout nginx/certs/server.key -out nginx/certs/server.crt -days 1 -subj "/CN=localhost"
+
     # Render environment-specific nginx.conf
     - name: Render NGINX config
       run: |
@@ -48,7 +53,10 @@ jobs:
 
     # Validate NGINX configuration syntax
     - name: Validate NGINX config
-      run: docker run --rm -v ${{ github.workspace }}/nginx:/etc/nginx:ro nginx:1.26 nginx -t
+      run: docker run --rm \
+        --add-host app:127.0.0.1 \
+        -v ${{ github.workspace }}/nginx:/etc/nginx:ro \
+        nginx:1.26 nginx -t
 
     # 6. Копируем Dockerfile и docker-compose.yml на VPS (в корень /root/myapp)
     - name: Copy infra files to VPS

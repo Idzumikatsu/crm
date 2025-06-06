@@ -1,9 +1,8 @@
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "time_slots")
@@ -13,17 +12,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class TimeSlot {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "teacher_id")
+  private Teacher teacher;
 
-    @Column(nullable = false)
-    private LocalDateTime start;
+  @Column(nullable = false)
+  private LocalDateTime start;
 
-    @Column(name = "end_time", nullable = false)
-    private LocalDateTime endTime;
+  @Column(name = "end_time", nullable = false)
+  private LocalDateTime endTime;
 }
