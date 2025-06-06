@@ -22,7 +22,7 @@
 | Слой / задача          | Технология / библиотека                        | Мин. версия | Назначение / комментарий                                        |
 |------------------------|------------------------------------------------|-------------|-----------------------------------------------------------------|
 | Язык                   | **Java 21 LTS**                                | 21          | Loom, record‑классы, pattern‑matching.                          |
-| Сборка                 | **Maven 3.9.9** (`./mvnw`)                    | 3.9         | Reproducible builds, Enforcer, Wrapper.                         |
+| Сборка                 | **Gradle 8.14** (`./gradlew`)                 | 8.14      | Kotlin DSL, wrapper, быстрые инкрементальные сборки.            |
 | Core‑Framework         | **Spring Boot 3.5.x**                         | 3.5         | Актуальный LTS, AOT, CRaC‑ready.                                |
 | SSR / шаблоны          | **Thymeleaf 3.2** + Extras Security 6          | —           | Рендеринг UI на сервере.                                        |
 | REST‑документация      | SpringDoc OpenAPI‑Starter 2.8.x               | —           | Swagger UI на `/swagger-ui.html`.                               |
@@ -81,7 +81,7 @@
 
 ## 5. Стандарты кода
 
-* **Стиль:** Google Java Style + Spotless (`mvn spotless:check` в CI).
+* **Стиль:** Google Java Style + Spotless (`./gradlew spotlessCheck` в CI).
 * **Null‑safety:** `@NonNull`, `Optional` — никаких необъяснимых `null`.
 * **Lombok:** `@Builder`, `@Value` — **только** для DTO и конфигураций.
 * **Логирование:** SLF4J + Logback; `DEBUG` в dev, `INFO` в prod; без `System.out`.
@@ -117,7 +117,7 @@
 
 ## 8. Безопасность
 
-* `mvn org.owasp:dependency-check-maven:check` — CVE‑скан.
+* `./gradlew dependencyCheckAnalyze` — CVE‑скан.
 * Секреты — только GitHub Secrets (CI) или AWS Parameter Store (prod).
 * Все входные данные валидируются Bean Validation.
 * HTTPS‑терминация — Nginx (конфиг `nginx/nginx.conf`).
@@ -134,7 +134,7 @@
 ## 10. Деплой
 
 * **`main`** — единственный prod‑бранч.
-* CI: `mvn clean package` → Docker build → push `ghcr.io/...` → SSH‑deploy VPS.
+* CI: `./gradlew build` → Docker build → push `ghcr.io/...` → SSH‑deploy VPS.
 * Rollback: `docker compose ls` → `docker compose up -d app:<prev_tag>`.
 
 ---
@@ -143,7 +143,7 @@
 
 ### Перед коммитом
 
-- [ ] Убедитесь, что `./mvnw test` локально **зелёный**.
+- [ ] Убедитесь, что `./gradlew test` локально **зелёный**.
 - [ ] Форматирование + Spotless OK.
 - [ ] Нет `TODO/FIXME` без ссылки на issue.
 - [ ] Commit message — Conventional Commit, на английском.
@@ -168,9 +168,9 @@
 
 | Скрипт               | Назначение                                             |
 |----------------------|---------------------------------------------------------|
-| `start.sh`           | Локальный запуск (Maven Wrapper).                       |
+| `start.sh`           | Локальный запуск (Gradle Wrapper).                       |
 | `wait-for-db.sh`     | Ожидание готовности Postgres перед стартом приложения.  |
-| `scripts/setup-proxy.sh` | Настройка Maven/Git под корпоративный proxy.       |
+| `scripts/setup-proxy.sh` | Настройка Gradle/Maven/Git под корпоративный proxy.       |
 
 ---
 
