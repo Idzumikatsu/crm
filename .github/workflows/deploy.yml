@@ -123,4 +123,4 @@ jobs:
           docker compose -f infra/docker-compose.dev.yml build --no-cache
           docker compose -f infra/docker-compose.dev.yml up -d
           docker compose -f infra/docker-compose.dev.yml ps
-          docker compose logs app --tail=20
+          docker compose -f infra/docker-compose.dev.yml logs app --tail=20
