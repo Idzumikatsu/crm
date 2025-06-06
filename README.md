@@ -75,7 +75,7 @@ PostgreSQL, само приложение и Nginx в роли обратног�
 
 ```bash
 ./gradlew build
-cp build/libs/*.jar app.jar
+cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
 docker compose up --build
 ```
 
