@@ -286,7 +286,7 @@ index f80bb8b2fb0dbf5efe6f03209579ce2e24f33c02..da64c83437cd939b77c4b5c5589afb59
 +docker compose -f infra/docker-compose.dev.yml up -d
  ```
  
- После запуска метрики Nginx доступны на `http://localhost:9113/metrics`.
+После запуска метрики Nginx доступны на `http://localhost:9114/metrics`.
  Экспортер считывает данные со страницы `/nginx_status` внутри контейнера.
  
  
