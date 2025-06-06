@@ -9,14 +9,17 @@ import com.example.scheduletracker.service.LessonService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class LessonServiceImpl implements LessonService {
   private final LessonRepository repo;
   private final TimeSlotRepository slotRepo;
+
+  public LessonServiceImpl(LessonRepository repo, TimeSlotRepository slotRepo) {
+    this.repo = repo;
+    this.slotRepo = slotRepo;
+  }
 
   @Override
   public Lesson save(Lesson lesson) {

@@ -5,13 +5,15 @@ import com.example.scheduletracker.repository.StudentRepository;
 import com.example.scheduletracker.service.StudentService;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
   private final StudentRepository repo;
+
+  public StudentServiceImpl(StudentRepository repo) {
+    this.repo = repo;
+  }
 
   @Override
   public Student save(Student student) {

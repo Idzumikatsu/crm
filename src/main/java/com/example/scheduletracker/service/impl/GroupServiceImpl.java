@@ -6,13 +6,15 @@ import com.example.scheduletracker.repository.GroupRepository;
 import com.example.scheduletracker.service.GroupService;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
   private final GroupRepository repo;
+
+  public GroupServiceImpl(GroupRepository repo) {
+    this.repo = repo;
+  }
 
   @Override
   public Group save(Group group) {

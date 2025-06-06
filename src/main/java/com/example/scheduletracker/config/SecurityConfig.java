@@ -2,7 +2,6 @@
 package com.example.scheduletracker.config;
 
 import com.example.scheduletracker.config.jwt.JwtFilter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,10 +17,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
   private final UserDetailsService userDetailsService;
   private final JwtFilter jwtFilter;
+
+  public SecurityConfig(UserDetailsService userDetailsService, JwtFilter jwtFilter) {
+    this.userDetailsService = userDetailsService;
+    this.jwtFilter = jwtFilter;
+  }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

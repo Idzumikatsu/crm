@@ -4,15 +4,17 @@ package com.example.scheduletracker.controller;
 import com.example.scheduletracker.entity.Group;
 import com.example.scheduletracker.service.GroupService;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/groups")
-@RequiredArgsConstructor
 public class GroupController {
   private final GroupService svc;
+
+  public GroupController(GroupService svc) {
+    this.svc = svc;
+  }
 
   @GetMapping
   public List<Group> all() {

@@ -7,7 +7,6 @@ import com.example.scheduletracker.dto.SignupRequest;
 import com.example.scheduletracker.entity.User;
 import com.example.scheduletracker.service.UserService;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,17 +16,23 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 public class AuthController {
   private final AuthenticationManager authManager;
   private final JwtUtils jwtUtils;
   private final UserService userService;
 
+  public AuthController(
+      AuthenticationManager authManager, JwtUtils jwtUtils, UserService userService) {
+    this.authManager = authManager;
+    this.jwtUtils = jwtUtils;
+    this.userService = userService;
+  }
+
   @PostMapping("/login")
   public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest req) {
     Authentication auth =
         authManager.authenticate(
-            new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
+            new UsernamePasswordAuthenticationToken(req.username(), req.password()));
     String username = auth.getName();
     User user = userService.findByUsername(username).orElseThrow();
     String token = jwtUtils.generateToken(username, user.getRole().name());
@@ -36,16 +41,16 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<Void> register(@RequestBody SignupRequest req) {
-    String username = req.getUsername();
+    String username = req.username();
     Optional<User> existing = userService.findByUsername(username);
     if (existing.isPresent()) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-    String roleName = Optional.ofNullable(req.getRole()).orElse("STUDENT");
+    String roleName = Optional.ofNullable(req.role()).orElse("STUDENT");
     User user =
         User.builder()
             .username(username)
-            .password(req.getPassword())
+            .password(req.password())
             .role(User.Role.valueOf(roleName.toUpperCase()))
             .build();
     userService.save(user);

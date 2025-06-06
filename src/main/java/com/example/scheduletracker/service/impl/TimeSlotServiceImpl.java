@@ -7,14 +7,18 @@ import com.example.scheduletracker.repository.TimeSlotRepository;
 import com.example.scheduletracker.service.TimeSlotService;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class TimeSlotServiceImpl implements TimeSlotService {
   private final TimeSlotRepository repo;
   private final TeacherRepository teacherRepository;
+
+  public TimeSlotServiceImpl(
+      TimeSlotRepository repo, TeacherRepository teacherRepository) {
+    this.repo = repo;
+    this.teacherRepository = teacherRepository;
+  }
 
   @Override
   public TimeSlot save(TimeSlot slot) {
