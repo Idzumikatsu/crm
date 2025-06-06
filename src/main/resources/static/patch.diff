@@ -1,0 +1,963 @@
+diff --git a/.github/workflows/deploy.yml b/.github/workflows/deploy.yml
+index b5e7e6d9281a13a93eed78b5a171d3958d0b95d6..78d4bdfa32c093c68994060059f5dbe972f645ee 100644
+--- a/.github/workflows/deploy.yml
++++ b/.github/workflows/deploy.yml
+@@ -13,113 +13,113 @@ name: Deploy to VPS
+ jobs:
+   build-and-deploy:
+     runs-on: ubuntu-latest
+ 
+     steps:
+     # 1. Клонируем репозиторий
+     - name: Checkout repository
+       uses: actions/checkout@v4
+ 
+     # 2. Устанавливаем Temurin JDK 21
+     - name: Setup Temurin JDK 21
+       uses: actions/setup-java@v4
+       with:
+         distribution: temurin
+         java-version: 21
+ 
+     # 3. Настраиваем прокси для Maven и Git
+     - name: Setup proxy
+       run: scripts/setup-proxy.sh
+       env:
+         PROXY_HOST: ${{ secrets.PROXY_HOST }}
+         PROXY_PORT: ${{ secrets.PROXY_PORT }}
+ 
+     # 4. Запускаем тесты и собираем JAR
+     - name: Build with tests
+-      run: ./gradlew build
++      run: ./backend/gradlew build
+ 
+     # 5. Переименовываем артефакт → app.jar (чтобы Dockerfile его нашёл)
+     - name: Prepare artifact
+       run: |
+         set -e
+-        mkdir -p build
+-        JAR_FILE=$(ls build/libs/*.jar | grep -v plain | head -n 1)
+-        cp "$JAR_FILE" build/app.jar
++        mkdir -p backend/build
++        JAR_FILE=$(ls backend/build/libs/*.jar | grep -v plain | head -n 1)
++        cp "$JAR_FILE" backend/build/app.jar
+ 
+     - name: Generate test TLS certificate
+       run: |
+-        mkdir -p nginx/certs
+-        openssl req -x509 -newkey rsa:2048 -nodes -keyout nginx/certs/server.key -out nginx/certs/server.crt -days 1 -subj "/CN=localhost"
++        mkdir -p infra/nginx/certs
++        openssl req -x509 -newkey rsa:2048 -nodes -keyout infra/nginx/certs/server.key -out infra/nginx/certs/server.crt -days 1 -subj "/CN=localhost"
+ 
+     # Render environment-specific nginx.conf
+     - name: Render NGINX config
+       run: |
+         APP_HOST=app APP_PORT=8080 ./scripts/render-nginx.sh
+ 
+     # Validate NGINX configuration syntax
+     - name: Validate NGINX config
+       run: |
+         docker run --rm \
+           --add-host app:127.0.0.1 \
+-          -v ${{ github.workspace }}/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+-          -v ${{ github.workspace }}/nginx/certs:/etc/nginx/certs:ro \
++          -v ${{ github.workspace }}/infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
++          -v ${{ github.workspace }}/infra/nginx/certs:/etc/nginx/certs:ro \
+           nginx:1.26 nginx -t -c /etc/nginx/nginx.conf
+ 
+-    # 6. Копируем Dockerfile и docker-compose.yml на VPS (в корень /root/myapp)
++    # 6. Копируем Dockerfile и docker-compose.dev.yml на VPS (в корень /root/myapp)
+     - name: Copy infra files to VPS
+-      if: ${{ hashFiles('Dockerfile', 'docker-compose.yml', 'nginx/nginx.conf', 'nginx/nginx.conf.template') != '' }}
++      if: ${{ hashFiles('backend/Dockerfile', 'infra/docker-compose.dev.yml', 'infra/nginx/nginx.conf', 'infra/nginx/nginx.conf.template') != '' }}
+       uses: appleboy/scp-action@v0.1.4
+       with:
+         host:       ${{ secrets.VPS_HOST }}
+         username:   ${{ secrets.VPS_USER }}
+         password:   ${{ secrets.VPS_PASSWORD }}
+         # 🛑 Если ваш SSH-порт – не 22, раскомментируйте строку ниже:
+         # port:     ${{ secrets.VPS_PORT }}
+-        source: "Dockerfile,docker-compose.yml,wait-for-db.sh,nginx/nginx.conf"
++        source: "backend/Dockerfile,infra/docker-compose.dev.yml,backend/wait-for-db.sh,infra/nginx/nginx.conf"
+         target: /root/myapp
+         rm:     true
+ 
+     # 6.5. Убеждаемся, что каталог существует (на случай пропуска предыдущего шага)
+     - name: Ensure target directory
+       uses: appleboy/ssh-action@v1.0.0
+       with:
+         host:       ${{ secrets.VPS_HOST }}
+         username:   ${{ secrets.VPS_USER }}
+         password:   ${{ secrets.VPS_PASSWORD }}
+         # port:     ${{ secrets.VPS_PORT }}
+         script: |
+           mkdir -p /root/myapp
+ 
+     # 7. Копируем сам app.jar на VPS
+     - name: Copy app.jar to VPS
+       uses: appleboy/scp-action@v0.1.4
+       with:
+         host:       ${{ secrets.VPS_HOST }}
+         username:   ${{ secrets.VPS_USER }}
+         password:   ${{ secrets.VPS_PASSWORD }}
+         # port:     ${{ secrets.VPS_PORT }}
+-        source:     build/app.jar
++        source:     backend/build/app.jar
+         target:     /root/myapp
+         strip_components: 1
+ 
+     # 8. Собираем Docker-образ и перезапускаем контейнер через SSH
+     - name: Docker Compose up
+       uses: appleboy/ssh-action@v1.0.0
+       with:
+         host:       ${{ secrets.VPS_HOST }}
+         username:   ${{ secrets.VPS_USER }}
+         password:   ${{ secrets.VPS_PASSWORD }}
+         # port:     ${{ secrets.VPS_PORT }}
+         script: |
+           set -e
+           cd /root/myapp
+           # remove any leftover containers using the app port
+           docker ps -aqf "name=myapp-app-1" | xargs -r docker rm -f
+           # remove any leftover db container as well
+           docker ps -aqf "name=myapp-db-1" | xargs -r docker rm -f
+           # if any other container is using port 8080, force remove it
+           docker ps -q --filter "publish=8080" | xargs -r docker rm -f
+-          docker compose down --remove-orphans
+-          docker compose build --no-cache
+-          docker compose up -d
+-          docker compose ps
++          docker compose -f infra/docker-compose.dev.yml down --remove-orphans
++          docker compose -f infra/docker-compose.dev.yml build --no-cache
++          docker compose -f infra/docker-compose.dev.yml up -d
++          docker compose -f infra/docker-compose.dev.yml ps
+           docker compose logs app --tail=20
+diff --git a/.gitignore b/.gitignore
+index b9f6e436b3e938d5b52e143bfdd341bc150d39bf..20efe3565384acfd9d91beb339cd44c20477d6fa 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,28 +1,28 @@
+ # Maven
+ /target/
+ !.mvn/wrapper/maven-wrapper.jar
+ 
+ # IDE
+ /.idea
+ *.iml
+ 
+ # Node
+ client/node_modules/
+ server/node_modules/
+ node_modules/
+-/.gradle/
+-/build/
++backend/.gradle/
++backend/build/
+ frontend/node_modules/
+ frontend/dist/
+ package-lock.json
+ client/package-lock.json
+ server/package-lock.json
+ 
+ # SSH keys
+ *.pem
+ .mvn/settings.xml
+ key.pem
+ 
+ # System
+ .DS_Store
+ Thumbs.db
+diff --git a/README.md b/README.md
+index f80bb8b2fb0dbf5efe6f03209579ce2e24f33c02..da64c83437cd939b77c4b5c5589afb59cb686dcc 100644
+--- a/README.md
++++ b/README.md
+@@ -1,119 +1,126 @@
+ # Schedule Tracker
+ 
+ ## Настройка окружения
+ 
+ 1. **Java 21**
+    - Установите JDK 21. На Linux можно установить пакет `openjdk-21-jdk`.
+ 2. **Gradle**
+-   - Используйте Gradle 8.14 или запускайте через прилагаемый скрипт `./gradlew`.
++   - Используйте Gradle 8.14 или запускайте через прилагаемый скрипт `./backend/gradlew`.
+ 3. **PostgreSQL**
+    - Приложение ожидает базу `schedule` с пользователем `postgres` и паролем `postgres`.
+    - Быстрый вариант через Docker:
+      ```bash
+      docker run --name schedule-db -p 5432:5432 -e POSTGRES_DB=schedule \
+       -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:15.3
+      ```
+     - В `application.yml` адрес БД задаётся через переменную окружения `DB_HOST`.
+       По умолчанию используется `localhost`. Если профиль `postgres` не активирован,
+       используется встроенная база H2.
+     - Для миграций используется Flyway **11.9.1**, что обеспечивает поддержку
+       PostgreSQL 15.3.
+ 4. **Сборка и запуск**
+-   - Сборка: `./gradlew build`
+-   - Запуск: `./gradlew bootRun`
+-   - Для упрощения можно использовать скрипт `./start.sh`, который
++   - Сборка: `./backend/gradlew build`
++   - Запуск: `./backend/gradlew bootRun`
++   - Для упрощения можно использовать скрипт `./backend/start.sh`, который
+      автоматически вызывает Gradle Wrapper и запускает приложение.
+    - Приложение слушает порт `8080`. Убедитесь, что этот порт свободен
+      перед запуском, иначе старт завершится ошибкой.
+    - При первом запуске Gradle скачает зависимости из Maven Central.
+      Требуется подключение к интернету или локальный кеш артефактов.
+    - В проект подключен модуль `spring-boot-starter-validation`,
+      поэтому запросы валидируются через Bean Validation.
+ 5. **Запуск тестов**
+-   - Выполните `./gradlew test`.
++   - Выполните `./backend/gradlew test`.
+ 
+ 6. **Сборка CSS**
+-   - Для обновления стилей Tailwind выполните `npm run build` (требуется Node.js 18+).
++   - Для обновления стилей Tailwind выполните:
++     ```bash
++     cd backend
++     npm run build
++     cd ..
++     ```
+ 
+ 7. **Прокси**
+    - Для получения зависимостей может потребоваться сетевой прокси.
+      Укажите его хост и порт в переменных окружения
+      `PROXY_HOST` и `PROXY_PORT` (а также `HTTP_PROXY` и `HTTPS_PROXY`
+      вида `http://<host>:<port>`), чтобы Maven и Git могли
+      подключаться к удалённым репозиториям. Если переменные не заданы,
+      прокси не используется.
+   - Для автоматического создания настроек воспользуйтесь скриптом
+     `scripts/setup-proxy.sh`. Он создаёт `.mvn/settings.xml` только при
+     наличии переменных окружения `PROXY_HOST` и `PROXY_PORT`, иначе
+     генерирует пустой файл и прокси не используется. Скрипт также
+     настраивает git при наличии `HTTP_PROXY`/`HTTPS_PROXY`.
+    - Файл `.mvn/jvm.config` по умолчанию пуст, поэтому параметры
+      прокси передаются только через переменные окружения.
+    - Если проект собирается через GitHub Actions, эти значения
+      необходимо задать как секреты репозитория `PROXY_HOST` и
+      `PROXY_PORT`.
+ 
+ ## Запуск в Docker
+ 
+ Приложение использует профиль `postgres`, поэтому его нужно активировать
+ через переменную `SPRING_PROFILES_ACTIVE`. Также контейнеру требуется адрес
+ сервиса PostgreSQL в переменной `DB_HOST`. Если вы создавали контейнер БД по
+ примеру выше, его имя `schedule-db`. Для связи контейнеров понадобится сеть
+ `app-network`; создайте её при необходимости командой `docker network create
+ app-network`. Запуск приложения выглядит так:
+ 
+ ```bash
+ docker run --rm -it --network app-network \
+   -e DB_HOST=schedule-db \
+   -e SPRING_PROFILES_ACTIVE=postgres \
+   --name my-java-app my-java-app
+ ```
+ 
+-Для удобства можно воспользоваться `docker-compose.yml`, который поднимет
+-PostgreSQL, само приложение и Nginx в роли обратного прокси. Перед запуском
+-убедитесь, что в корне проекта есть `app.jar`:
++Для удобства можно воспользоваться `infra/docker-compose.dev.yml`, который
++поднимет PostgreSQL, само приложение и Nginx в роли обратного прокси. Перед
++запуском убедитесь, что в каталоге `backend/` есть `app.jar`:
+ 
+ ```bash
++cd backend
+ ./gradlew build
+ cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
+-docker compose up --build
++cd ..
++docker compose -f infra/docker-compose.dev.yml up --build
+ ```
+ 
+ ### Проверка сервиса
+ После деплоя убедитесь, что контейнеры запущены:
+ ```bash
+ docker compose ps -a
+ ```
+ Если сервис `app` отсутствует или имеет статус `Exited`, убедитесь,
+ что перед сборкой был создан `app.jar`, и просмотрите лог:
+ ```bash
+ docker compose logs app
+ ```
+ Частая причина ошибки 502/503 — приложение не смогло подключиться к базе. Запустите контейнеры повторно:
+ ```bash
+-docker compose up -d
++docker compose -f infra/docker-compose.dev.yml up -d
+ ```
+ 
+ После запуска метрики Nginx доступны на `http://localhost:9113/metrics`.
+ Экспортер считывает данные со страницы `/nginx_status` внутри контейнера.
+ 
+ 
+ 
+ ## Учетные записи
+ 
+ После первого запуска создаются учетные записи менеджера и преподавателя.
+ Параметры входа:
+ - менеджер: `manager`/`manager`
+ - преподаватель: `teacher`/`teacher`
+ 
+ При активном профиле `test` эти пользователи не создаются, что упрощает
+ написание интеграционных тестов.
+ 
+ Новые пользователи могут зарегистрироваться через POST `/api/auth/register`,
+ передав `username`, `password` и опциональное `role` в теле запроса.
+ 
+ ## Веб-интерфейс
+ 
+ Основные страницы располагаются в каталоге `src/main/resources/static` и доступны
+ без авторизации:
+ - `/login` или `/login.html` – форма входа в систему;
+@@ -137,32 +144,32 @@ docker compose up -d
+ Основные эндпоинты:
+ - `POST /api/auth/login` и `POST /api/auth/register`
+ - CRUD для преподавателей `/api/teachers`
+ - CRUD для студентов `/api/students`
+ - CRUD для групп `/api/groups`
+ - Управление слотами преподавателей `/api/time-slots`
+ - Работа с занятиями `/api/lessons` (проверяется наличие слота преподавателя и отсутствие пересечений)
+ - Получение данных пользователя `/api/users`
+ 
+ 
+ ## API документация
+ 
+ После запуска приложения документация Swagger доступна по адресу
+ `/swagger-ui.html`. Там перечислены все доступные REST эндпоинты.
+ 
+ ## CI/CD
+ 
+ Репозиторий содержит workflow `.github/workflows/deploy.yml`, который автоматически деплоит приложение на выделенный VPS при пуше в ветку `main`. Для корректной работы необходимо создать следующие секреты репозитория:
+ 
+ - `VPS_HOST` – адрес сервера;
+ - `VPS_USER` – имя пользователя для подключения;
+ - `VPS_PASSWORD` – пароль пользователя;
+ - `VPS_PORT` – SSH‑порт, если отличается от `22`;
+ - `PROXY_HOST` и `PROXY_PORT` – при необходимости использовать сетевой прокси.
+ 
+-Workflow собирает JAR, копирует его и файлы инфраструктуры на сервер и запускает `docker compose up -d`.
++Workflow собирает JAR, копирует его и файлы инфраструктуры на сервер и запускает `docker compose -f infra/docker-compose.dev.yml up -d`.
+ Сервер должен иметь установленный Docker версии **27.5.1** или новее (API 1.47), так как деплой тестировался на этой версии.
+ После успешного завершения всех проверок Pull Request в `main` автоматически сливается через auto-merge.
+ 
+ 
+ 
+ 
+diff --git a/TASKS.md b/TASKS.md
+index f1b494e80ba7ad45f183298e6c2d24da592c495a..671f6e761ba706d58e8ebaf4a8f0d50b5a9837e6 100644
+--- a/TASKS.md
++++ b/TASKS.md
+@@ -14,73 +14,73 @@
+ | **Schema‑mgt**     | **Flyway 9**                                           | Simple versioned SQL, works well with Postgres features.                                                       |
+ | **Object‑mapping** | **MapStruct 1.6** + **Jakarta Records**                | Typesafe compile‑time mappers.                                                                                 |
+ | **Frontend**       | **React 18 + Vite + TypeScript 5**                     | Fast HMR, tree‑shaking, typed.                                                                                 |
+ | **UI lib**         | **shadcn/ui + Tailwind CSS 3.4**                       | Accessible headless primitives, fast design iterations.                                                        |
+ | **Calendar**       | **FullCalendar 6 — timeGrid**                          | Battle‑tested drag‑n‑drop.                                                                                     |
+ | **Auth**           | **JWT (RS256) + TOTP 2FA**                             | Stateless sessions; native support for Telegram OTP fallback.                                                  |
+ | **Infra**          | **Docker Compose (dev)** → **k3s Helm (prod)**         | Simple local dev; production in‑cluster scaling.                                                               |
+ | **CI/CD**          | **GitHub Actions** → Container registry → Helm promote | Ubiquitous, zero vendor lock‑in.                                                                               |
+ | **Observability**  | **Prometheus + Grafana + Loki**                        | OSS standard stack.                                                                                            |
+ 
+ ---
+ 
+ ## 1  Migration Plan (archive → best‑practice stack)
+ 
+ | ID       | Step                                                                               | Effort | Outcome                                                                        |
+ | -------- | ---------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------ |
+ | **BE‑0** | *Maven → Gradle* automated via `gradle init`, remove `pom.xml`, adjust GH Actions. | 3 h    | Builds green under Gradle Kotlin DSL. ✅ DONE                                          |
+ | **BE‑1** | Remove Lombok                | 5 h    | Replace with Java records / explicit constructors; `./mvnw` deleted. ✅ DONE |
+ | **BE-2** | Upgrade to Java 21 + Spring Boot 3.3 | 2 h | Module path, Jakarta packages. ✅ DONE |
+ | **BE‑3** | Introduce MapStruct mappers                | 2 h    | `*Mapper.java` for DTOs. ✅ DONE |
+ | **BE‑4** | TimeZone refactor                                                                  | 4 h    | Replace `LocalDateTime` with `OffsetDateTime`, store UTC; Flyway `V2__tz.sql`. ✅ DONE |
+ | **FE‑0** | Scaffold React SPA in `frontend/`                | 1 h    | Vite dev server up. ✅ DONE |
+ 
+ ---
+ 
+-## 2  Repository Layout (post‑migration)
++## 2  Repository Layout (post‑migration) ✅ DONE
+ 
+ ```
+ crm-calendar/
+  ├── backend/
+  │    ├── build.gradle.kts          # root Gradle
+  │    ├── settings.gradle.kts
+  │    ├── src/main/java/com/synergycrm/...
+  │    └── src/test/java/...
+  ├── frontend/
+  │    ├── package.json, vite.config.ts, tailwind.config.js
+  │    └── src/...
+  ├── infra/
+  │    ├── docker-compose.dev.yml
+  │    └── k8s/helm/
+  └── docs/
+       ├── ADR‑001_build‑tool.md
+       └── ERD.png
+ ```
+ 
+ ---
+ 
+-## 3  Data Model (definitive)
++## 3  Data Model (definitive) ✅ DONE
+ 
+ ```
+ user(id UUID, email, pwd, role, tz, locale, 2fa_secret, active, created_at)
+ teacher(id UUID PK‑FK→user, hourly_rate_cents, buffer_min)
+ student(id UUID, first_name, last_name, phone, telegram, email, notes)
+ availability_template(id UUID, teacher_id, weekday, start_time, end_time, until_date)
+ availability_exception(id UUID, template_id?, teacher_id, date, reason)
+ time_slot(id UUID, teacher_id, start_ts TIMESTAMPTZ, end_ts TIMESTAMPTZ,
+           status OPEN|BOOKED|BLOCKED, lesson_id UUID?)
+ lesson(id UUID, teacher_id, student_id, start_ts, end_ts, duration_min,
+        status SCHEDULED|COMPLETED|CANCELLED, price_cents, created_by, updated_by, updated_at)
+ notification_template(id UUID, code, lang, subject, body_html)
+ notification_log(id UUID, lesson_id, channel, sent_at, status, read_at, payload_json)
+ audit_log(id bigserial, entity, entity_id, action, old_json, new_json, actor_id, ts)
+ ```
+ 
+ *GIST index*:
+ `CREATE INDEX time_slot_overlap ON time_slot USING GIST (tsrange(start_ts, end_ts));`
+ 
+ ---
+ 
+ ## 4  Backend Implementation Checklist
+ 
+ | # | Task                    | Owner | Est | Details                                                        |
+ | - | ----------------------- | ----- | --- | -------------------------------------------------------------- |
+diff --git a/Dockerfile b/backend/Dockerfile
+similarity index 100%
+rename from Dockerfile
+rename to backend/Dockerfile
+diff --git a/build.gradle.kts b/backend/build.gradle.kts
+similarity index 100%
+rename from build.gradle.kts
+rename to backend/build.gradle.kts
+diff --git a/gradle.properties b/backend/gradle.properties
+similarity index 100%
+rename from gradle.properties
+rename to backend/gradle.properties
+diff --git a/gradle/libs.versions.toml b/backend/gradle/libs.versions.toml
+similarity index 100%
+rename from gradle/libs.versions.toml
+rename to backend/gradle/libs.versions.toml
+diff --git a/gradle/wrapper/gradle-wrapper.jar b/backend/gradle/wrapper/gradle-wrapper.jar
+similarity index 100%
+rename from gradle/wrapper/gradle-wrapper.jar
+rename to backend/gradle/wrapper/gradle-wrapper.jar
+diff --git a/gradle/wrapper/gradle-wrapper.properties b/backend/gradle/wrapper/gradle-wrapper.properties
+similarity index 100%
+rename from gradle/wrapper/gradle-wrapper.properties
+rename to backend/gradle/wrapper/gradle-wrapper.properties
+diff --git a/gradlew b/backend/gradlew
+similarity index 100%
+rename from gradlew
+rename to backend/gradlew
+diff --git a/gradlew.bat b/backend/gradlew.bat
+similarity index 100%
+rename from gradlew.bat
+rename to backend/gradlew.bat
+diff --git a/package.json b/backend/package.json
+similarity index 100%
+rename from package.json
+rename to backend/package.json
+diff --git a/settings.gradle.kts b/backend/settings.gradle.kts
+similarity index 100%
+rename from settings.gradle.kts
+rename to backend/settings.gradle.kts
+diff --git a/src/main/java/com/example/scheduletracker/ScheduleTrackerApplication.java b/backend/src/main/java/com/example/scheduletracker/ScheduleTrackerApplication.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/ScheduleTrackerApplication.java
+rename to backend/src/main/java/com/example/scheduletracker/ScheduleTrackerApplication.java
+diff --git a/src/main/java/com/example/scheduletracker/config/DataInitializer.java b/backend/src/main/java/com/example/scheduletracker/config/DataInitializer.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/config/DataInitializer.java
+rename to backend/src/main/java/com/example/scheduletracker/config/DataInitializer.java
+diff --git a/src/main/java/com/example/scheduletracker/config/SecurityConfig.java b/backend/src/main/java/com/example/scheduletracker/config/SecurityConfig.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/config/SecurityConfig.java
+rename to backend/src/main/java/com/example/scheduletracker/config/SecurityConfig.java
+diff --git a/src/main/java/com/example/scheduletracker/config/jwt/JwtFilter.java b/backend/src/main/java/com/example/scheduletracker/config/jwt/JwtFilter.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/config/jwt/JwtFilter.java
+rename to backend/src/main/java/com/example/scheduletracker/config/jwt/JwtFilter.java
+diff --git a/src/main/java/com/example/scheduletracker/config/jwt/JwtUtils.java b/backend/src/main/java/com/example/scheduletracker/config/jwt/JwtUtils.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/config/jwt/JwtUtils.java
+rename to backend/src/main/java/com/example/scheduletracker/config/jwt/JwtUtils.java
+diff --git a/src/main/java/com/example/scheduletracker/controller/AuthController.java b/backend/src/main/java/com/example/scheduletracker/controller/AuthController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/controller/AuthController.java
+rename to backend/src/main/java/com/example/scheduletracker/controller/AuthController.java
+diff --git a/src/main/java/com/example/scheduletracker/controller/AvailabilityController.java b/backend/src/main/java/com/example/scheduletracker/controller/AvailabilityController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/controller/AvailabilityController.java
+rename to backend/src/main/java/com/example/scheduletracker/controller/AvailabilityController.java
+diff --git a/src/main/java/com/example/scheduletracker/controller/GroupController.java b/backend/src/main/java/com/example/scheduletracker/controller/GroupController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/controller/GroupController.java
+rename to backend/src/main/java/com/example/scheduletracker/controller/GroupController.java
+diff --git a/src/main/java/com/example/scheduletracker/controller/HelloController.java b/backend/src/main/java/com/example/scheduletracker/controller/HelloController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/controller/HelloController.java
+rename to backend/src/main/java/com/example/scheduletracker/controller/HelloController.java
+diff --git a/src/main/java/com/example/scheduletracker/controller/LessonController.java b/backend/src/main/java/com/example/scheduletracker/controller/LessonController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/controller/LessonController.java
+rename to backend/src/main/java/com/example/scheduletracker/controller/LessonController.java
+diff --git a/src/main/java/com/example/scheduletracker/controller/ManagerController.java b/backend/src/main/java/com/example/scheduletracker/controller/ManagerController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/controller/ManagerController.java
+rename to backend/src/main/java/com/example/scheduletracker/controller/ManagerController.java
+diff --git a/src/main/java/com/example/scheduletracker/controller/StudentController.java b/backend/src/main/java/com/example/scheduletracker/controller/StudentController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/controller/StudentController.java
+rename to backend/src/main/java/com/example/scheduletracker/controller/StudentController.java
+diff --git a/src/main/java/com/example/scheduletracker/controller/TeacherController.java b/backend/src/main/java/com/example/scheduletracker/controller/TeacherController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/controller/TeacherController.java
+rename to backend/src/main/java/com/example/scheduletracker/controller/TeacherController.java
+diff --git a/src/main/java/com/example/scheduletracker/controller/TeacherLessonController.java b/backend/src/main/java/com/example/scheduletracker/controller/TeacherLessonController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/controller/TeacherLessonController.java
+rename to backend/src/main/java/com/example/scheduletracker/controller/TeacherLessonController.java
+diff --git a/src/main/java/com/example/scheduletracker/controller/TimeSlotController.java b/backend/src/main/java/com/example/scheduletracker/controller/TimeSlotController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/controller/TimeSlotController.java
+rename to backend/src/main/java/com/example/scheduletracker/controller/TimeSlotController.java
+diff --git a/src/main/java/com/example/scheduletracker/controller/UserController.java b/backend/src/main/java/com/example/scheduletracker/controller/UserController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/controller/UserController.java
+rename to backend/src/main/java/com/example/scheduletracker/controller/UserController.java
+diff --git a/src/main/java/com/example/scheduletracker/dto/JwtResponse.java b/backend/src/main/java/com/example/scheduletracker/dto/JwtResponse.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/dto/JwtResponse.java
+rename to backend/src/main/java/com/example/scheduletracker/dto/JwtResponse.java
+diff --git a/src/main/java/com/example/scheduletracker/dto/LoginRequest.java b/backend/src/main/java/com/example/scheduletracker/dto/LoginRequest.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/dto/LoginRequest.java
+rename to backend/src/main/java/com/example/scheduletracker/dto/LoginRequest.java
+diff --git a/src/main/java/com/example/scheduletracker/dto/SignupRequest.java b/backend/src/main/java/com/example/scheduletracker/dto/SignupRequest.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/dto/SignupRequest.java
+rename to backend/src/main/java/com/example/scheduletracker/dto/SignupRequest.java
+diff --git a/src/main/java/com/example/scheduletracker/dto/UserDto.java b/backend/src/main/java/com/example/scheduletracker/dto/UserDto.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/dto/UserDto.java
+rename to backend/src/main/java/com/example/scheduletracker/dto/UserDto.java
+diff --git a/src/main/java/com/example/scheduletracker/entity/AvailabilityTemplate.java b/backend/src/main/java/com/example/scheduletracker/entity/AvailabilityTemplate.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/entity/AvailabilityTemplate.java
+rename to backend/src/main/java/com/example/scheduletracker/entity/AvailabilityTemplate.java
+diff --git a/src/main/java/com/example/scheduletracker/entity/Group.java b/backend/src/main/java/com/example/scheduletracker/entity/Group.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/entity/Group.java
+rename to backend/src/main/java/com/example/scheduletracker/entity/Group.java
+diff --git a/src/main/java/com/example/scheduletracker/entity/Lesson.java b/backend/src/main/java/com/example/scheduletracker/entity/Lesson.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/entity/Lesson.java
+rename to backend/src/main/java/com/example/scheduletracker/entity/Lesson.java
+diff --git a/src/main/java/com/example/scheduletracker/entity/Student.java b/backend/src/main/java/com/example/scheduletracker/entity/Student.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/entity/Student.java
+rename to backend/src/main/java/com/example/scheduletracker/entity/Student.java
+diff --git a/src/main/java/com/example/scheduletracker/entity/Teacher.java b/backend/src/main/java/com/example/scheduletracker/entity/Teacher.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/entity/Teacher.java
+rename to backend/src/main/java/com/example/scheduletracker/entity/Teacher.java
+diff --git a/src/main/java/com/example/scheduletracker/entity/TeacherStudent.java b/backend/src/main/java/com/example/scheduletracker/entity/TeacherStudent.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/entity/TeacherStudent.java
+rename to backend/src/main/java/com/example/scheduletracker/entity/TeacherStudent.java
+diff --git a/src/main/java/com/example/scheduletracker/entity/TimeSlot.java b/backend/src/main/java/com/example/scheduletracker/entity/TimeSlot.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/entity/TimeSlot.java
+rename to backend/src/main/java/com/example/scheduletracker/entity/TimeSlot.java
+diff --git a/src/main/java/com/example/scheduletracker/entity/User.java b/backend/src/main/java/com/example/scheduletracker/entity/User.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/entity/User.java
+rename to backend/src/main/java/com/example/scheduletracker/entity/User.java
+diff --git a/src/main/java/com/example/scheduletracker/exception/BookingConflictException.java b/backend/src/main/java/com/example/scheduletracker/exception/BookingConflictException.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/exception/BookingConflictException.java
+rename to backend/src/main/java/com/example/scheduletracker/exception/BookingConflictException.java
+diff --git a/src/main/java/com/example/scheduletracker/mapper/UserMapper.java b/backend/src/main/java/com/example/scheduletracker/mapper/UserMapper.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/mapper/UserMapper.java
+rename to backend/src/main/java/com/example/scheduletracker/mapper/UserMapper.java
+diff --git a/src/main/java/com/example/scheduletracker/repository/AvailabilityTemplateRepository.java b/backend/src/main/java/com/example/scheduletracker/repository/AvailabilityTemplateRepository.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/repository/AvailabilityTemplateRepository.java
+rename to backend/src/main/java/com/example/scheduletracker/repository/AvailabilityTemplateRepository.java
+diff --git a/src/main/java/com/example/scheduletracker/repository/GroupRepository.java b/backend/src/main/java/com/example/scheduletracker/repository/GroupRepository.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/repository/GroupRepository.java
+rename to backend/src/main/java/com/example/scheduletracker/repository/GroupRepository.java
+diff --git a/src/main/java/com/example/scheduletracker/repository/LessonRepository.java b/backend/src/main/java/com/example/scheduletracker/repository/LessonRepository.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/repository/LessonRepository.java
+rename to backend/src/main/java/com/example/scheduletracker/repository/LessonRepository.java
+diff --git a/src/main/java/com/example/scheduletracker/repository/StudentRepository.java b/backend/src/main/java/com/example/scheduletracker/repository/StudentRepository.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/repository/StudentRepository.java
+rename to backend/src/main/java/com/example/scheduletracker/repository/StudentRepository.java
+diff --git a/src/main/java/com/example/scheduletracker/repository/TeacherRepository.java b/backend/src/main/java/com/example/scheduletracker/repository/TeacherRepository.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/repository/TeacherRepository.java
+rename to backend/src/main/java/com/example/scheduletracker/repository/TeacherRepository.java
+diff --git a/src/main/java/com/example/scheduletracker/repository/TeacherStudentRepository.java b/backend/src/main/java/com/example/scheduletracker/repository/TeacherStudentRepository.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/repository/TeacherStudentRepository.java
+rename to backend/src/main/java/com/example/scheduletracker/repository/TeacherStudentRepository.java
+diff --git a/src/main/java/com/example/scheduletracker/repository/TimeSlotRepository.java b/backend/src/main/java/com/example/scheduletracker/repository/TimeSlotRepository.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/repository/TimeSlotRepository.java
+rename to backend/src/main/java/com/example/scheduletracker/repository/TimeSlotRepository.java
+diff --git a/src/main/java/com/example/scheduletracker/repository/UserRepository.java b/backend/src/main/java/com/example/scheduletracker/repository/UserRepository.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/repository/UserRepository.java
+rename to backend/src/main/java/com/example/scheduletracker/repository/UserRepository.java
+diff --git a/src/main/java/com/example/scheduletracker/service/AvailabilityService.java b/backend/src/main/java/com/example/scheduletracker/service/AvailabilityService.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/AvailabilityService.java
+rename to backend/src/main/java/com/example/scheduletracker/service/AvailabilityService.java
+diff --git a/src/main/java/com/example/scheduletracker/service/GroupService.java b/backend/src/main/java/com/example/scheduletracker/service/GroupService.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/GroupService.java
+rename to backend/src/main/java/com/example/scheduletracker/service/GroupService.java
+diff --git a/src/main/java/com/example/scheduletracker/service/LessonService.java b/backend/src/main/java/com/example/scheduletracker/service/LessonService.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/LessonService.java
+rename to backend/src/main/java/com/example/scheduletracker/service/LessonService.java
+diff --git a/src/main/java/com/example/scheduletracker/service/NotificationService.java b/backend/src/main/java/com/example/scheduletracker/service/NotificationService.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/NotificationService.java
+rename to backend/src/main/java/com/example/scheduletracker/service/NotificationService.java
+diff --git a/src/main/java/com/example/scheduletracker/service/ReminderService.java b/backend/src/main/java/com/example/scheduletracker/service/ReminderService.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/ReminderService.java
+rename to backend/src/main/java/com/example/scheduletracker/service/ReminderService.java
+diff --git a/src/main/java/com/example/scheduletracker/service/StudentService.java b/backend/src/main/java/com/example/scheduletracker/service/StudentService.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/StudentService.java
+rename to backend/src/main/java/com/example/scheduletracker/service/StudentService.java
+diff --git a/src/main/java/com/example/scheduletracker/service/TeacherService.java b/backend/src/main/java/com/example/scheduletracker/service/TeacherService.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/TeacherService.java
+rename to backend/src/main/java/com/example/scheduletracker/service/TeacherService.java
+diff --git a/src/main/java/com/example/scheduletracker/service/TeacherStudentService.java b/backend/src/main/java/com/example/scheduletracker/service/TeacherStudentService.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/TeacherStudentService.java
+rename to backend/src/main/java/com/example/scheduletracker/service/TeacherStudentService.java
+diff --git a/src/main/java/com/example/scheduletracker/service/TimeSlotService.java b/backend/src/main/java/com/example/scheduletracker/service/TimeSlotService.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/TimeSlotService.java
+rename to backend/src/main/java/com/example/scheduletracker/service/TimeSlotService.java
+diff --git a/src/main/java/com/example/scheduletracker/service/UserService.java b/backend/src/main/java/com/example/scheduletracker/service/UserService.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/UserService.java
+rename to backend/src/main/java/com/example/scheduletracker/service/UserService.java
+diff --git a/src/main/java/com/example/scheduletracker/service/impl/AvailabilityServiceImpl.java b/backend/src/main/java/com/example/scheduletracker/service/impl/AvailabilityServiceImpl.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/impl/AvailabilityServiceImpl.java
+rename to backend/src/main/java/com/example/scheduletracker/service/impl/AvailabilityServiceImpl.java
+diff --git a/src/main/java/com/example/scheduletracker/service/impl/GroupServiceImpl.java b/backend/src/main/java/com/example/scheduletracker/service/impl/GroupServiceImpl.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/impl/GroupServiceImpl.java
+rename to backend/src/main/java/com/example/scheduletracker/service/impl/GroupServiceImpl.java
+diff --git a/src/main/java/com/example/scheduletracker/service/impl/LessonServiceImpl.java b/backend/src/main/java/com/example/scheduletracker/service/impl/LessonServiceImpl.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/impl/LessonServiceImpl.java
+rename to backend/src/main/java/com/example/scheduletracker/service/impl/LessonServiceImpl.java
+diff --git a/src/main/java/com/example/scheduletracker/service/impl/LoggingNotificationService.java b/backend/src/main/java/com/example/scheduletracker/service/impl/LoggingNotificationService.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/impl/LoggingNotificationService.java
+rename to backend/src/main/java/com/example/scheduletracker/service/impl/LoggingNotificationService.java
+diff --git a/src/main/java/com/example/scheduletracker/service/impl/ReminderServiceImpl.java b/backend/src/main/java/com/example/scheduletracker/service/impl/ReminderServiceImpl.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/impl/ReminderServiceImpl.java
+rename to backend/src/main/java/com/example/scheduletracker/service/impl/ReminderServiceImpl.java
+diff --git a/src/main/java/com/example/scheduletracker/service/impl/StudentServiceImpl.java b/backend/src/main/java/com/example/scheduletracker/service/impl/StudentServiceImpl.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/impl/StudentServiceImpl.java
+rename to backend/src/main/java/com/example/scheduletracker/service/impl/StudentServiceImpl.java
+diff --git a/src/main/java/com/example/scheduletracker/service/impl/TeacherServiceImpl.java b/backend/src/main/java/com/example/scheduletracker/service/impl/TeacherServiceImpl.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/impl/TeacherServiceImpl.java
+rename to backend/src/main/java/com/example/scheduletracker/service/impl/TeacherServiceImpl.java
+diff --git a/src/main/java/com/example/scheduletracker/service/impl/TeacherStudentServiceImpl.java b/backend/src/main/java/com/example/scheduletracker/service/impl/TeacherStudentServiceImpl.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/impl/TeacherStudentServiceImpl.java
+rename to backend/src/main/java/com/example/scheduletracker/service/impl/TeacherStudentServiceImpl.java
+diff --git a/src/main/java/com/example/scheduletracker/service/impl/TimeSlotServiceImpl.java b/backend/src/main/java/com/example/scheduletracker/service/impl/TimeSlotServiceImpl.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/impl/TimeSlotServiceImpl.java
+rename to backend/src/main/java/com/example/scheduletracker/service/impl/TimeSlotServiceImpl.java
+diff --git a/src/main/java/com/example/scheduletracker/service/impl/UserDetailsServiceImpl.java b/backend/src/main/java/com/example/scheduletracker/service/impl/UserDetailsServiceImpl.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/impl/UserDetailsServiceImpl.java
+rename to backend/src/main/java/com/example/scheduletracker/service/impl/UserDetailsServiceImpl.java
+diff --git a/src/main/java/com/example/scheduletracker/service/impl/UserServiceImpl.java b/backend/src/main/java/com/example/scheduletracker/service/impl/UserServiceImpl.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/service/impl/UserServiceImpl.java
+rename to backend/src/main/java/com/example/scheduletracker/service/impl/UserServiceImpl.java
+diff --git a/src/main/java/com/example/scheduletracker/web/WebController.java b/backend/src/main/java/com/example/scheduletracker/web/WebController.java
+similarity index 100%
+rename from src/main/java/com/example/scheduletracker/web/WebController.java
+rename to backend/src/main/java/com/example/scheduletracker/web/WebController.java
+diff --git a/src/main/resources/application-h2.yml b/backend/src/main/resources/application-h2.yml
+similarity index 100%
+rename from src/main/resources/application-h2.yml
+rename to backend/src/main/resources/application-h2.yml
+diff --git a/src/main/resources/application-postgres.properties b/backend/src/main/resources/application-postgres.properties
+similarity index 100%
+rename from src/main/resources/application-postgres.properties
+rename to backend/src/main/resources/application-postgres.properties
+diff --git a/src/main/resources/application-postgres.yml b/backend/src/main/resources/application-postgres.yml
+similarity index 100%
+rename from src/main/resources/application-postgres.yml
+rename to backend/src/main/resources/application-postgres.yml
+diff --git a/src/main/resources/application.properties b/backend/src/main/resources/application.properties
+similarity index 100%
+rename from src/main/resources/application.properties
+rename to backend/src/main/resources/application.properties
+diff --git a/src/main/resources/application.yml b/backend/src/main/resources/application.yml
+similarity index 100%
+rename from src/main/resources/application.yml
+rename to backend/src/main/resources/application.yml
+diff --git a/src/main/resources/db/migration/V1__init.sql b/backend/src/main/resources/db/migration/V1__init.sql
+similarity index 100%
+rename from src/main/resources/db/migration/V1__init.sql
+rename to backend/src/main/resources/db/migration/V1__init.sql
+diff --git a/src/main/resources/db/migration/V2__tz.sql b/backend/src/main/resources/db/migration/V2__tz.sql
+similarity index 100%
+rename from src/main/resources/db/migration/V2__tz.sql
+rename to backend/src/main/resources/db/migration/V2__tz.sql
+diff --git a/src/main/resources/db/migration/V3__availability.sql b/backend/src/main/resources/db/migration/V3__availability.sql
+similarity index 100%
+rename from src/main/resources/db/migration/V3__availability.sql
+rename to backend/src/main/resources/db/migration/V3__availability.sql
+diff --git a/src/main/resources/static/index.html b/backend/src/main/resources/static/index.html
+similarity index 100%
+rename from src/main/resources/static/index.html
+rename to backend/src/main/resources/static/index.html
+diff --git a/src/main/resources/static/input.css b/backend/src/main/resources/static/input.css
+similarity index 100%
+rename from src/main/resources/static/input.css
+rename to backend/src/main/resources/static/input.css
+diff --git a/src/main/resources/static/login.html b/backend/src/main/resources/static/login.html
+similarity index 100%
+rename from src/main/resources/static/login.html
+rename to backend/src/main/resources/static/login.html
+diff --git a/src/main/resources/static/manager.html b/backend/src/main/resources/static/manager.html
+similarity index 100%
+rename from src/main/resources/static/manager.html
+rename to backend/src/main/resources/static/manager.html
+diff --git a/src/main/resources/static/students.html b/backend/src/main/resources/static/students.html
+similarity index 100%
+rename from src/main/resources/static/students.html
+rename to backend/src/main/resources/static/students.html
+diff --git a/src/main/resources/static/styles.css b/backend/src/main/resources/static/styles.css
+similarity index 100%
+rename from src/main/resources/static/styles.css
+rename to backend/src/main/resources/static/styles.css
+diff --git a/src/main/resources/static/teacher.html b/backend/src/main/resources/static/teacher.html
+similarity index 100%
+rename from src/main/resources/static/teacher.html
+rename to backend/src/main/resources/static/teacher.html
+diff --git a/src/main/resources/static/teachers.html b/backend/src/main/resources/static/teachers.html
+similarity index 100%
+rename from src/main/resources/static/teachers.html
+rename to backend/src/main/resources/static/teachers.html
+diff --git a/src/main/resources/templates/fragments/footer.html b/backend/src/main/resources/templates/fragments/footer.html
+similarity index 100%
+rename from src/main/resources/templates/fragments/footer.html
+rename to backend/src/main/resources/templates/fragments/footer.html
+diff --git a/src/main/resources/templates/fragments/head.html b/backend/src/main/resources/templates/fragments/head.html
+similarity index 100%
+rename from src/main/resources/templates/fragments/head.html
+rename to backend/src/main/resources/templates/fragments/head.html
+diff --git a/src/main/resources/templates/fragments/navbar.html b/backend/src/main/resources/templates/fragments/navbar.html
+similarity index 100%
+rename from src/main/resources/templates/fragments/navbar.html
+rename to backend/src/main/resources/templates/fragments/navbar.html
+diff --git a/src/main/resources/templates/layout.html b/backend/src/main/resources/templates/layout.html
+similarity index 100%
+rename from src/main/resources/templates/layout.html
+rename to backend/src/main/resources/templates/layout.html
+diff --git a/src/main/resources/templates/login.html b/backend/src/main/resources/templates/login.html
+similarity index 100%
+rename from src/main/resources/templates/login.html
+rename to backend/src/main/resources/templates/login.html
+diff --git a/src/main/resources/templates/manager.html b/backend/src/main/resources/templates/manager.html
+similarity index 100%
+rename from src/main/resources/templates/manager.html
+rename to backend/src/main/resources/templates/manager.html
+diff --git a/src/main/resources/templates/profile.html b/backend/src/main/resources/templates/profile.html
+similarity index 100%
+rename from src/main/resources/templates/profile.html
+rename to backend/src/main/resources/templates/profile.html
+diff --git a/src/main/resources/templates/students.html b/backend/src/main/resources/templates/students.html
+similarity index 100%
+rename from src/main/resources/templates/students.html
+rename to backend/src/main/resources/templates/students.html
+diff --git a/src/main/resources/templates/teacher.html b/backend/src/main/resources/templates/teacher.html
+similarity index 100%
+rename from src/main/resources/templates/teacher.html
+rename to backend/src/main/resources/templates/teacher.html
+diff --git a/src/main/resources/templates/teachers.html b/backend/src/main/resources/templates/teachers.html
+similarity index 100%
+rename from src/main/resources/templates/teachers.html
+rename to backend/src/main/resources/templates/teachers.html
+diff --git a/src/test/java/com/example/scheduletracker/FlywaySchemaTest.java b/backend/src/test/java/com/example/scheduletracker/FlywaySchemaTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/FlywaySchemaTest.java
+rename to backend/src/test/java/com/example/scheduletracker/FlywaySchemaTest.java
+diff --git a/src/test/java/com/example/scheduletracker/config/DataInitializerTest.java b/backend/src/test/java/com/example/scheduletracker/config/DataInitializerTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/config/DataInitializerTest.java
+rename to backend/src/test/java/com/example/scheduletracker/config/DataInitializerTest.java
+diff --git a/src/test/java/com/example/scheduletracker/config/jwt/JwtUtilsTest.java b/backend/src/test/java/com/example/scheduletracker/config/jwt/JwtUtilsTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/config/jwt/JwtUtilsTest.java
+rename to backend/src/test/java/com/example/scheduletracker/config/jwt/JwtUtilsTest.java
+diff --git a/src/test/java/com/example/scheduletracker/controller/AuthControllerTest.java b/backend/src/test/java/com/example/scheduletracker/controller/AuthControllerTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/controller/AuthControllerTest.java
+rename to backend/src/test/java/com/example/scheduletracker/controller/AuthControllerTest.java
+diff --git a/src/test/java/com/example/scheduletracker/controller/GroupControllerTest.java b/backend/src/test/java/com/example/scheduletracker/controller/GroupControllerTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/controller/GroupControllerTest.java
+rename to backend/src/test/java/com/example/scheduletracker/controller/GroupControllerTest.java
+diff --git a/src/test/java/com/example/scheduletracker/controller/HelloControllerTest.java b/backend/src/test/java/com/example/scheduletracker/controller/HelloControllerTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/controller/HelloControllerTest.java
+rename to backend/src/test/java/com/example/scheduletracker/controller/HelloControllerTest.java
+diff --git a/src/test/java/com/example/scheduletracker/controller/ManagerControllerTest.java b/backend/src/test/java/com/example/scheduletracker/controller/ManagerControllerTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/controller/ManagerControllerTest.java
+rename to backend/src/test/java/com/example/scheduletracker/controller/ManagerControllerTest.java
+diff --git a/src/test/java/com/example/scheduletracker/controller/StudentControllerSecurityTest.java b/backend/src/test/java/com/example/scheduletracker/controller/StudentControllerSecurityTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/controller/StudentControllerSecurityTest.java
+rename to backend/src/test/java/com/example/scheduletracker/controller/StudentControllerSecurityTest.java
+diff --git a/src/test/java/com/example/scheduletracker/controller/TeacherControllerSecurityTest.java b/backend/src/test/java/com/example/scheduletracker/controller/TeacherControllerSecurityTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/controller/TeacherControllerSecurityTest.java
+rename to backend/src/test/java/com/example/scheduletracker/controller/TeacherControllerSecurityTest.java
+diff --git a/src/test/java/com/example/scheduletracker/controller/UserControllerSecurityTest.java b/backend/src/test/java/com/example/scheduletracker/controller/UserControllerSecurityTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/controller/UserControllerSecurityTest.java
+rename to backend/src/test/java/com/example/scheduletracker/controller/UserControllerSecurityTest.java
+diff --git a/src/test/java/com/example/scheduletracker/service/AvailabilityServiceImplTest.java b/backend/src/test/java/com/example/scheduletracker/service/AvailabilityServiceImplTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/service/AvailabilityServiceImplTest.java
+rename to backend/src/test/java/com/example/scheduletracker/service/AvailabilityServiceImplTest.java
+diff --git a/src/test/java/com/example/scheduletracker/service/GroupServiceImplTest.java b/backend/src/test/java/com/example/scheduletracker/service/GroupServiceImplTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/service/GroupServiceImplTest.java
+rename to backend/src/test/java/com/example/scheduletracker/service/GroupServiceImplTest.java
+diff --git a/src/test/java/com/example/scheduletracker/service/LessonServiceImplTest.java b/backend/src/test/java/com/example/scheduletracker/service/LessonServiceImplTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/service/LessonServiceImplTest.java
+rename to backend/src/test/java/com/example/scheduletracker/service/LessonServiceImplTest.java
+diff --git a/src/test/java/com/example/scheduletracker/service/StudentServiceImplTest.java b/backend/src/test/java/com/example/scheduletracker/service/StudentServiceImplTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/service/StudentServiceImplTest.java
+rename to backend/src/test/java/com/example/scheduletracker/service/StudentServiceImplTest.java
+diff --git a/src/test/java/com/example/scheduletracker/service/TeacherServiceImplTest.java b/backend/src/test/java/com/example/scheduletracker/service/TeacherServiceImplTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/service/TeacherServiceImplTest.java
+rename to backend/src/test/java/com/example/scheduletracker/service/TeacherServiceImplTest.java
+diff --git a/src/test/java/com/example/scheduletracker/service/TeacherStudentServiceImplTest.java b/backend/src/test/java/com/example/scheduletracker/service/TeacherStudentServiceImplTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/service/TeacherStudentServiceImplTest.java
+rename to backend/src/test/java/com/example/scheduletracker/service/TeacherStudentServiceImplTest.java
+diff --git a/src/test/java/com/example/scheduletracker/service/TimeSlotServiceImplTest.java b/backend/src/test/java/com/example/scheduletracker/service/TimeSlotServiceImplTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/service/TimeSlotServiceImplTest.java
+rename to backend/src/test/java/com/example/scheduletracker/service/TimeSlotServiceImplTest.java
+diff --git a/src/test/java/com/example/scheduletracker/service/UserServiceImplTest.java b/backend/src/test/java/com/example/scheduletracker/service/UserServiceImplTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/service/UserServiceImplTest.java
+rename to backend/src/test/java/com/example/scheduletracker/service/UserServiceImplTest.java
+diff --git a/src/test/java/com/example/scheduletracker/service/reminder/ReminderServiceImplTest.java b/backend/src/test/java/com/example/scheduletracker/service/reminder/ReminderServiceImplTest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/service/reminder/ReminderServiceImplTest.java
+rename to backend/src/test/java/com/example/scheduletracker/service/reminder/ReminderServiceImplTest.java
+diff --git a/src/test/java/com/example/scheduletracker/ui/LoginUITest.java b/backend/src/test/java/com/example/scheduletracker/ui/LoginUITest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/ui/LoginUITest.java
+rename to backend/src/test/java/com/example/scheduletracker/ui/LoginUITest.java
+diff --git a/src/test/java/com/example/scheduletracker/ui/ManagerDashboardUITest.java b/backend/src/test/java/com/example/scheduletracker/ui/ManagerDashboardUITest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/ui/ManagerDashboardUITest.java
+rename to backend/src/test/java/com/example/scheduletracker/ui/ManagerDashboardUITest.java
+diff --git a/src/test/java/com/example/scheduletracker/ui/RoleAccessUITest.java b/backend/src/test/java/com/example/scheduletracker/ui/RoleAccessUITest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/ui/RoleAccessUITest.java
+rename to backend/src/test/java/com/example/scheduletracker/ui/RoleAccessUITest.java
+diff --git a/src/test/java/com/example/scheduletracker/ui/TeacherDashboardUITest.java b/backend/src/test/java/com/example/scheduletracker/ui/TeacherDashboardUITest.java
+similarity index 100%
+rename from src/test/java/com/example/scheduletracker/ui/TeacherDashboardUITest.java
+rename to backend/src/test/java/com/example/scheduletracker/ui/TeacherDashboardUITest.java
+diff --git a/src/test/resources/application-test.properties b/backend/src/test/resources/application-test.properties
+similarity index 100%
+rename from src/test/resources/application-test.properties
+rename to backend/src/test/resources/application-test.properties
+diff --git a/start.sh b/backend/start.sh
+similarity index 100%
+rename from start.sh
+rename to backend/start.sh
+diff --git a/tailwind.config.js b/backend/tailwind.config.js
+similarity index 100%
+rename from tailwind.config.js
+rename to backend/tailwind.config.js
+diff --git a/wait-for-db.sh b/backend/wait-for-db.sh
+similarity index 100%
+rename from wait-for-db.sh
+rename to backend/wait-for-db.sh
+diff --git a/docs/ERD.png b/docs/ERD.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..d3d1013f06c73ccab3a3b733f014b19cbea93741
+GIT binary patch
+literal 68
+zcmeAS@N?(olHy`uVBq!ia0vp^j3CUx0wlM}@Gt=>Zci7-kcwN$fBwreFf%hT%-_D_
+Q9Z;CT)78&qol`;+0E^!ay#N3J
+
+literal 0
+HcmV?d00001
+
+diff --git a/docker-compose.yml b/infra/docker-compose.dev.yml
+similarity index 100%
+rename from docker-compose.yml
+rename to infra/docker-compose.dev.yml
+diff --git a/infra/k8s/helm/README.md b/infra/k8s/helm/README.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..98bc48b319cfce63397bf62325243b9e10b2a1b8
+--- /dev/null
++++ b/infra/k8s/helm/README.md
+@@ -0,0 +1 @@
++Helm charts for production deployment.
+diff --git a/nginx/certs/README.md b/infra/nginx/certs/README.md
+similarity index 100%
+rename from nginx/certs/README.md
+rename to infra/nginx/certs/README.md
+diff --git a/nginx/nginx.conf b/infra/nginx/nginx.conf
+similarity index 100%
+rename from nginx/nginx.conf
+rename to infra/nginx/nginx.conf
+diff --git a/nginx/nginx.conf.template b/infra/nginx/nginx.conf.template
+similarity index 100%
+rename from nginx/nginx.conf.template
+rename to infra/nginx/nginx.conf.template
+diff --git a/scripts/render-nginx.sh b/scripts/render-nginx.sh
+index 38ee85a9a873e8a2733cd6fa05e6f76e0f32bc7b..1b6bba9626462bca46a9a8ce33f87bd5c216e907 100755
+--- a/scripts/render-nginx.sh
++++ b/scripts/render-nginx.sh
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env sh
+ set -e
+ : "${APP_HOST:?APP_HOST is required}"
+ : "${APP_PORT:?APP_PORT is required}"
+ 
+-envsubst '${APP_HOST} ${APP_PORT}' < nginx/nginx.conf.template > nginx/nginx.conf
++envsubst '${APP_HOST} ${APP_PORT}' < infra/nginx/nginx.conf.template > infra/nginx/nginx.conf
