@@ -47,12 +47,10 @@ public class AuthController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
     String roleName = Optional.ofNullable(req.role()).orElse("STUDENT");
-    User user =
-        User.builder()
-            .username(username)
-            .password(req.password())
-            .role(User.Role.valueOf(roleName.toUpperCase()))
-            .build();
+    User user = new User();
+    user.setUsername(username);
+    user.setPassword(req.password());
+    user.setRole(User.Role.valueOf(roleName.toUpperCase()));
     userService.save(user);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }

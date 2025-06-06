@@ -33,29 +33,15 @@ class LessonServiceImplTest {
   @BeforeEach
   void setup() {
     service = new LessonServiceImpl(repo, slotRepo);
-    t1 = Teacher.builder().id(1L).name("T1").build();
-    t2 = Teacher.builder().id(2L).name("T2").build();
-    g1 = Group.builder().id(1L).name("G1").build();
+    t1 = new Teacher(1L, "T1", null);
+    t2 = new Teacher(2L, "T2", null);
+    g1 = new Group(1L, "G1", null);
   }
 
   @Test
   void searchByTeacherFiltersResults() {
-    Lesson l1 =
-        Lesson.builder()
-            .id(1L)
-            .teacher(t1)
-            .group(g1)
-            .dateTime(LocalDateTime.now())
-            .duration(60)
-            .build();
-    Lesson l2 =
-        Lesson.builder()
-            .id(2L)
-            .teacher(t2)
-            .group(g1)
-            .dateTime(LocalDateTime.now())
-            .duration(60)
-            .build();
+    Lesson l1 = new Lesson(1L, LocalDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
+    Lesson l2 = new Lesson(2L, LocalDateTime.now(), 60, Lesson.Status.SCHEDULED, t2, g1);
     when(repo.findAll()).thenReturn(List.of(l1, l2));
 
     List<Lesson> result = service.search(null, null, 1L, null);
@@ -66,15 +52,7 @@ class LessonServiceImplTest {
 
   @Test
   void updateStatusChangesEntity() {
-    Lesson lesson =
-        Lesson.builder()
-            .id(1L)
-            .teacher(t1)
-            .group(g1)
-            .dateTime(LocalDateTime.now())
-            .duration(60)
-            .status(Lesson.Status.SCHEDULED)
-            .build();
+    Lesson lesson = new Lesson(1L, LocalDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
     when(repo.findById(1L)).thenReturn(java.util.Optional.of(lesson));
     when(repo.save(any(Lesson.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -85,8 +63,7 @@ class LessonServiceImplTest {
 
   @Test
   void saveOutsideSlotThrows() {
-    Lesson lesson =
-        Lesson.builder().teacher(t1).group(g1).dateTime(LocalDateTime.now()).duration(60).build();
+    Lesson lesson = new Lesson(null, LocalDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
     when(slotRepo.findByTeacher(t1)).thenReturn(List.of());
 
     assertThrows(IllegalArgumentException.class, () -> service.save(lesson));
@@ -95,19 +72,12 @@ class LessonServiceImplTest {
   @Test
   void saveOverlappingThrows() {
     LocalDateTime dt = LocalDateTime.now();
-    TimeSlot slot =
-        TimeSlot.builder()
-            .teacher(t1)
-            .start(dt.minusMinutes(30))
-            .endTime(dt.plusMinutes(90))
-            .build();
+    TimeSlot slot = new TimeSlot(null, t1, dt.minusMinutes(30), dt.plusMinutes(90));
     when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
-    Lesson existing =
-        Lesson.builder().id(2L).teacher(t1).group(g1).dateTime(dt).duration(60).build();
+    Lesson existing = new Lesson(2L, dt, 60, Lesson.Status.SCHEDULED, t1, g1);
     when(repo.findByTeacher(t1)).thenReturn(List.of(existing));
 
-    Lesson newLesson =
-        Lesson.builder().teacher(t1).group(g1).dateTime(dt.plusMinutes(30)).duration(60).build();
+    Lesson newLesson = new Lesson(null, dt.plusMinutes(30), 60, Lesson.Status.SCHEDULED, t1, g1);
 
     assertThrows(IllegalStateException.class, () -> service.save(newLesson));
   }
@@ -115,17 +85,12 @@ class LessonServiceImplTest {
   @Test
   void saveValidLessonPersists() {
     LocalDateTime dt = LocalDateTime.now();
-    TimeSlot slot =
-        TimeSlot.builder()
-            .teacher(t1)
-            .start(dt.minusMinutes(10))
-            .endTime(dt.plusMinutes(70))
-            .build();
+    TimeSlot slot = new TimeSlot(null, t1, dt.minusMinutes(10), dt.plusMinutes(70));
     when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
     when(repo.findByTeacher(t1)).thenReturn(List.of());
     when(repo.save(any(Lesson.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-    Lesson lesson = Lesson.builder().teacher(t1).group(g1).dateTime(dt).duration(60).build();
+    Lesson lesson = new Lesson(null, dt, 60, Lesson.Status.SCHEDULED, t1, g1);
 
     Lesson saved = service.save(lesson);
     assertEquals(dt, saved.getDateTime());
