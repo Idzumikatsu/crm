@@ -1,72 +1,188 @@
-1. Сбор исходных данных
-1.1 Сформировать ответственного за этап аудита. — выполнено, назначен SRE Lead Ivan Petrov
-1.2 Получить полный перечень внешних и внутренних HTTP/WS/GRPC-эндпоинтов. — выполнено, перечень добавлен в `docs/NGINX_REQUIREMENTS.md`
-1.3 Зафиксировать для каждого эндпоинта метод, URI и тип протокола. — выполнено, см. раздел 1.2–1.3 в `NGINX_REQUIREMENTS.md`
-1.4 Собрать метрики нагрузки (средняя, пиковая, тренд) за последний отчётный период. — выполнено, добавлено в раздел 1.4
-1.5 Уточнить целевые SLA по задержке ответа и уровню доступности. — выполнено, см. раздел 1.5
-1.6 Определить юридические и корпоративные требования к защите данных и логированию. — выполнено, см. раздел 1.6
-1.7 Зафиксировать текущее место завершения TLS-шифрования. — выполнено, см. раздел 1.7
-1.8 Согласовать распределение обязанностей между NGINX и приложением (кеш, SSL, лимиты, WAF). — выполнено, см. раздел 1.8
-1.9 Консолидировать все выводы в единый документ «NGINX Requirements». — выполнено, документ обновлён
+**CRM Calendar – Implementation Blueprint *v0.4 (Best‑Practice Refresh)***
+*Last updated: 06 Jun 2025 – targets MVP go‑live 16 Jun 2025*
 
-2. Проектная топология
-2.1 Подготовить схему фактических сетевых потоков. — выполнено, см. раздел 2.1 в `NGINX_REQUIREMENTS.md`
-2.2 Принять решение о режиме развёртывания NGINX (отдельный слой, sidecar, DaemonSet). — выполнено, см. раздел 2.2
-2.3 Определить стратегию балансировки трафика между бэкендами. — выполнено, см. раздел 2.3
-2.4 Провести оценку совместимости клиентов с HTTP/2 и, при необходимости, HTTP/3. — выполнено, см. раздел 2.4
-2.5 Зафиксировать политику поэтапных релизов (blue-green, canary). — выполнено, см. раздел 2.5
-2.6 Утвердить целевую архитектурную схему и добавить в дизайн-док. — выполнено, см. `NGINX_DESIGN.md`
+---
 
-3. Производительность и масштабирование
-3.1 Определить требуемое количество рабочих процессов под доступные вычислительные ресурсы. — выполнено, см. раздел 3.1
-3.2 Установить расчётный максимум одновременных соединений. — выполнено, настройка в `nginx.conf`
-3.3 Согласовать политику keep-alive (тайм-ауты, лимиты). — выполнено, см. раздел 3.3
-3.4 Определить, какие типы контента должны сжиматься и каким алгоритмом. — выполнено, см. раздел 3.4
-3.5 Задать предельные значения внутренних тайм-аутов проксирования на основе p99-задержек. — выполнено, см. раздел 3.5
-3.6 Сформировать документ с базовыми производительными ориентирами. — выполнено, см. раздел 3.6
+### 0  Philosophy & Key Technical Choices
 
-4. Безопасность
-4.1 Установить минимально допустимую версию TLS и список приемлемых шифров. — выполнено, обновлён `nginx.conf`, см. раздел 4.1
-4.2 Включить обязательную политику HSTS и проверку статуса сертификатов. — выполнено, добавлен HSTS и OCSP stapling
-4.3 Сконфигурировать ограничения скорости запросов, ориентируясь на собранную статистику. — выполнено, лимит 10 rps в `nginx.conf`
-4.4 Определить набор WAF-правил, охватывающий основные угрозы OWASP Top-10. — выполнено, задействован OWASP CRS
-4.5 Установить допустимые пределы размера тела запроса для разных категорий маршрутов. — выполнено, `client_max_body_size` 1MB
-4.6 Создать контрольный лист проверки безопасности перед выпуском в эксплуатацию. — выполнено, см. `docs/SECURITY_CHECKLIST.md`
+| Layer              | Choice                                                 | Rationale                                                                                                      |
+| ------------------ | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| **Build**          | **Gradle Kotlin DSL**                                  | Fast incremental build, rich plugin ecosystem, Kotlin scripts > XML. We migrate repo from Maven (script BE‑0). |
+| **Language**       | **Java 21** (records, pattern matching)                | Eliminates boilerplate → no Lombok needed.                                                                     |
+| **Framework**      | **Spring Boot 3.3**                                    | Mature, native image ready, Jakarta EE 10.                                                                     |
+| **DB**             | **PostgreSQL 15**                                      | Rich date/time ops (`tstzrange`), GIN, partitioning.                                                           |
+| **Schema‑mgt**     | **Flyway 9**                                           | Simple versioned SQL, works well with Postgres features.                                                       |
+| **Object‑mapping** | **MapStruct 1.6** + **Jakarta Records**                | Typesafe compile‑time mappers.                                                                                 |
+| **Frontend**       | **React 18 + Vite + TypeScript 5**                     | Fast HMR, tree‑shaking, typed.                                                                                 |
+| **UI lib**         | **shadcn/ui + Tailwind CSS 3.4**                       | Accessible headless primitives, fast design iterations.                                                        |
+| **Calendar**       | **FullCalendar 6 — timeGrid**                          | Battle‑tested drag‑n‑drop.                                                                                     |
+| **Auth**           | **JWT (RS256) + TOTP 2FA**                             | Stateless sessions; native support for Telegram OTP fallback.                                                  |
+| **Infra**          | **Docker Compose (dev)** → **k3s Helm (prod)**         | Simple local dev; production in‑cluster scaling.                                                               |
+| **CI/CD**          | **GitHub Actions** → Container registry → Helm promote | Ubiquitous, zero vendor lock‑in.                                                                               |
+| **Observability**  | **Prometheus + Grafana + Loki**                        | OSS standard stack.                                                                                            |
 
-5. Кеширование и статика
-5.1 Классифицировать пути статического контента и динамических API-ресурсов. — выполнено, см. раздел 5.1 в `NGINX_REQUIREMENTS.md`
-5.2 Фиксировать требования к идентификации версионных ассетов (хеш-имена). — выполнено, раздел 5.2
-5.3 Установить сроки кэширования и директивы Cache-Control для статических файлов. — выполнено, раздел 5.3
-5.4 Определить правила кратковременного кеша для публичных GET-запросов. — выполнено, раздел 5.4
-5.5 Спроектировать процесс инвалидирования кеша при обновлениях приложения. — выполнено, раздел 5.5
+---
 
-6. Долгоживущие соединения
-6.1 Выделить перечень эндпоинтов, использующих WebSocket / SSE. — выполнено, см. раздел 6.1
-6.2 Определить требования к тайм-аутам чтения для постоянных соединений. — выполнено, см. раздел 6.2
-6.3 Задать порядок обработки сбоев соединения и повторных подключений. — выполнено, см. раздел 6.3
+## 1  Migration Plan (archive → best‑practice stack)
 
-7. Наблюдаемость и логирование
-7.1 Согласовать унифицированный формат лог-записей (структурированный JSON). — выполнено, см. раздел 7.1
-7.2 Определить канал доставки логов в централизованную систему. — выполнено, см. раздел 7.2
-7.3 Определить список метрик, подлежащих сбору, и метод их экспорта. — выполнено, см. раздел 7.3
-7.4 Сформулировать набор пороговых алертов по ошибкам 5xx, задержкам, отказам upstream. — выполнено, см. раздел 7.4
-7.5 Подготовить типовые сценарии диагностики инцидентов. — выполнено, см. раздел 7.5
+| ID       | Step                                                                               | Effort | Outcome                                                                        |
+| -------- | ---------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------ |
+| **BE‑0** | *Maven → Gradle* automated via `gradle init`, remove `pom.xml`, adjust GH Actions. | 3 h    | Builds green under Gradle Kotlin DSL.                                          |
+| **BE‑1** | Remove Lombok                                                                      | 5 h    | Replace with Java records / explicit constructors; `./mvnw` deleted.           |
+| **BE‑2** | Upgrade to Java 21 + Spring Boot 3.3                                               | 2 h    | Module path, Jakarta packages.                                                 |
+| **BE‑3** | Introduce MapStruct mappers                                                        | 2 h    | `*Mapper.java` for DTOs.                                                       |
+| **BE‑4** | TimeZone refactor                                                                  | 4 h    | Replace `LocalDateTime` with `OffsetDateTime`, store UTC; Flyway `V2__tz.sql`. |
+| **FE‑0** | Scaffold React SPA in `frontend/`                                                  | 1 h    | Vite dev server up.                                                            |
 
-8. Высокая доступность и отказоустойчивость
-8.1 Рассчитать минимально необходимое количество экземпляров NGINX для заданной цели отказоустойчивости. — выполнено, см. `docs/NGINX_HA.md`
-8.2 Установить правила исключения некорректно работающих бэкендов из пула. — выполнено, обновлён `nginx.conf`
-8.3 Определить процедуру плавной перезагрузки конфигурации без прерывания трафика. — выполнено, см. `docs/NGINX_HA.md`
-8.4 Составить план аварийного восстановления с задокументированными целевыми RTO / RPO. — выполнено, см. `docs/NGINX_HA.md`
+---
 
-9. Конвейер поставки и инфраструктура как код
-9.1 Создать репозиторий конфигураций со строгим контролем версий и ревью. — выполнено, каталог `nginx/` хранится в Git, все изменения проходят PR
-9.2 Включить автоматическую валидацию синтаксиса конфигураций в CI-конвейер. — выполнено, добавлен шаг `nginx -t`
-9.3 Шаблонизировать конфигурации, обеспечив единообразие окружений. — выполнено, используется `nginx.conf.template`
-9.4 Определить политику постепенного вывода трафика и критерии автоматического отката. — выполнено, см. `docs/NGINX_DEPLOYMENT.md`
-9.5 Документировать полный процесс доставки изменений. — выполнено, см. `NGINX_DEPLOYMENT.md`
+## 2  Repository Layout (post‑migration)
 
-10. Документация и обучение
-10.1 Организовать централизованное хранилище документации по NGINX внутри проекта. — выполнено, создан `docs/README.md`
-10.2 Подготовить оперативные инструкции (runbook) для типовых сбоев. — выполнено, см. `RUNBOOK_NGINX.md`
-10.3 Разработать обучающие материалы для разработчиков и SRE-команды. — выполнено, см. `NGINX_TRAINING.md`
-10.4 Установить регламент периодического пересмотра и актуализации документации. — выполнено, регламент в `docs/README.md`
+```
+crm-calendar/
+ ├── backend/
+ │    ├── build.gradle.kts          # root Gradle
+ │    ├── settings.gradle.kts
+ │    ├── src/main/java/com/synergycrm/...
+ │    └── src/test/java/...
+ ├── frontend/
+ │    ├── package.json, vite.config.ts, tailwind.config.js
+ │    └── src/...
+ ├── infra/
+ │    ├── docker-compose.dev.yml
+ │    └── k8s/helm/
+ └── docs/
+      ├── ADR‑001_build‑tool.md
+      └── ERD.png
+```
+
+---
+
+## 3  Data Model (definitive)
+
+```
+user(id UUID, email, pwd, role, tz, locale, 2fa_secret, active, created_at)
+teacher(id UUID PK‑FK→user, hourly_rate_cents, buffer_min)
+student(id UUID, first_name, last_name, phone, telegram, email, notes)
+availability_template(id UUID, teacher_id, weekday, start_time, end_time, until_date)
+availability_exception(id UUID, template_id?, teacher_id, date, reason)
+time_slot(id UUID, teacher_id, start_ts TIMESTAMPTZ, end_ts TIMESTAMPTZ,
+          status OPEN|BOOKED|BLOCKED, lesson_id UUID?)
+lesson(id UUID, teacher_id, student_id, start_ts, end_ts, duration_min,
+       status SCHEDULED|COMPLETED|CANCELLED, price_cents, created_by, updated_by, updated_at)
+notification_template(id UUID, code, lang, subject, body_html)
+notification_log(id UUID, lesson_id, channel, sent_at, status, read_at, payload_json)
+audit_log(id bigserial, entity, entity_id, action, old_json, new_json, actor_id, ts)
+```
+
+*GIST index*:
+`CREATE INDEX time_slot_overlap ON time_slot USING GIST (tsrange(start_ts, end_ts));`
+
+---
+
+## 4  Backend Implementation Checklist
+
+| # | Task                    | Owner | Est | Details                                                        |
+| - | ----------------------- | ----- | --- | -------------------------------------------------------------- |
+| 1 | **Availability module** | Codex | 6 h | Service: generate / delete slots; REST: `/templates`, `/slots` |
+| 2 | **Booking service**     | Codex | 5 h | `LessonService.book(...)` with slot lock; 409 on conflict      |
+| 3 | **Reminder engine**     | Codex | 3 h | Quartz per lesson; channels email/TG; payload merge            |
+| 4 | **Analytics API**       | Codex | 4 h | Materialized view, POI XLSX export, Google Sheets push         |
+| 5 | **Security 2FA**        | Codex | 3 h | TOTP secret provisioning, QR gen, login flow                   |
+| 6 | **Audit log AOP**       | Codex | 2 h | `@Track` annotation → diff capture JSON-Patch                  |
+
+*Code stubs for each delivered in `backend/src/main/java/...`*
+
+---
+
+## 5  Frontend Implementation Checklist
+
+| # | Feature                      | Est | Key Components                                                  |
+| - | ---------------------------- | --- | --------------------------------------------------------------- |
+| 1 | Auth & layout                | 3 h | `<AuthGate/>`, `<Sidebar/>`, React Router v6                    |
+| 2 | Teacher calendar             | 4 h | `<TeacherCalendar/>`, FullCalendar, availability template modal |
+| 3 | Manager timeline             | 5 h | `<ManagerCalendar/>` with teacher selector, Lesson modal        |
+| 4 | Student search & CRUD        | 2 h | `<StudentCombobox/>`, `<StudentDialog/>`                        |
+| 5 | Settings (buffer, templates) | 3 h | `<SettingsPage/>`, TipTap editor                                |
+| 6 | Analytics dashboard          | 3 h | React Query fetch → `<LineChart/>` (recharts)                   |
+
+---
+
+## 6  CI/CD (final)
+
+```yaml
+name: build-test-deploy
+on:
+  push:
+    branches: [ main ]
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { java-version: '21', distribution: 'temurin' }
+      - uses: gradle/gradle-build-action@v3
+      - run: ./gradlew test bootBuildImage --imageName=ghcr.io/org/crm-backend:${{ github.sha }}
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: |
+          cd frontend
+          npm ci
+          npm run build
+      - uses: docker/build-push-action@v5
+        with:
+          context: frontend
+          file: infra/Dockerfile.nginx
+          tags: ghcr.io/org/crm-frontend:${{ github.sha }}
+  deploy:
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Helm promote
+        run: helm upgrade --install crm ./infra/k8s -f infra/k8s/values-prod.yaml
+```
+
+---
+
+## 7  Test Strategy
+
+| Layer       | Tool                          | Coverage target                 |
+| ----------- | ----------------------------- | ------------------------------- |
+| Unit        | JUnit5 + Mockito              | 80 % business modules           |
+| Integration | Testcontainers Postgres       | CRUD, overlap guard             |
+| API         | Spring MockMvc + Rest‑Assured | Critical flows                  |
+| E2E         | Cypress                       | Booking scenario, template edit |
+| Load        | k6 (HTTP)                     | p95 < 250 ms @ 2k RPS read      |
+| Security    | OWASP ZAP docker              | nightly scan, 0 blocker issues  |
+
+---
+
+## 8  Sprint Timeline (calendar‑days)
+
+| Day | Deliverable                       | Notes                    |
+| --- | --------------------------------- | ------------------------ |
+| 1   | Repo migration (BE‑0, BE‑1)       | Green build Gradle + J21 |
+| 2‑3 | Availability module (BE‑2, FE‑2)  | Teacher calendar ready   |
+| 4‑5 | Booking flow (BE‑3, FE‑3)         | Manager timeline live    |
+| 6   | Reminder + 2FA (BE‑4, FE‑1 tweak) | E‑mails/TG sending       |
+| 7   | Analytics + export (BE‑5, FE‑6)   | XLSX download works      |
+| 8   | Hardening, tests, ZAP             | 80 % coverage            |
+| 9   | Load test, k3s deploy             | p95 latency check        |
+| 10  | Smoke + stakeholder review        | MVP tag v0.1 prod        |
+
+---
+
+## 9  Open Points to Confirm
+
+1. Hourly rate currency = **RUB**? if multi‑currency needed, add `currency` column in `teacher`.
+2. Data retention: propose 3 years for `audit_log`, 1 year for `notification_log`.
+3. Provide sample RU/EN templates by 09 Jun for Codex seeding.
+
+---
+
+*End of Blueprint v0.4 – ready for Codex execution*
