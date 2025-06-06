@@ -11,7 +11,7 @@ services:
       - "5432:5432"
   app:
     build:
-      context: .
+      context: ..
       dockerfile: backend/Dockerfile
     depends_on:
       - db
@@ -28,7 +28,7 @@ services:
       - app
     restart: unless-stopped
     volumes:
-      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
 
