@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './auth';
 import { AuthGate } from './components/AuthGate';
 import { LoginPage } from './pages/LoginPage';
@@ -6,12 +7,16 @@ import { DashboardPage } from './pages/DashboardPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { TeacherCalendarPage } from './pages/TeacherCalendarPage';
 import { ManagerCalendarPage } from './pages/ManagerCalendarPage';
+import { StudentsPage } from './pages/StudentsPage';
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route
             path="/settings"
@@ -38,6 +43,14 @@ function App() {
             }
           />
           <Route
+            path="/students"
+            element={
+              <AuthGate>
+                <StudentsPage />
+              </AuthGate>
+            }
+          />
+          <Route
             path="/"
             element={
               <AuthGate>
@@ -46,7 +59,8 @@ function App() {
             }
           />
         </Routes>
-      </AuthProvider>
+        </AuthProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   );
 }
