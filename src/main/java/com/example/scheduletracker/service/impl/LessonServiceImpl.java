@@ -1,15 +1,18 @@
 // src/main/java/com/example/scheduletracker/service/impl/LessonServiceImpl.java
 package com.example.scheduletracker.service.impl;
 
+import com.example.scheduletracker.entity.Group;
 import com.example.scheduletracker.entity.Lesson;
 import com.example.scheduletracker.entity.TimeSlot;
 import com.example.scheduletracker.repository.LessonRepository;
 import com.example.scheduletracker.repository.TimeSlotRepository;
 import com.example.scheduletracker.service.LessonService;
+import com.example.scheduletracker.exception.BookingConflictException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LessonServiceImpl implements LessonService {
@@ -49,6 +52,28 @@ public class LessonServiceImpl implements LessonService {
     }
 
     return repo.save(lesson);
+  }
+
+  @Override
+  @Transactional
+  public Lesson book(Long teacherId, Long groupId, OffsetDateTime start, int duration) {
+    var end = start.plusMinutes(duration);
+
+    var slot =
+        slotRepo.findSlotForPeriodLocked(teacherId, start, end)
+            .orElseThrow(() -> new BookingConflictException("slot not available"));
+
+    Lesson lesson =
+        Lesson.builder()
+            .teacher(slot.getTeacher())
+            .group(Group.builder().id(groupId).build())
+            .dateTime(start)
+            .duration(duration)
+            .status(Lesson.Status.SCHEDULED)
+            .build();
+
+    // reuse save checks
+    return save(lesson);
   }
 
   @Override

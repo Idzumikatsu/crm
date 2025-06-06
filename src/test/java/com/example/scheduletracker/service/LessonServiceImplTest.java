@@ -7,11 +7,13 @@ import com.example.scheduletracker.entity.Group;
 import com.example.scheduletracker.entity.Lesson;
 import com.example.scheduletracker.entity.Teacher;
 import com.example.scheduletracker.entity.TimeSlot;
+import com.example.scheduletracker.exception.BookingConflictException;
 import com.example.scheduletracker.repository.LessonRepository;
 import com.example.scheduletracker.repository.TimeSlotRepository;
 import com.example.scheduletracker.service.impl.LessonServiceImpl;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -94,5 +96,28 @@ class LessonServiceImplTest {
 
     Lesson saved = service.save(lesson);
     assertEquals(dt, saved.getDateTime());
+  }
+
+  @Test
+  void bookWhenSlotMissingThrows() {
+    OffsetDateTime dt = OffsetDateTime.now();
+    when(slotRepo.findSlotForPeriodLocked(anyLong(), any(), any())).thenReturn(Optional.empty());
+
+    assertThrows(
+        BookingConflictException.class,
+        () -> service.book(1L, 1L, dt, 60));
+  }
+
+  @Test
+  void bookSuccessPersistsLesson() {
+    OffsetDateTime dt = OffsetDateTime.now();
+    TimeSlot slot = new TimeSlot(1L, t1, dt, dt.plusMinutes(60));
+    when(slotRepo.findSlotForPeriodLocked(eq(1L), any(), any())).thenReturn(Optional.of(slot));
+    when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
+    when(repo.findByTeacher(t1)).thenReturn(List.of());
+    when(repo.save(any(Lesson.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+    Lesson booked = service.book(1L, 1L, dt, 60);
+    assertEquals(dt, booked.getDateTime());
   }
 }

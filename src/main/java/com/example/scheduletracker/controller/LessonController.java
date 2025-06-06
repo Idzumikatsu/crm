@@ -39,7 +39,11 @@ public class LessonController {
 
   @PostMapping
   public Lesson create(@RequestBody Lesson lesson) {
-    return svc.save(lesson);
+    return svc.book(
+        lesson.getTeacher().getId(),
+        lesson.getGroup().getId(),
+        lesson.getDateTime(),
+        lesson.getDuration());
   }
 
   @PutMapping("/{id}")
