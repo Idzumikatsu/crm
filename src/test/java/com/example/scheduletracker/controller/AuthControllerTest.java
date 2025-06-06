@@ -31,8 +31,7 @@ class AuthControllerTest {
     Authentication auth = new UsernamePasswordAuthenticationToken("user", "pass");
     when(authManager.authenticate(any())).thenReturn(auth);
     when(userService.findByUsername("user"))
-        .thenReturn(
-            java.util.Optional.of(User.builder().username("user").role(User.Role.TEACHER).build()));
+        .thenReturn(java.util.Optional.of(new User(null, "user", null, User.Role.TEACHER)));
     when(utils.generateToken(any(), any())).thenReturn("token");
 
     mvc.perform(
@@ -45,7 +44,7 @@ class AuthControllerTest {
   @Test
   void registerCreatesUser() throws Exception {
     when(userService.findByUsername("new")).thenReturn(java.util.Optional.empty());
-    when(userService.save(any())).thenReturn(User.builder().id(1L).build());
+    when(userService.save(any())).thenReturn(new User(1L, "new", "p", User.Role.STUDENT));
 
     mvc.perform(
             post("/api/auth/register")

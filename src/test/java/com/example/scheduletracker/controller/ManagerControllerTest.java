@@ -34,7 +34,7 @@ class ManagerControllerTest {
   @Test
   @DisplayName("GET /api/manager/teachers returns list")
   void teachersList() throws Exception {
-    Teacher t = Teacher.builder().id(1L).name("T1").build();
+    Teacher t = new Teacher(1L, "T1", null);
     when(teacherService.findAll()).thenReturn(List.of(t));
 
     mvc.perform(get("/api/manager/teachers"))
@@ -45,8 +45,8 @@ class ManagerControllerTest {
   @Test
   @DisplayName("POST /api/manager/assign assigns student")
   void assignCreatesRelation() throws Exception {
-    Teacher t = Teacher.builder().id(1L).name("T1").build();
-    Student s = Student.builder().id(2L).name("S1").email("s@e.com").build();
+    Teacher t = new Teacher(1L, "T1", null);
+    Student s = new Student(2L, "S1", "s@e.com");
     when(teacherService.findById(1L)).thenReturn(Optional.of(t));
     when(studentService.findById(2L)).thenReturn(Optional.of(s));
     when(teacherStudentService.save(any())).thenAnswer(inv -> inv.getArgument(0));

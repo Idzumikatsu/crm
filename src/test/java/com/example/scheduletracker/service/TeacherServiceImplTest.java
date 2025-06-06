@@ -29,7 +29,7 @@ class TeacherServiceImplTest {
 
   @Test
   void saveDelegatesToRepo() {
-    Teacher t = Teacher.builder().name("T1").build();
+    Teacher t = new Teacher(null, "T1", null);
     when(repo.save(any(Teacher.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     Teacher saved = service.save(t);
@@ -40,7 +40,7 @@ class TeacherServiceImplTest {
 
   @Test
   void findByIdReturnsData() {
-    Teacher t = Teacher.builder().id(1L).name("T1").build();
+    Teacher t = new Teacher(1L, "T1", null);
     when(repo.findById(1L)).thenReturn(Optional.of(t));
 
     Optional<Teacher> result = service.findById(1L);
@@ -51,7 +51,7 @@ class TeacherServiceImplTest {
 
   @Test
   void findAllReturnsList() {
-    when(repo.findAll()).thenReturn(List.of(Teacher.builder().build()));
+    when(repo.findAll()).thenReturn(List.of(new Teacher()));
 
     List<Teacher> result = service.findAll();
 

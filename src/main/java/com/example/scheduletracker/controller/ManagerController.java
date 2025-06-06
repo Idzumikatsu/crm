@@ -47,11 +47,7 @@ public class ManagerController {
       return ResponseEntity.notFound().build();
     }
     TeacherStudent ts =
-        TeacherStudent.builder()
-            .id(new TeacherStudent.Id(teacherId, studentId))
-            .teacher(teacher)
-            .student(student)
-            .build();
+        new TeacherStudent(new TeacherStudent.Id(teacherId, studentId), teacher, student);
     return ResponseEntity.ok(teacherStudentService.save(ts));
   }
 }

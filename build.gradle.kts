@@ -27,8 +27,6 @@ dependencies {
     implementation(libs.org.springframework.boot.spring.boot.starter.security)
     implementation(libs.org.springframework.boot.spring.boot.starter.validation)
     implementation(libs.io.jsonwebtoken.jjwt.api)
-    compileOnly(libs.org.projectlombok.lombok)
-    annotationProcessor(libs.org.projectlombok.lombok)
     implementation(libs.org.springdoc.springdoc.openapi.starter.webmvc.ui)
     runtimeOnly(libs.io.jsonwebtoken.jjwt.impl)
     runtimeOnly(libs.io.jsonwebtoken.jjwt.jackson)
