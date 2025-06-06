@@ -55,6 +55,7 @@ crm-calendar/
       ├── ADR‑001_build‑tool.md
       └── ERD.png
 ```
+✅ DONE
 
 ---
 
@@ -74,6 +75,7 @@ notification_template(id UUID, code, lang, subject, body_html)
 notification_log(id UUID, lesson_id, channel, sent_at, status, read_at, payload_json)
 audit_log(id bigserial, entity, entity_id, action, old_json, new_json, actor_id, ts)
 ```
+✅ DONE via V4__definitive.sql
 
 *GIST index*:
 `CREATE INDEX time_slot_overlap ON time_slot USING GIST (tsrange(start_ts, end_ts));`
