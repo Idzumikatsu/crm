@@ -5,6 +5,7 @@ import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { TeacherCalendarPage } from './pages/TeacherCalendarPage';
+import { ManagerCalendarPage } from './pages/ManagerCalendarPage';
 
 function App() {
   return (
@@ -25,6 +26,14 @@ function App() {
             element={
               <AuthGate>
                 <TeacherCalendarPage />
+              </AuthGate>
+            }
+          />
+          <Route
+            path="/manager"
+            element={
+              <AuthGate>
+                <ManagerCalendarPage />
               </AuthGate>
             }
           />

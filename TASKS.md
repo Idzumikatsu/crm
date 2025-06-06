@@ -103,7 +103,7 @@ audit_log(id bigserial, entity, entity_id, action, old_json, new_json, actor_id,
 | - | ---------------------------- | --- | --------------------------------------------------------------- |
 | 1 | Auth & layout                | 3 h | `<AuthGate/>`, `<Sidebar/>`, React Router v6 ✅ DONE |
 | 2 | Teacher calendar             | 4 h | `<TeacherCalendar/>`, FullCalendar, availability template modal ✅ DONE |
-| 3 | Manager timeline             | 5 h | `<ManagerCalendar/>` with teacher selector, Lesson modal        |
+| 3 | Manager timeline             | 5 h | `<ManagerCalendar/>` with teacher selector, Lesson modal ✅ DONE |
 | 4 | Student search & CRUD        | 2 h | `<StudentCombobox/>`, `<StudentDialog/>`                        |
 | 5 | Settings (buffer, templates) | 3 h | `<SettingsPage/>`, TipTap editor                                |
 | 6 | Analytics dashboard          | 3 h | React Query fetch → `<LineChart/>` (recharts)                   |
