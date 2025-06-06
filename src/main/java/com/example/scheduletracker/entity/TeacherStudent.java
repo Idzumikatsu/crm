@@ -1,8 +1,6 @@
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
-import java.util.Objects;
 
 /** Assignment of teacher to student. */
 @Entity
@@ -22,8 +20,8 @@ public class TeacherStudent {
 
   public TeacherStudent() {}
 
-  public TeacherStudent(Id id, Teacher teacher, Student student) {
-    this.id = id;
+  public TeacherStudent(Teacher teacher, Student student) {
+    this.id = new Id(teacher.getId(), student.getId());
     this.teacher = teacher;
     this.student = student;
   }
@@ -52,8 +50,42 @@ public class TeacherStudent {
     this.student = student;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+    private Id id;
+    private Teacher teacher;
+    private Student student;
+
+    public Builder id(Id id) {
+      this.id = id;
+      return this;
+    }
+
+    public Builder teacher(Teacher teacher) {
+      this.teacher = teacher;
+      return this;
+    }
+
+    public Builder student(Student student) {
+      this.student = student;
+      return this;
+    }
+
+    public TeacherStudent build() {
+      TeacherStudent ts = new TeacherStudent();
+      ts.id = this.id;
+      ts.teacher = this.teacher;
+      ts.student = this.student;
+      return ts;
+    }
+  }
+
   @Embeddable
-  public static class Id implements Serializable {
+  public static class Id implements java.io.Serializable {
+
     @Column(name = "teacher_id")
     private Long teacherId;
 
@@ -88,12 +120,13 @@ public class TeacherStudent {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
       Id id = (Id) o;
-      return Objects.equals(teacherId, id.teacherId) && Objects.equals(studentId, id.studentId);
+      return java.util.Objects.equals(teacherId, id.teacherId) &&
+             java.util.Objects.equals(studentId, id.studentId);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(teacherId, studentId);
+      return java.util.Objects.hash(teacherId, studentId);
     }
   }
 }

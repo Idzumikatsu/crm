@@ -60,4 +60,33 @@ public class Teacher {
   public void setTeacherStudents(Set<TeacherStudent> teacherStudents) {
     this.teacherStudents = teacherStudents;
   }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+    private Long id;
+    private String name;
+    private String bio;
+
+    public Builder id(Long id) {
+      this.id = id;
+      return this;
+    }
+
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder bio(String bio) {
+      this.bio = bio;
+      return this;
+    }
+
+    public Teacher build() {
+      return new Teacher(id, name, bio);
+    }
+  }
 }

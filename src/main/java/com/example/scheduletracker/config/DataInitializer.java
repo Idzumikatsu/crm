@@ -22,16 +22,20 @@ public class DataInitializer implements ApplicationRunner {
   @Override
   public void run(ApplicationArguments args) {
     if (userRepository.count() == 0) {
-      User manager = new User();
-      manager.setUsername("manager");
-      manager.setPassword(passwordEncoder.encode("manager"));
-      manager.setRole(User.Role.MANAGER);
+      User manager =
+          new User(
+              null,
+              "manager",
+              passwordEncoder.encode("manager"),
+              User.Role.MANAGER);
       userRepository.save(manager);
 
-      User teacher = new User();
-      teacher.setUsername("teacher");
-      teacher.setPassword(passwordEncoder.encode("teacher"));
-      teacher.setRole(User.Role.TEACHER);
+      User teacher =
+          new User(
+              null,
+              "teacher",
+              passwordEncoder.encode("teacher"),
+              User.Role.TEACHER);
       userRepository.save(teacher);
     }
   }

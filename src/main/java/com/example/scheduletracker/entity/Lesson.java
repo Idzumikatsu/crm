@@ -88,6 +88,53 @@ public class Lesson {
     this.group = group;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+    private Long id;
+    private LocalDateTime dateTime;
+    private Integer duration;
+    private Status status = Status.SCHEDULED;
+    private Teacher teacher;
+    private Group group;
+
+    public Builder id(Long id) {
+      this.id = id;
+      return this;
+    }
+
+    public Builder dateTime(LocalDateTime dateTime) {
+      this.dateTime = dateTime;
+      return this;
+    }
+
+    public Builder duration(Integer duration) {
+      this.duration = duration;
+      return this;
+    }
+
+    public Builder status(Status status) {
+      this.status = status;
+      return this;
+    }
+
+    public Builder teacher(Teacher teacher) {
+      this.teacher = teacher;
+      return this;
+    }
+
+    public Builder group(Group group) {
+      this.group = group;
+      return this;
+    }
+
+    public Lesson build() {
+      return new Lesson(id, dateTime, duration, status, teacher, group);
+    }
+  }
+
   public enum Status {
     SCHEDULED,
     CONFIRMED,

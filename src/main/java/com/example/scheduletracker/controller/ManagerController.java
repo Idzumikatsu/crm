@@ -46,8 +46,10 @@ public class ManagerController {
     if (teacher == null || student == null) {
       return ResponseEntity.notFound().build();
     }
-    TeacherStudent ts =
-        new TeacherStudent(new TeacherStudent.Id(teacherId, studentId), teacher, student);
+    TeacherStudent ts = new TeacherStudent();
+    ts.setId(new TeacherStudent.Id(teacherId, studentId));
+    ts.setTeacher(teacher);
+    ts.setStudent(student);
     return ResponseEntity.ok(teacherStudentService.save(ts));
   }
 }

@@ -61,4 +61,39 @@ public class TimeSlot {
   public void setEndTime(LocalDateTime endTime) {
     this.endTime = endTime;
   }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+    private Long id;
+    private Teacher teacher;
+    private LocalDateTime start;
+    private LocalDateTime endTime;
+
+    public Builder id(Long id) {
+      this.id = id;
+      return this;
+    }
+
+    public Builder teacher(Teacher teacher) {
+      this.teacher = teacher;
+      return this;
+    }
+
+    public Builder start(LocalDateTime start) {
+      this.start = start;
+      return this;
+    }
+
+    public Builder endTime(LocalDateTime endTime) {
+      this.endTime = endTime;
+      return this;
+    }
+
+    public TimeSlot build() {
+      return new TimeSlot(id, teacher, start, endTime);
+    }
+  }
 }
