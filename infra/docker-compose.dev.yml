@@ -39,4 +39,4 @@ services:
     command:
       - --nginx.scrape-uri=http://nginx/nginx_status
     ports:
-      - "9113:9113"
+      - "9114:9113"
