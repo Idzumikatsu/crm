@@ -48,11 +48,11 @@ public class AuthController {
     }
     String roleName = Optional.ofNullable(req.role()).orElse("STUDENT");
     User user =
-        User.builder()
-            .username(username)
-            .password(req.password())
-            .role(User.Role.valueOf(roleName.toUpperCase()))
-            .build();
+        new User(
+            null,
+            username,
+            req.password(),
+            User.Role.valueOf(roleName.toUpperCase()));
     userService.save(user);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }

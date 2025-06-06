@@ -23,19 +23,19 @@ public class DataInitializer implements ApplicationRunner {
   public void run(ApplicationArguments args) {
     if (userRepository.count() == 0) {
       User manager =
-          User.builder()
-              .username("manager")
-              .password(passwordEncoder.encode("manager"))
-              .role(User.Role.MANAGER)
-              .build();
+          new User(
+              null,
+              "manager",
+              passwordEncoder.encode("manager"),
+              User.Role.MANAGER);
       userRepository.save(manager);
 
       User teacher =
-          User.builder()
-              .username("teacher")
-              .password(passwordEncoder.encode("teacher"))
-              .role(User.Role.TEACHER)
-              .build();
+          new User(
+              null,
+              "teacher",
+              passwordEncoder.encode("teacher"),
+              User.Role.TEACHER);
       userRepository.save(teacher);
     }
   }
