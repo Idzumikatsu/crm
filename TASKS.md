@@ -101,7 +101,7 @@ audit_log(id bigserial, entity, entity_id, action, old_json, new_json, actor_id,
 
 | # | Feature                      | Est | Key Components                                                  |
 | - | ---------------------------- | --- | --------------------------------------------------------------- |
-| 1 | Auth & layout                | 3 h | `<AuthGate/>`, `<Sidebar/>`, React Router v6                    |
+| 1 | Auth & layout                | 3 h | `<AuthGate/>`, `<Sidebar/>`, React Router v6 ✅ DONE |
 | 2 | Teacher calendar             | 4 h | `<TeacherCalendar/>`, FullCalendar, availability template modal |
 | 3 | Manager timeline             | 5 h | `<ManagerCalendar/>` with teacher selector, Lesson modal        |
 | 4 | Student search & CRUD        | 2 h | `<StudentCombobox/>`, `<StudentDialog/>`                        |
