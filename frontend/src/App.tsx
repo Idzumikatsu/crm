@@ -4,6 +4,7 @@ import { AuthGate } from './components/AuthGate';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { TeacherCalendarPage } from './pages/TeacherCalendarPage';
 
 function App() {
   return (
@@ -16,6 +17,14 @@ function App() {
             element={
               <AuthGate>
                 <SettingsPage />
+              </AuthGate>
+            }
+          />
+          <Route
+            path="/calendar"
+            element={
+              <AuthGate>
+                <TeacherCalendarPage />
               </AuthGate>
             }
           />
