@@ -181,9 +181,9 @@ jobs:
 
 ## 9  Open Points to Confirm
 
-1. Hourly rate currency = **RUB**? if multi‑currency needed, add `currency` column in `teacher`.
-2. Data retention: propose 3 years for `audit_log`, 1 year for `notification_log`.
-3. Provide sample RU/EN templates by 09 Jun for Codex seeding.
+1. Hourly rate currency = **RUB**? if multi‑currency needed, add `currency` column in `teacher`. ✅ DONE
+2. Data retention: propose 3 years for `audit_log`, 1 year for `notification_log`. ✅ DONE
+3. Provide sample RU/EN templates by 09 Jun for Codex seeding. ✅ DONE
 
 ---
 

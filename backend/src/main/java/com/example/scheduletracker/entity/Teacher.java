@@ -18,15 +18,19 @@ public class Teacher {
   @Column(length = 1000)
   private String bio;
 
+  @Column(nullable = false, length = 3)
+  private String currency = "RUB";
+
   @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<TeacherStudent> teacherStudents = new HashSet<>();
 
   public Teacher() {}
 
-  public Teacher(Long id, String name, String bio) {
+  public Teacher(Long id, String name, String bio, String currency) {
     this.id = id;
     this.name = name;
     this.bio = bio;
+    this.currency = currency;
   }
 
   public Long getId() {
@@ -53,6 +57,14 @@ public class Teacher {
     this.bio = bio;
   }
 
+  public String getCurrency() {
+    return currency;
+  }
+
+  public void setCurrency(String currency) {
+    this.currency = currency;
+  }
+
   public Set<TeacherStudent> getTeacherStudents() {
     return teacherStudents;
   }
@@ -69,6 +81,7 @@ public class Teacher {
     private Long id;
     private String name;
     private String bio;
+    private String currency = "RUB";
 
     public Builder id(Long id) {
       this.id = id;
@@ -85,8 +98,13 @@ public class Teacher {
       return this;
     }
 
+    public Builder currency(String currency) {
+      this.currency = currency;
+      return this;
+    }
+
     public Teacher build() {
-      return new Teacher(id, name, bio);
+      return new Teacher(id, name, bio, currency);
     }
   }
 }
