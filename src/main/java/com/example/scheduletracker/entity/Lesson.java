@@ -1,7 +1,7 @@
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /** Lesson entity. */
 @Entity
@@ -12,7 +12,7 @@ public class Lesson {
   private Long id;
 
   @Column(nullable = false)
-  private LocalDateTime dateTime;
+  private OffsetDateTime dateTime;
 
   @Column(nullable = false)
   private Integer duration; // minutes
@@ -31,7 +31,7 @@ public class Lesson {
 
   public Lesson() {}
 
-  public Lesson(Long id, LocalDateTime dateTime, Integer duration, Status status, Teacher teacher, Group group) {
+  public Lesson(Long id, OffsetDateTime dateTime, Integer duration, Status status, Teacher teacher, Group group) {
     this.id = id;
     this.dateTime = dateTime;
     this.duration = duration;
@@ -48,11 +48,11 @@ public class Lesson {
     this.id = id;
   }
 
-  public LocalDateTime getDateTime() {
+  public OffsetDateTime getDateTime() {
     return dateTime;
   }
 
-  public void setDateTime(LocalDateTime dateTime) {
+  public void setDateTime(OffsetDateTime dateTime) {
     this.dateTime = dateTime;
   }
 
@@ -94,7 +94,7 @@ public class Lesson {
 
   public static class Builder {
     private Long id;
-    private LocalDateTime dateTime;
+    private OffsetDateTime dateTime;
     private Integer duration;
     private Status status = Status.SCHEDULED;
     private Teacher teacher;
@@ -105,7 +105,7 @@ public class Lesson {
       return this;
     }
 
-    public Builder dateTime(LocalDateTime dateTime) {
+    public Builder dateTime(OffsetDateTime dateTime) {
       this.dateTime = dateTime;
       return this;
     }

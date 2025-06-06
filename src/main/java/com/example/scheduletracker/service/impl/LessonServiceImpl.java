@@ -6,7 +6,7 @@ import com.example.scheduletracker.entity.TimeSlot;
 import com.example.scheduletracker.repository.LessonRepository;
 import com.example.scheduletracker.repository.TimeSlotRepository;
 import com.example.scheduletracker.service.LessonService;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -67,12 +67,12 @@ public class LessonServiceImpl implements LessonService {
   }
 
   @Override
-  public List<Lesson> findBetween(LocalDateTime from, LocalDateTime to) {
+  public List<Lesson> findBetween(OffsetDateTime from, OffsetDateTime to) {
     return repo.findByDateTimeBetween(from, to);
   }
 
   @Override
-  public List<Lesson> search(LocalDateTime from, LocalDateTime to, Long teacherId, Long groupId) {
+  public List<Lesson> search(OffsetDateTime from, OffsetDateTime to, Long teacherId, Long groupId) {
     return repo.findAll().stream()
         .filter(l -> from == null || !l.getDateTime().isBefore(from))
         .filter(l -> to == null || !l.getDateTime().isAfter(to))

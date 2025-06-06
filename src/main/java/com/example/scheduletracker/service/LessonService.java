@@ -2,7 +2,7 @@
 package com.example.scheduletracker.service;
 
 import com.example.scheduletracker.entity.Lesson;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +15,7 @@ public interface LessonService {
 
   void deleteById(Long id);
 
-  List<Lesson> findBetween(LocalDateTime from, LocalDateTime to);
+  List<Lesson> findBetween(OffsetDateTime from, OffsetDateTime to);
 
   Lesson updateStatus(Long id, Lesson.Status status);
 
@@ -28,5 +28,5 @@ public interface LessonService {
    * @param groupId filter by group id
    * @return list of lessons matching all provided filters
    */
-  List<Lesson> search(LocalDateTime from, LocalDateTime to, Long teacherId, Long groupId);
+  List<Lesson> search(OffsetDateTime from, OffsetDateTime to, Long teacherId, Long groupId);
 }
