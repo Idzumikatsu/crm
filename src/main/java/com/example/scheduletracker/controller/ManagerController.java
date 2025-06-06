@@ -7,19 +7,26 @@ import com.example.scheduletracker.service.StudentService;
 import com.example.scheduletracker.service.TeacherService;
 import com.example.scheduletracker.service.TeacherStudentService;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/manager")
-@RequiredArgsConstructor
 @PreAuthorize("hasRole('MANAGER')")
 public class ManagerController {
   private final TeacherService teacherService;
   private final StudentService studentService;
   private final TeacherStudentService teacherStudentService;
+
+  public ManagerController(
+      TeacherService teacherService,
+      StudentService studentService,
+      TeacherStudentService teacherStudentService) {
+    this.teacherService = teacherService;
+    this.studentService = studentService;
+    this.teacherStudentService = teacherStudentService;
+  }
 
   @GetMapping("/teachers")
   public List<Teacher> teachers() {

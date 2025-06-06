@@ -5,15 +5,18 @@ import com.example.scheduletracker.entity.User;
 import com.example.scheduletracker.repository.UserRepository;
 import com.example.scheduletracker.service.UserService;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
   private final UserRepository repo;
   private final PasswordEncoder passwordEncoder;
+
+  public UserServiceImpl(UserRepository repo, PasswordEncoder passwordEncoder) {
+    this.repo = repo;
+    this.passwordEncoder = passwordEncoder;
+  }
 
   @Override
   public User save(User user) {

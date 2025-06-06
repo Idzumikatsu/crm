@@ -1,9 +1,4 @@
 package com.example.scheduletracker.dto;
 
-import lombok.Data;
-
-@Data
-public class LoginRequest {
-  private String username;
-  private String password;
-}
+/** Credentials provided by a user when logging in. */
+public record LoginRequest(String username, String password) {}

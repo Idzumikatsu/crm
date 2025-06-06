@@ -3,17 +3,19 @@ package com.example.scheduletracker.controller;
 import com.example.scheduletracker.entity.Lesson;
 import com.example.scheduletracker.service.LessonService;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/teacher/lessons")
-@RequiredArgsConstructor
 @PreAuthorize("hasRole('TEACHER')")
 public class TeacherLessonController {
   private final LessonService svc;
+
+  public TeacherLessonController(LessonService svc) {
+    this.svc = svc;
+  }
 
   @GetMapping
   public List<Lesson> list(@RequestParam Long teacherId) {

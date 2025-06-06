@@ -1,10 +1,4 @@
 package com.example.scheduletracker.dto;
 
-import lombok.Data;
-
-@Data
-public class SignupRequest {
-  private String username;
-  private String password;
-  private String role;
-}
+/** Payload for user registration. */
+public record SignupRequest(String username, String password, String role) {}

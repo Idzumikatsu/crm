@@ -1,12 +1,4 @@
 package com.example.scheduletracker.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
-public class JwtResponse {
-  private String token;
-  private String username;
-  private String role;
-}
+/** Simple DTO returned after successful authentication. */
+public record JwtResponse(String token, String username, String role) {}

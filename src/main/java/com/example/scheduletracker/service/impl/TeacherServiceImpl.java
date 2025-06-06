@@ -6,13 +6,15 @@ import com.example.scheduletracker.repository.TeacherRepository;
 import com.example.scheduletracker.service.TeacherService;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
   private final TeacherRepository repo;
+
+  public TeacherServiceImpl(TeacherRepository repo) {
+    this.repo = repo;
+  }
 
   @Override
   public Teacher save(Teacher teacher) {

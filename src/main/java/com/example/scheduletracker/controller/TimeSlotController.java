@@ -3,15 +3,17 @@ package com.example.scheduletracker.controller;
 import com.example.scheduletracker.entity.TimeSlot;
 import com.example.scheduletracker.service.TimeSlotService;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/time-slots")
-@RequiredArgsConstructor
 public class TimeSlotController {
   private final TimeSlotService svc;
+
+  public TimeSlotController(TimeSlotService svc) {
+    this.svc = svc;
+  }
 
   @GetMapping
   public List<TimeSlot> all(@RequestParam(required = false) Long teacherId) {
