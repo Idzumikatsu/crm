@@ -100,7 +100,7 @@ jobs:
         # port:     ${{ secrets.VPS_PORT }}
         source:     backend/build/app.jar
         target:     /root/myapp
-        strip_components: 1
+        strip_components: 2
 
     # 8. Собираем Docker-образ и перезапускаем контейнер через SSH
     - name: Docker Compose up
