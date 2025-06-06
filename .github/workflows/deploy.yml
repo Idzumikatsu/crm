@@ -53,11 +53,12 @@ jobs:
 
     # Validate NGINX configuration syntax
     - name: Validate NGINX config
-      run: docker run --rm \
-        --add-host app:127.0.0.1 \
-        -v ${{ github.workspace }}/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
-        -v ${{ github.workspace }}/nginx/certs:/etc/nginx/certs:ro \
-        nginx:1.26 nginx -t -c /etc/nginx/nginx.conf
+      run: |
+        docker run --rm \
+          --add-host app:127.0.0.1 \
+          -v ${{ github.workspace }}/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+          -v ${{ github.workspace }}/nginx/certs:/etc/nginx/certs:ro \
+          nginx:1.26 nginx -t -c /etc/nginx/nginx.conf
 
     # 6. Копируем Dockerfile и docker-compose.yml на VPS (в корень /root/myapp)
     - name: Copy infra files to VPS
