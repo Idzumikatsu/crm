@@ -41,9 +41,18 @@ jobs:
     - name: Prepare artifact
       run: cp target/*.jar target/app.jar
 
+    # Render environment-specific nginx.conf
+    - name: Render NGINX config
+      run: |
+        APP_HOST=app APP_PORT=8080 ./scripts/render-nginx.sh
+
+    # Validate NGINX configuration syntax
+    - name: Validate NGINX config
+      run: docker run --rm -v ${{ github.workspace }}/nginx:/etc/nginx:ro nginx:1.26 nginx -t
+
     # 6. Копируем Dockerfile и docker-compose.yml на VPS (в корень /root/myapp)
     - name: Copy infra files to VPS
-      if: ${{ hashFiles('Dockerfile', 'docker-compose.yml', 'nginx/nginx.conf') != '' }}
+      if: ${{ hashFiles('Dockerfile', 'docker-compose.yml', 'nginx/nginx.conf', 'nginx/nginx.conf.template') != '' }}
       uses: appleboy/scp-action@v0.1.4
       with:
         host:       ${{ secrets.VPS_HOST }}
