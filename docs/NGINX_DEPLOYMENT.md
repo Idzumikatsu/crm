@@ -17,3 +17,4 @@ Deployments start with one instance receiving a portion of traffic while the pre
 3. `docker compose up -d` rebuilds containers.
 4. After success, traffic is gradually switched according to the strategy above.
 
+5. When all checks pass the pull request is auto-merged.

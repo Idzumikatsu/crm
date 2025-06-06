@@ -1,0 +1,21 @@
+name: Auto Merge PR
+
+on:
+  workflow_run:
+    workflows: ["Deploy to VPS"]
+    types:
+      - completed
+
+jobs:
+  enable-auto-merge:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.pull_requests[0]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable PR auto-merge
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ github.event.workflow_run.pull_requests[0].number }}
+          merge-method: squash
