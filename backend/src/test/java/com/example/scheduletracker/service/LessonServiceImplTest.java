@@ -35,8 +35,8 @@ class LessonServiceImplTest {
   @BeforeEach
   void setup() {
     service = new LessonServiceImpl(repo, slotRepo);
-    t1 = new Teacher(1L, "T1", null);
-    t2 = new Teacher(2L, "T2", null);
+    t1 = new Teacher(1L, "T1", null, "RUB");
+    t2 = new Teacher(2L, "T2", null, "RUB");
     g1 = new Group(1L, "G1", null);
   }
 

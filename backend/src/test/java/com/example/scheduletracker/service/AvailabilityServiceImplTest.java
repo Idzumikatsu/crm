@@ -40,7 +40,7 @@ class AvailabilityServiceImplTest {
 
   @Test
   void generateSlotsCreatesSlots() {
-    Teacher t = new Teacher(1L, "T", null);
+    Teacher t = new Teacher(1L, "T", null, "RUB");
     AvailabilityTemplate tpl =
         new AvailabilityTemplate(
             1L, t, DayOfWeek.MONDAY, LocalTime.of(10, 0), LocalTime.of(11, 0), null);
@@ -58,7 +58,7 @@ class AvailabilityServiceImplTest {
 
   @Test
   void deleteSlotsRemovesFutureSlots() {
-    Teacher t = new Teacher(1L, "T", null);
+    Teacher t = new Teacher(1L, "T", null, "RUB");
     TimeSlot future =
         new TimeSlot(
             1L,

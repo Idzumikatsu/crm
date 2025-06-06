@@ -41,7 +41,7 @@ class TimeSlotServiceImplTest {
 
   @Test
   void findByTeacherIdReturnsRepoData() {
-    Teacher t = new Teacher(1L, "T1", null);
+    Teacher t = new Teacher(1L, "T1", null, "RUB");
     TimeSlot slot = new TimeSlot(1L, t, null, null);
     when(teacherRepo.findById(1L)).thenReturn(Optional.of(t));
     when(repo.findByTeacher(t)).thenReturn(List.of(slot));
