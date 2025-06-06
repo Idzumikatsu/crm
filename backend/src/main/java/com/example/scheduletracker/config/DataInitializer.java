@@ -2,6 +2,7 @@ package com.example.scheduletracker.config;
 
 import com.example.scheduletracker.entity.User;
 import com.example.scheduletracker.repository.UserRepository;
+import com.example.scheduletracker.service.security.TotpService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -13,10 +14,13 @@ import org.springframework.stereotype.Component;
 public class DataInitializer implements ApplicationRunner {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final TotpService totpService;
 
-  public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+  public DataInitializer(
+      UserRepository userRepository, PasswordEncoder passwordEncoder, TotpService totpService) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
+    this.totpService = totpService;
   }
 
   @Override
@@ -27,7 +31,8 @@ public class DataInitializer implements ApplicationRunner {
               null,
               "manager",
               passwordEncoder.encode("manager"),
-              User.Role.MANAGER);
+              User.Role.MANAGER,
+              totpService.generateSecret());
       userRepository.save(manager);
 
       User teacher =
@@ -35,7 +40,8 @@ public class DataInitializer implements ApplicationRunner {
               null,
               "teacher",
               passwordEncoder.encode("teacher"),
-              User.Role.TEACHER);
+              User.Role.TEACHER,
+              totpService.generateSecret());
       userRepository.save(teacher);
     }
   }

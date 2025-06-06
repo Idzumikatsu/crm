@@ -30,6 +30,8 @@ dependencies {
     implementation(libs.org.springframework.boot.spring.boot.starter.mail)
     implementation(libs.org.apache.poi.poi.ooxml)
     implementation(libs.org.mapstruct.mapstruct)
+    implementation(libs.otp.java)
+    implementation(libs.aerogear.otp)
     annotationProcessor(libs.org.mapstruct.mapstruct.processor)
     testAnnotationProcessor(libs.org.mapstruct.mapstruct.processor)
     implementation(libs.io.jsonwebtoken.jjwt.api)

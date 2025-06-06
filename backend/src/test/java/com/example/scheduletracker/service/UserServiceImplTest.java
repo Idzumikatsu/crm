@@ -29,7 +29,7 @@ class UserServiceImplTest {
   @Test
   void saveEncodesPassword() {
     when(repo.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-    User u = new User(null, "alice", "secret", User.Role.STUDENT);
+    User u = new User(null, "alice", "secret", User.Role.STUDENT, null);
 
     User saved = service.save(u);
 

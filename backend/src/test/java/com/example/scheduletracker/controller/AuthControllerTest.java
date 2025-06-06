@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.scheduletracker.config.jwt.JwtUtils;
 import com.example.scheduletracker.entity.User;
 import com.example.scheduletracker.service.UserService;
+import com.example.scheduletracker.service.security.TotpService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,26 +26,29 @@ class AuthControllerTest {
   @MockBean AuthenticationManager authManager;
   @MockBean JwtUtils utils;
   @MockBean UserService userService;
+  @MockBean TotpService totpService;
 
   @Test
   void loginReturnsOk() throws Exception {
     Authentication auth = new UsernamePasswordAuthenticationToken("user", "pass");
     when(authManager.authenticate(any())).thenReturn(auth);
     when(userService.findByUsername("user"))
-        .thenReturn(java.util.Optional.of(new User(null, "user", null, User.Role.TEACHER)));
+        .thenReturn(java.util.Optional.of(new User(null, "user", null, User.Role.TEACHER, "s")));
+    when(totpService.verifyCode("s", "123456")).thenReturn(true);
     when(utils.generateToken(any(), any())).thenReturn("token");
 
     mvc.perform(
             post("/api/auth/login")
                 .contentType("application/json")
-                .content("{\"username\":\"u\",\"password\":\"p\"}"))
+                .content("{\"username\":\"u\",\"password\":\"p\",\"code\":\"123456\"}"))
         .andExpect(status().isOk());
   }
 
   @Test
   void registerCreatesUser() throws Exception {
     when(userService.findByUsername("new")).thenReturn(java.util.Optional.empty());
-    when(userService.save(any())).thenReturn(new User(1L, "new", "p", User.Role.STUDENT));
+    when(totpService.generateSecret()).thenReturn("secret");
+    when(userService.save(any())).thenReturn(new User(1L, "new", "p", User.Role.STUDENT, "secret"));
 
     mvc.perform(
             post("/api/auth/register")
