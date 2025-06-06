@@ -84,7 +84,7 @@ audit_log(id bigserial, entity, entity_id, action, old_json, new_json, actor_id,
 
 | # | Task                    | Owner | Est | Details                                                        |
 | - | ----------------------- | ----- | --- | -------------------------------------------------------------- |
-| 1 | **Availability module** | Codex | 6 h | Service: generate / delete slots; REST: `/templates`, `/slots` |
+| 1 | **Availability module** | Codex | 6 h | Service: generate / delete slots; REST: `/templates`, `/slots` ✅ DONE |
 | 2 | **Booking service**     | Codex | 5 h | `LessonService.book(...)` with slot lock; 409 on conflict      |
 | 3 | **Reminder engine**     | Codex | 3 h | Quartz per lesson; channels email/TG; payload merge            |
 | 4 | **Analytics API**       | Codex | 4 h | Materialized view, POI XLSX export, Google Sheets push         |
