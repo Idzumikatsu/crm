@@ -6,12 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class SpaController {
 
-    @RequestMapping("/")
-    public String redirectIndex() {
-        return "forward:/index.html";
-    }
-
-    @RequestMapping("/{*path:^(?!api|swagger-ui).*}")
+    @RequestMapping(value = {"/", "/{path:^(?!api|swagger-ui$).*$}",
+            "/**/{path:^(?!api|swagger-ui$)[^\\.]*}"})
     public String redirect() {
         return "forward:/index.html";
     }
