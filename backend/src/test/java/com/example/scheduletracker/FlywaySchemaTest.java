@@ -19,5 +19,14 @@ public class FlywaySchemaTest {
     // Flyway should have created the 'users' table in H2
     Integer userCount = jdbcTemplate.queryForObject("SELECT count(*) FROM users", Integer.class);
     assertThat(userCount).isZero();
+
+    Integer groupCount = jdbcTemplate.queryForObject("SELECT count(*) FROM groups", Integer.class);
+    assertThat(groupCount).isZero();
+
+    Integer colExists =
+        jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'LESSON' AND COLUMN_NAME = 'GROUP_ID'",
+            Integer.class);
+    assertThat(colExists).isEqualTo(1);
   }
 }
