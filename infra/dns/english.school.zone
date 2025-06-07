@@ -1,0 +1,23 @@
+$TTL 3600
+@   IN  SOA ns1.english.school. hostmaster.english.school. (
+    2025060701 ; serial
+    7200       ; refresh (2 hours)
+    1800       ; retry (30 minutes)
+    1209600    ; expire (2 weeks)
+    3600       ; minimum (1 hour)
+)
+
+    IN  NS  ns1.english.school.
+    IN  NS  ns2.english.school.
+
+@           IN  A       45.15.170.22
+www         IN  A       45.15.170.22
+app         IN  A       45.15.170.22
+api         IN  A       45.15.170.22
+static      IN  A       45.15.170.22
+smtp        IN  A       45.15.170.22
+mail        IN  A       45.15.170.22
+autodiscover IN CNAME   english.school.
+
+@           IN  MX 10  mail.english.school.
+@           IN  MX 20  mail.english.school.
