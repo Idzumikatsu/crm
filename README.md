@@ -136,6 +136,23 @@ docker compose -f infra/docker-compose.dev.yml up -d
 Новые пользователи могут зарегистрироваться через POST `/api/auth/register`,
 передав `username`, `password` и опциональное `role` в теле запроса.
 
+### Двухфакторная аутентификация
+
+При успешной регистрации сервер возвращает объект `SignupResponse`,
+содержащий поле `secret`. Этот секрет нужно сохранить и добавить в любое
+приложение TOTP (Google Authenticator, FreeOTP и т.п.). Сформируйте QR‑код с
+помощью утилиты `qrencode`:
+
+```bash
+SECRET="JBSWY3DPEHPK3PXP"
+qrencode "otpauth://totp/ScheduleTracker:alice?secret=$SECRET&issuer=ScheduleTracker" -o totp.png
+```
+
+Полученный файл `totp.png` можно отсканировать в приложении аутентификации,
+либо просто ввести значение `SECRET` вручную. Пример QR‑кода приведён ниже:
+
+![TOTP QR](docs/img/totp-sample.png)
+
 ## Веб-интерфейс
 
 SPA реализована на React и располагается в каталоге `frontend/`.
