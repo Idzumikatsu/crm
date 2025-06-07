@@ -35,30 +35,30 @@ class LessonServiceImplTest {
   @BeforeEach
   void setup() {
     service = new LessonServiceImpl(repo, slotRepo);
-    t1 = new Teacher(1L, "T1", null, "RUB");
-    t2 = new Teacher(2L, "T2", null, "RUB");
-    g1 = new Group(1L, "G1", null);
+    t1 = new Teacher(java.util.UUID.randomUUID(), "T1", null, "RUB");
+    t2 = new Teacher(java.util.UUID.randomUUID(), "T2", null, "RUB");
+    g1 = new Group(java.util.UUID.randomUUID(), "G1", null);
   }
 
   @Test
   void searchByTeacherFiltersResults() {
-    Lesson l1 = new Lesson(1L, OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
-    Lesson l2 = new Lesson(2L, OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t2, g1);
+    Lesson l1 = new Lesson(java.util.UUID.randomUUID(), OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
+    Lesson l2 = new Lesson(java.util.UUID.randomUUID(), OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t2, g1);
     when(repo.findAll()).thenReturn(List.of(l1, l2));
 
-    List<Lesson> result = service.search(null, null, 1L, null);
+    List<Lesson> result = service.search(null, null, t1.getId(), null);
 
     assertEquals(1, result.size());
-    assertEquals(1L, result.get(0).getTeacher().getId());
+    assertEquals(t1.getId(), result.get(0).getTeacher().getId());
   }
 
   @Test
   void updateStatusChangesEntity() {
-    Lesson lesson = new Lesson(1L, OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
-    when(repo.findById(1L)).thenReturn(java.util.Optional.of(lesson));
+    Lesson lesson = new Lesson(java.util.UUID.randomUUID(), OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
+    when(repo.findById(lesson.getId())).thenReturn(java.util.Optional.of(lesson));
     when(repo.save(any(Lesson.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-    Lesson updated = service.updateStatus(1L, Lesson.Status.CONFIRMED);
+    Lesson updated = service.updateStatus(lesson.getId(), Lesson.Status.CONFIRMED);
 
     assertEquals(Lesson.Status.CONFIRMED, updated.getStatus());
   }
@@ -76,7 +76,7 @@ class LessonServiceImplTest {
     OffsetDateTime dt = OffsetDateTime.now();
     TimeSlot slot = new TimeSlot(null, t1, dt.minusMinutes(30), dt.plusMinutes(90));
     when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
-    Lesson existing = new Lesson(2L, dt, 60, Lesson.Status.SCHEDULED, t1, g1);
+    Lesson existing = new Lesson(java.util.UUID.randomUUID(), dt, 60, Lesson.Status.SCHEDULED, t1, g1);
     when(repo.findByTeacher(t1)).thenReturn(List.of(existing));
 
     Lesson newLesson = new Lesson(null, dt.plusMinutes(30), 60, Lesson.Status.SCHEDULED, t1, g1);
@@ -101,23 +101,23 @@ class LessonServiceImplTest {
   @Test
   void bookWhenSlotMissingThrows() {
     OffsetDateTime dt = OffsetDateTime.now();
-    when(slotRepo.findSlotForPeriodLocked(anyLong(), any(), any())).thenReturn(Optional.empty());
+    when(slotRepo.findSlotForPeriodLocked(any(), any(), any())).thenReturn(Optional.empty());
 
     assertThrows(
         BookingConflictException.class,
-        () -> service.book(1L, 1L, dt, 60));
+        () -> service.book(t1.getId(), g1.getId(), dt, 60));
   }
 
   @Test
   void bookSuccessPersistsLesson() {
     OffsetDateTime dt = OffsetDateTime.now();
-    TimeSlot slot = new TimeSlot(1L, t1, dt, dt.plusMinutes(60));
-    when(slotRepo.findSlotForPeriodLocked(eq(1L), any(), any())).thenReturn(Optional.of(slot));
+    TimeSlot slot = new TimeSlot(java.util.UUID.randomUUID(), t1, dt, dt.plusMinutes(60));
+    when(slotRepo.findSlotForPeriodLocked(eq(t1.getId()), any(), any())).thenReturn(Optional.of(slot));
     when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
     when(repo.findByTeacher(t1)).thenReturn(List.of());
     when(repo.save(any(Lesson.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-    Lesson booked = service.book(1L, 1L, dt, 60);
+    Lesson booked = service.book(t1.getId(), g1.getId(), dt, 60);
     assertEquals(dt, booked.getDateTime());
   }
 }

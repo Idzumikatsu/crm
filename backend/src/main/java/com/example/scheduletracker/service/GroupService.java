@@ -4,13 +4,14 @@ package com.example.scheduletracker.service;
 import com.example.scheduletracker.entity.Group;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface GroupService {
   Group save(Group group);
 
   List<Group> findAll();
 
-  Optional<Group> findById(Long id);
+  Optional<Group> findById(UUID id);
 
-  void deleteById(Long id);
+  void deleteById(UUID id);
 }

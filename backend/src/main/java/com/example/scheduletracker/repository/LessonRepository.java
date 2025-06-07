@@ -4,11 +4,12 @@ package com.example.scheduletracker.repository;
 import com.example.scheduletracker.entity.Lesson;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import com.example.scheduletracker.dto.LessonCountDto;
 
-public interface LessonRepository extends JpaRepository<Lesson, Long> {
+public interface LessonRepository extends JpaRepository<Lesson, UUID> {
   List<Lesson> findByDateTimeBetween(OffsetDateTime from, OffsetDateTime to);
 
   List<Lesson> findByTeacher(com.example.scheduletracker.entity.Teacher teacher);

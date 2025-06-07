@@ -41,13 +41,14 @@ class GroupServiceImplTest {
 
   @Test
   void findByIdReturnsData() {
-    Group g = new Group(1L, "G1", null);
-    when(repo.findById(1L)).thenReturn(Optional.of(g));
+    java.util.UUID gid = java.util.UUID.randomUUID();
+    Group g = new Group(gid, "G1", null);
+    when(repo.findById(gid)).thenReturn(Optional.of(g));
 
-    Optional<Group> result = service.findById(1L);
+    Optional<Group> result = service.findById(gid);
 
     assertTrue(result.isPresent());
-    assertEquals(1L, result.get().getId());
+    assertEquals(gid, result.get().getId());
   }
 
   @Test

@@ -3,6 +3,7 @@ package com.example.scheduletracker.controller;
 import com.example.scheduletracker.entity.TimeSlot;
 import com.example.scheduletracker.service.TimeSlotService;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class TimeSlotController {
   }
 
   @GetMapping
-  public List<TimeSlot> all(@RequestParam(required = false) Long teacherId) {
+  public List<TimeSlot> all(@RequestParam(required = false) UUID teacherId) {
     if (teacherId != null) {
       return svc.findByTeacherId(teacherId);
     }
@@ -24,7 +25,7 @@ public class TimeSlotController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<TimeSlot> get(@PathVariable Long id) {
+  public ResponseEntity<TimeSlot> get(@PathVariable UUID id) {
     return svc.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
@@ -34,7 +35,7 @@ public class TimeSlotController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<TimeSlot> update(@PathVariable Long id, @RequestBody TimeSlot slot) {
+  public ResponseEntity<TimeSlot> update(@PathVariable UUID id, @RequestBody TimeSlot slot) {
     return svc.findById(id)
         .map(
             existing -> {
@@ -45,7 +46,7 @@ public class TimeSlotController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
     svc.deleteById(id);
     return ResponseEntity.noContent().build();
   }

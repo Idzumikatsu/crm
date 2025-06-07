@@ -40,13 +40,14 @@ class TeacherServiceImplTest {
 
   @Test
   void findByIdReturnsData() {
-    Teacher t = new Teacher(1L, "T1", null, "RUB");
-    when(repo.findById(1L)).thenReturn(Optional.of(t));
+    java.util.UUID id = java.util.UUID.randomUUID();
+    Teacher t = new Teacher(id, "T1", null, "RUB");
+    when(repo.findById(id)).thenReturn(Optional.of(t));
 
-    Optional<Teacher> result = service.findById(1L);
+    Optional<Teacher> result = service.findById(id);
 
     assertTrue(result.isPresent());
-    assertEquals(1L, result.get().getId());
+    assertEquals(id, result.get().getId());
   }
 
   @Test

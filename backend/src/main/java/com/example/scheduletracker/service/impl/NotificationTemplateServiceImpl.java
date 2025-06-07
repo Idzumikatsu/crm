@@ -5,6 +5,7 @@ import com.example.scheduletracker.repository.NotificationTemplateRepository;
 import com.example.scheduletracker.service.NotificationTemplateService;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,12 +27,12 @@ public class NotificationTemplateServiceImpl implements NotificationTemplateServ
   }
 
   @Override
-  public Optional<NotificationTemplate> findById(Long id) {
+  public Optional<NotificationTemplate> findById(UUID id) {
     return repo.findById(id);
   }
 
   @Override
-  public void deleteById(Long id) {
+  public void deleteById(UUID id) {
     repo.deleteById(id);
   }
 

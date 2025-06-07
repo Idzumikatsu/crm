@@ -5,6 +5,7 @@ import com.example.scheduletracker.entity.Lesson;
 import com.example.scheduletracker.service.LessonService;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,8 @@ public class LessonController {
           OffsetDateTime from,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
           OffsetDateTime to,
-      @RequestParam(required = false) Long teacherId,
-      @RequestParam(required = false) Long groupId) {
+      @RequestParam(required = false) UUID teacherId,
+      @RequestParam(required = false) UUID groupId) {
     if (from != null || to != null || teacherId != null || groupId != null) {
       return svc.search(from, to, teacherId, groupId);
     }
@@ -33,7 +34,7 @@ public class LessonController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Lesson> get(@PathVariable Long id) {
+  public ResponseEntity<Lesson> get(@PathVariable UUID id) {
     return svc.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
@@ -47,7 +48,7 @@ public class LessonController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Lesson> update(@PathVariable Long id, @RequestBody Lesson l) {
+  public ResponseEntity<Lesson> update(@PathVariable UUID id, @RequestBody Lesson l) {
     return svc.findById(id)
         .map(
             existing -> {
@@ -58,14 +59,14 @@ public class LessonController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
     svc.deleteById(id);
     return ResponseEntity.noContent().build();
   }
 
   @PatchMapping("/{id}/status")
   public ResponseEntity<Lesson> updateStatus(
-      @PathVariable Long id, @RequestParam Lesson.Status status) {
+      @PathVariable UUID id, @RequestParam Lesson.Status status) {
     return ResponseEntity.ok(svc.updateStatus(id, status));
   }
 }

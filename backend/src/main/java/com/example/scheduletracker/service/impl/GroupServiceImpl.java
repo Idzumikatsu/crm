@@ -6,6 +6,7 @@ import com.example.scheduletracker.repository.GroupRepository;
 import com.example.scheduletracker.service.GroupService;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,12 +28,12 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Optional<Group> findById(Long id) {
+  public Optional<Group> findById(UUID id) {
     return repo.findById(id);
   }
 
   @Override
-  public void deleteById(Long id) {
+  public void deleteById(UUID id) {
     repo.deleteById(id);
   }
 }

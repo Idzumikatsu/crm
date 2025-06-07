@@ -4,14 +4,18 @@ import jakarta.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
+import org.hibernate.annotations.GenericGenerator;
 
 /** Weekly availability template for teacher */
 @Entity
 @Table(name = "availability_templates")
 public class AvailabilityTemplate {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+  private UUID id;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "teacher_id")
@@ -33,7 +37,7 @@ public class AvailabilityTemplate {
   public AvailabilityTemplate() {}
 
   public AvailabilityTemplate(
-      Long id,
+      UUID id,
       Teacher teacher,
       DayOfWeek weekDay,
       LocalTime startTime,
@@ -47,11 +51,11 @@ public class AvailabilityTemplate {
     this.untilDate = untilDate;
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 

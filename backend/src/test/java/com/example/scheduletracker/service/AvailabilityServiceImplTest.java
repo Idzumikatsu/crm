@@ -40,17 +40,17 @@ class AvailabilityServiceImplTest {
 
   @Test
   void generateSlotsCreatesSlots() {
-    Teacher t = new Teacher(1L, "T", null, "RUB");
+    Teacher t = new Teacher(java.util.UUID.randomUUID(), "T", null, "RUB");
     AvailabilityTemplate tpl =
         new AvailabilityTemplate(
-            1L, t, DayOfWeek.MONDAY, LocalTime.of(10, 0), LocalTime.of(11, 0), null);
-    when(teacherRepo.findById(1L)).thenReturn(Optional.of(t));
+            java.util.UUID.randomUUID(), t, DayOfWeek.MONDAY, LocalTime.of(10, 0), LocalTime.of(11, 0), null);
+    when(teacherRepo.findById(t.getId())).thenReturn(Optional.of(t));
     when(templateRepo.findByTeacher(t)).thenReturn(List.of(tpl));
     when(slotRepo.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
     List<TimeSlot> result =
         service.generateSlots(
-            1L, LocalDate.of(2025, 6, 9), LocalDate.of(2025, 6, 10)); // Monday-Tuesday
+            t.getId(), LocalDate.of(2025, 6, 9), LocalDate.of(2025, 6, 10)); // Monday-Tuesday
 
     assertEquals(1, result.size());
     verify(slotRepo).save(any());
@@ -58,23 +58,23 @@ class AvailabilityServiceImplTest {
 
   @Test
   void deleteSlotsRemovesFutureSlots() {
-    Teacher t = new Teacher(1L, "T", null, "RUB");
+    Teacher t = new Teacher(java.util.UUID.randomUUID(), "T", null, "RUB");
     TimeSlot future =
         new TimeSlot(
-            1L,
+            java.util.UUID.randomUUID(),
             t,
             OffsetDateTime.of(2025, 6, 10, 10, 0, 0, 0, ZoneOffset.UTC),
             OffsetDateTime.of(2025, 6, 10, 11, 0, 0, 0, ZoneOffset.UTC));
     TimeSlot past =
         new TimeSlot(
-            2L,
+            java.util.UUID.randomUUID(),
             t,
             OffsetDateTime.of(2025, 6, 5, 10, 0, 0, 0, ZoneOffset.UTC),
             OffsetDateTime.of(2025, 6, 5, 11, 0, 0, 0, ZoneOffset.UTC));
-    when(teacherRepo.findById(1L)).thenReturn(Optional.of(t));
+    when(teacherRepo.findById(t.getId())).thenReturn(Optional.of(t));
     when(slotRepo.findByTeacher(t)).thenReturn(List.of(future, past));
 
-    service.deleteSlots(1L, LocalDate.of(2025, 6, 8));
+    service.deleteSlots(t.getId(), LocalDate.of(2025, 6, 8));
 
     verify(slotRepo).delete(future);
     verify(slotRepo, never()).delete(past);

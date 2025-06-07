@@ -27,7 +27,7 @@ class StudentServiceImplTest {
 
   @Test
   void findAllReturnsRepoData() {
-    Student s = new Student(1L, "Bob", "b@example.com");
+    Student s = new Student(java.util.UUID.randomUUID(), "Bob", "b@example.com");
     when(repo.findAll()).thenReturn(List.of(s));
 
     List<Student> result = service.findAll();

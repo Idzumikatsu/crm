@@ -3,14 +3,18 @@ package com.example.scheduletracker.entity;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+import org.hibernate.annotations.GenericGenerator;
 
 /** Student entity. */
 @Entity
 @Table(name = "students")
 public class Student {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+  private UUID id;
 
   @Column(nullable = false)
   private String name;
@@ -29,11 +33,11 @@ public class Student {
 
   public Student() {}
 
-  public Student(Long id, String name, String email) {
+  public Student(UUID id, String name, String email) {
     this(id, name, email, null, false);
   }
 
-  public Student(Long id, String name, String email, String telegramUsername, boolean validContact) {
+  public Student(UUID id, String name, String email, String telegramUsername, boolean validContact) {
     this.id = id;
     this.name = name;
     this.email = email;
@@ -41,11 +45,11 @@ public class Student {
     this.validContact = validContact;
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
@@ -94,13 +98,13 @@ public class Student {
   }
 
   public static class Builder {
-    private Long id;
+    private UUID id;
     private String name;
     private String email;
     private String telegramUsername;
     private boolean validContact;
 
-    public Builder id(Long id) {
+    public Builder id(UUID id) {
       this.id = id;
       return this;
     }

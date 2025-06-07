@@ -7,6 +7,7 @@ import com.example.scheduletracker.repository.TimeSlotRepository;
 import com.example.scheduletracker.service.TimeSlotService;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,19 +32,19 @@ public class TimeSlotServiceImpl implements TimeSlotService {
   }
 
   @Override
-  public List<TimeSlot> findByTeacherId(Long teacherId) {
+  public List<TimeSlot> findByTeacherId(UUID teacherId) {
     Teacher t = teacherRepository.findById(teacherId).orElse(null);
     if (t == null) return List.of();
     return repo.findByTeacher(t);
   }
 
   @Override
-  public Optional<TimeSlot> findById(Long id) {
+  public Optional<TimeSlot> findById(UUID id) {
     return repo.findById(id);
   }
 
   @Override
-  public void deleteById(Long id) {
+  public void deleteById(UUID id) {
     repo.deleteById(id);
   }
 }

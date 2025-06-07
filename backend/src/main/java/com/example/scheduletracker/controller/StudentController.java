@@ -3,6 +3,7 @@ package com.example.scheduletracker.controller;
 import com.example.scheduletracker.entity.Student;
 import com.example.scheduletracker.service.StudentService;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class StudentController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Student> get(@PathVariable Long id) {
+  public ResponseEntity<Student> get(@PathVariable UUID id) {
     return svc.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
@@ -33,7 +34,7 @@ public class StudentController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Student> update(@PathVariable Long id, @RequestBody Student s) {
+  public ResponseEntity<Student> update(@PathVariable UUID id, @RequestBody Student s) {
     return svc.findById(id)
         .map(
             existing -> {
@@ -44,7 +45,7 @@ public class StudentController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
     svc.deleteById(id);
     return ResponseEntity.noContent().build();
   }

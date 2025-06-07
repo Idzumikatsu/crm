@@ -8,6 +8,7 @@ import com.example.scheduletracker.repository.LessonRepository;
 import com.example.scheduletracker.repository.TimeSlotRepository;
 import com.example.scheduletracker.service.LessonService;
 import com.example.scheduletracker.exception.BookingConflictException;
+import java.util.UUID;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +57,7 @@ public class LessonServiceImpl implements LessonService {
 
   @Override
   @Transactional
-  public Lesson book(Long teacherId, Long groupId, OffsetDateTime start, int duration) {
+  public Lesson book(UUID teacherId, UUID groupId, OffsetDateTime start, int duration) {
     var end = start.plusMinutes(duration);
 
     var slot =
@@ -82,12 +83,12 @@ public class LessonServiceImpl implements LessonService {
   }
 
   @Override
-  public Optional<Lesson> findById(Long id) {
+  public Optional<Lesson> findById(UUID id) {
     return repo.findById(id);
   }
 
   @Override
-  public void deleteById(Long id) {
+  public void deleteById(UUID id) {
     repo.deleteById(id);
   }
 
@@ -97,7 +98,7 @@ public class LessonServiceImpl implements LessonService {
   }
 
   @Override
-  public List<Lesson> search(OffsetDateTime from, OffsetDateTime to, Long teacherId, Long groupId) {
+  public List<Lesson> search(OffsetDateTime from, OffsetDateTime to, UUID teacherId, UUID groupId) {
     return repo.findAll().stream()
         .filter(l -> from == null || !l.getDateTime().isBefore(from))
         .filter(l -> to == null || !l.getDateTime().isAfter(to))
@@ -111,7 +112,7 @@ public class LessonServiceImpl implements LessonService {
   }
 
   @Override
-  public Lesson updateStatus(Long id, Lesson.Status status) {
+  public Lesson updateStatus(UUID id, Lesson.Status status) {
     Lesson lesson = repo.findById(id).orElseThrow();
     lesson.setStatus(status);
     return repo.save(lesson);

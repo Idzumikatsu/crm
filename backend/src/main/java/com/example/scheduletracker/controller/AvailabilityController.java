@@ -5,6 +5,7 @@ import com.example.scheduletracker.entity.TimeSlot;
 import com.example.scheduletracker.service.AvailabilityService;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +18,7 @@ public class AvailabilityController {
   }
 
   @GetMapping("/templates")
-  public List<AvailabilityTemplate> templates(@RequestParam(required = false) Long teacherId) {
+  public List<AvailabilityTemplate> templates(@RequestParam(required = false) UUID teacherId) {
     return service.findTemplates(teacherId);
   }
 
@@ -27,13 +28,13 @@ public class AvailabilityController {
   }
 
   @DeleteMapping("/templates/{id}")
-  public void deleteTemplate(@PathVariable Long id) {
+  public void deleteTemplate(@PathVariable UUID id) {
     service.deleteTemplate(id);
   }
 
   @PostMapping("/slots/generate")
   public List<TimeSlot> generate(
-      @RequestParam Long teacherId,
+      @RequestParam UUID teacherId,
       @RequestParam LocalDate from,
       @RequestParam LocalDate to) {
     return service.generateSlots(teacherId, from, to);
@@ -41,7 +42,7 @@ public class AvailabilityController {
 
   @DeleteMapping("/slots")
   public void delete(
-      @RequestParam Long teacherId,
+      @RequestParam UUID teacherId,
       @RequestParam LocalDate from) {
     service.deleteSlots(teacherId, from);
   }
