@@ -91,6 +91,10 @@ openssl req -x509 -newkey rsa:2048 -nodes -keyout infra/nginx/certs/server.key -
 cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
 cd ..
 docker compose -f infra/docker-compose.dev.yml up --build
+
+При запуске `nginx` отдельно используйте переменные окружения `APP_HOST` и
+`APP_PORT` для указания адреса backend-сервиса. Контейнер автоматически
+подставит их в `nginx.conf.template`.
 ```
 
 ### Проверка сервиса
