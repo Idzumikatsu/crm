@@ -57,4 +57,22 @@ class AuthControllerTest {
                 .content("{\"username\":\"new\",\"password\":\"p\"}"))
         .andExpect(status().isCreated());
   }
+
+  @Test
+  void loginWithShortCodeFails() throws Exception {
+    mvc.perform(
+            post("/api/auth/login")
+                .contentType("application/json")
+                .content("{\"username\":\"u\",\"password\":\"p\",\"code\":\"123\"}"))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void registerWithoutUsernameFails() throws Exception {
+    mvc.perform(
+            post("/api/auth/register")
+                .contentType("application/json")
+                .content("{\"password\":\"p\"}"))
+        .andExpect(status().isBadRequest());
+  }
 }

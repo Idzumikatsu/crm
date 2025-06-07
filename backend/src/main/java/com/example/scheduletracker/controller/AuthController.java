@@ -8,6 +8,7 @@ import com.example.scheduletracker.entity.User;
 import com.example.scheduletracker.service.UserService;
 import com.example.scheduletracker.service.security.TotpService;
 import com.example.scheduletracker.dto.SignupResponse;
+import jakarta.validation.Valid;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest req) {
+  public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest req) {
     Authentication auth =
         authManager.authenticate(
             new UsernamePasswordAuthenticationToken(req.username(), req.password()));
@@ -50,7 +51,7 @@ public class AuthController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<SignupResponse> register(@RequestBody SignupRequest req) {
+  public ResponseEntity<SignupResponse> register(@Valid @RequestBody SignupRequest req) {
     String username = req.username();
     Optional<User> existing = userService.findByUsername(username);
     if (existing.isPresent()) {
