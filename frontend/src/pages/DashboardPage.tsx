@@ -8,11 +8,13 @@ interface Point {
 }
 
 export const DashboardPage = () => {
-  const { data } = useQuery<Point[]>(['analytics'], () =>
-    fetch('/api/analytics')
-      .then((r) => r.json())
-      .then((d) => d as Point[])
-  );
+  const { data } = useQuery<Point[]>({
+    queryKey: ['analytics'],
+    queryFn: () =>
+      fetch('/api/analytics')
+        .then((r) => r.json())
+        .then((d) => d as Point[]),
+  });
 
   return (
     <div className="flex">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Student } from './StudentCombobox';
+import type { Student } from './StudentCombobox';
 
 interface Props {
   student?: Student;
