@@ -1,3 +1,39 @@
+# TODO · High‑Priority Polish & Production‑Readiness (07 Jun 2025)
+
+> **Цель фазы «Polish»** — превратить MVP в полноценный удобный сервис: законченный UI/UX, Production‑grade уведомления, чистый бренд‑дизайн, безопасный DNS + SSL.
+> **Приоритет:** выше, чем задачи пост‑MVP roadmap; эти работы выполняются **сразу** после стабилизации MVP.
+
+| P      | ID         | Задача                                                                                     | Est | Зависимость  |
+| ------ | ---------- | ------------------------------------------------------------------------------------------ | --- | ------------ |
+| **P0** | **DNS‑1**  | Перенести DNS зоны (`crm‑synergy.io`) на **Cloudflare**                                    | 1 h | —            |
+| P0     | **DNS‑2**  | Настроить A/CNAME: `app`, `api`, `static`, `smtp`, `autodiscover`                          | 1 h | DNS‑1        |
+| P0     | **DNS‑3**  | Выпустить TLS certы Let’s Encrypt (Cloudflare DNS‑01) + HSTS preload                       | 1 h | DNS‑2        |
+| **P0** | **NT‑1**   | Production SMTP: Mailgun sandbox → verified domain, SPF, DKIM, DMARC                       | 2 h | DNS‑2        |
+| P0     | **NT‑2**   | Telegram Bot: зарегистрировать `@SynergyCRMBot`, включить webhook `/tg/callback`           | 2 h | —            |
+| P0     | **DATA‑1** | Расширить `student` таблицу: `email NOT NULL`, `telegram_username`, `valid_contact = bool` | 1 h | —            |
+| **P0** | **UX‑1**   | Создать **Figma** файл c полным визуалом (лого, палитра, типографика)                      | 4 h | —            |
+| P0     | **UX‑2**   | Имплементировать global дизайн‑system: Tailwind config + `shadcn/ui` theme tokens          | 3 h | UX‑1         |
+| P0     | **UX‑3**   | Pixel‑perfect макеты: Login, Dashboard, Calendar, Settings (RU+EN)                         | 6 h | UX‑2         |
+| **P1** | **NT‑3**   | UI редактор шаблонов: e‑mail + TG с превью, переменные подсвечены                          | 4 h | NT‑1, NT‑2   |
+| P1     | **NT‑4**   | Пользовательские настройки уведомлений (каналы + расписание)                               | 3 h | NT‑3         |
+| P1     | **UX‑4**   | Добавить skeleton‑загрузки, анимации переходов (Framer Motion)                             | 2 h | UX‑3         |
+| P1     | **UX‑5**   | Accessibility audit — WCAG AA: контрасты, ARIA, key‑nav                                    | 3 h | UX‑3         |
+| **P1** | **ONB‑1**  | Wizard‑онбординг педагога: загрузка аватара, установка буфера, выбор шаблонов              | 4 h | UX‑3, DATA‑1 |
+| P1     | **ONB‑2**  | Справка «Quick‑start для менеджера» в приложении (markdown modal)                          | 2 h | UX‑3         |
+| P1     | **DATA‑2** | Миграция: backfill email/telegram у существующих students; отчёт missing                   | 2 h | DATA‑1       |
+| **P2** | **BR‑1**   | Анимация логотипа (SVG) на landing                                                         | 1 h | UX‑1         |
+| P2     | **QOS‑1**  | Интегрировать **Sentry** release tracking FE+BE                                            | 2 h | DNS‑3        |
+| P2     | **QOS‑2**  | GH Actions smoke‑test в Prod (check /health, /api/v1/info)                                 | 1 h | DNS‑3        |
+
+### Легенда приоритетов
+
+* **P0** — блокирует выход в публичное продакшн‑использование.
+* **P1** — критично для качественного UX и снижения поддержки.
+* **P2** — улучшает имидж и наблюдаемость, не блокирует релиз.
+
+\*Файл обновлён: 07 Jun 2025 • Синхронизирован с кодовой базой \**`main@HEAD`*
+
+
 # TODO · Post-MVP Roadmap (Q3 2025)
 
 Ниже — задачи, направленные на развитие CRM-календаря после успешного релиза MVP.  
