@@ -15,7 +15,10 @@
    - Установите JDK 21. На Linux можно установить пакет `openjdk-21-jdk`.
 2. **Gradle**
    - Используйте Gradle 8.14 или запускайте через прилагаемый скрипт `./backend/gradlew`.
-3. **PostgreSQL**
+3. **Node.js**
+   - Use Node 20 or 22 as in the CI matrix.
+   - Run `npm install` (or `npm ci`) before any npm script (`npm run build`, `npm run lint`, `npm run dev`).
+4. **PostgreSQL**
    - Приложение ожидает базу `schedule` с пользователем `postgres` и паролем `postgres`.
    - Быстрый вариант через Docker:
      ```bash
@@ -27,7 +30,7 @@
       используется встроенная база H2.
     - Для миграций используется Flyway **11.9.1**, что обеспечивает поддержку
       PostgreSQL 16.2.
-4. **Сборка и запуск backend**
+5. **Сборка и запуск backend**
    - Сборка: `./backend/gradlew build`
    - Запуск: `./backend/gradlew bootRun`
    - Приложение слушает порт `8080`. Убедитесь, что этот порт свободен
@@ -36,15 +39,15 @@
      Требуется подключение к интернету или локальный кеш артефактов.
    - В проект подключен модуль `spring-boot-starter-validation`,
      поэтому запросы валидируются через Bean Validation.
-5. **Запуск тестов**
+6. **Запуск тестов**
    - Выполните `./backend/gradlew test`.
 
-6. **Сборка CSS**
+7. **Сборка CSS**
    - Выполните `npm install` (или `npm ci`) из корня репозитория.
    - Для обновления стилей Tailwind запустите `npm run build` из корня
      репозитория. Результат появится в `backend/src/main/resources/static`.
 
-7. **Прокси**
+8. **Прокси**
    - Для получения зависимостей может потребоваться сетевой прокси.
      Укажите его хост и порт в переменных окружения
      `PROXY_HOST` и `PROXY_PORT` (а также `HTTP_PROXY` и `HTTPS_PROXY`
