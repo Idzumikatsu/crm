@@ -29,3 +29,6 @@ Thumbs.db
 
 # Generated NGINX config
 infra/nginx/nginx.conf
+
+# Ignore patch files
+*.diff

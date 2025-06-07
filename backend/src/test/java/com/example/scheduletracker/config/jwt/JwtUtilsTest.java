@@ -11,7 +11,7 @@ class JwtUtilsTest {
 
   @BeforeEach
   void setup() {
-    utils = new JwtUtils();
+    utils = new JwtUtils("testsecret");
   }
 
   @Test

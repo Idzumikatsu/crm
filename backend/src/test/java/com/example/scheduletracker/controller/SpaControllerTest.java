@@ -26,5 +26,8 @@ class SpaControllerTest {
     mvc.perform(get("/calendar"))
         .andExpect(status().isOk())
         .andExpect(forwardedUrl("/index.html"));
+    mvc.perform(get("/calendar/day"))
+        .andExpect(status().isOk())
+        .andExpect(forwardedUrl("/index.html"));
   }
 }
