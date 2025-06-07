@@ -6,6 +6,8 @@ plugins {
     id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.4"
     java
+    id("com.diffplug.spotless") version "6.25.0"
+    jacoco
 }
 
 repositories {
@@ -57,4 +59,23 @@ tasks.withType<JavaCompile>() {
 
 tasks.withType<Javadoc>() {
     options.encoding = "UTF-8"
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+        target("src/*/java/**/*.java")
+    }
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+
+tasks.named("check") {
+    dependsOn(tasks.jacocoTestReport)
 }
