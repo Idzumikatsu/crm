@@ -1,3 +1,6 @@
 spring:
   profiles:
     default: h2
+
+telegram:
+  bot-token: ${TELEGRAM_BOT_TOKEN:}
