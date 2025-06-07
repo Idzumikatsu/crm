@@ -113,4 +113,5 @@ CREATE TABLE audit_log (
     ts TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE INDEX time_slot_overlap ON time_slot USING GIST (tsrange(start_ts, end_ts));
+-- Use `tstzrange` because `start_ts`/`end_ts` are TIMESTAMPTZ values
+CREATE INDEX time_slot_overlap ON time_slot USING GIST (tstzrange(start_ts, end_ts));
