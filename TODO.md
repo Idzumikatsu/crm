@@ -10,7 +10,7 @@
 | P0     | **DNS‑3**  | Выпустить TLS certы Let’s Encrypt (Cloudflare DNS‑01) + HSTS preload                       | 1 h | DNS‑2        |
 | **P0** | **NT‑1**   | Production SMTP: Mailgun sandbox → verified domain, SPF, DKIM, DMARC                       | 2 h | DNS‑2        |
 | P0     | **NT‑2**   | Telegram Bot: зарегистрировать `@SynergyCRMBot`, включить webhook `/tg/callback`           | 2 h | —            |
-| P0     | **DATA‑1** | Расширить `student` таблицу: `email NOT NULL`, `telegram_username`, `valid_contact = bool` | 1 h | —            |
+| P0     | **DATA‑1** | ✅ Расширить `student` таблицу: `email NOT NULL`, `telegram_username`, `valid_contact = bool` | 1 h | —            |
 | **P0** | **UX‑1**   | Создать **Figma** файл c полным визуалом (лого, палитра, типографика)                      | 4 h | —            |
 | P0     | **UX‑2**   | Имплементировать global дизайн‑system: Tailwind config + `shadcn/ui` theme tokens          | 3 h | UX‑1         |
 | P0     | **UX‑3**   | Pixel‑perfect макеты: Login, Dashboard, Calendar, Settings (RU+EN)                         | 6 h | UX‑2         |

@@ -18,15 +18,27 @@ public class Student {
   @Column(nullable = false, unique = true)
   private String email;
 
+  @Column(name = "telegram_username")
+  private String telegramUsername;
+
+  @Column(name = "valid_contact", nullable = false)
+  private boolean validContact;
+
   @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<TeacherStudent> teacherStudents = new HashSet<>();
 
   public Student() {}
 
   public Student(Long id, String name, String email) {
+    this(id, name, email, null, false);
+  }
+
+  public Student(Long id, String name, String email, String telegramUsername, boolean validContact) {
     this.id = id;
     this.name = name;
     this.email = email;
+    this.telegramUsername = telegramUsername;
+    this.validContact = validContact;
   }
 
   public Long getId() {
@@ -53,6 +65,22 @@ public class Student {
     this.email = email;
   }
 
+  public String getTelegramUsername() {
+    return telegramUsername;
+  }
+
+  public void setTelegramUsername(String telegramUsername) {
+    this.telegramUsername = telegramUsername;
+  }
+
+  public boolean isValidContact() {
+    return validContact;
+  }
+
+  public void setValidContact(boolean validContact) {
+    this.validContact = validContact;
+  }
+
   public Set<TeacherStudent> getTeacherStudents() {
     return teacherStudents;
   }
@@ -69,6 +97,8 @@ public class Student {
     private Long id;
     private String name;
     private String email;
+    private String telegramUsername;
+    private boolean validContact;
 
     public Builder id(Long id) {
       this.id = id;
@@ -85,8 +115,18 @@ public class Student {
       return this;
     }
 
+    public Builder telegramUsername(String telegramUsername) {
+      this.telegramUsername = telegramUsername;
+      return this;
+    }
+
+    public Builder validContact(boolean validContact) {
+      this.validContact = validContact;
+      return this;
+    }
+
     public Student build() {
-      return new Student(id, name, email);
+      return new Student(id, name, email, telegramUsername, validContact);
     }
   }
 }
