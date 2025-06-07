@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/manager")
-@PreAuthorize("hasRole('MANAGER')")
+@PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
 public class ManagerController {
   private final TeacherService teacherService;
   private final StudentService studentService;

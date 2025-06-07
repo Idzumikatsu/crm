@@ -23,26 +23,23 @@ public class DataInitializer implements ApplicationRunner {
     this.totpService = totpService;
   }
 
+  private void createIfMissing(String username, String rawPassword, User.Role role) {
+    if (userRepository.findByUsername(username).isEmpty()) {
+      User user =
+          new User(
+              null,
+              username,
+              passwordEncoder.encode(rawPassword),
+              role,
+              totpService.generateSecret());
+      userRepository.save(user);
+    }
+  }
+
   @Override
   public void run(ApplicationArguments args) {
-    if (userRepository.count() == 0) {
-      User manager =
-          new User(
-              null,
-              "manager",
-              passwordEncoder.encode("manager"),
-              User.Role.MANAGER,
-              totpService.generateSecret());
-      userRepository.save(manager);
-
-      User teacher =
-          new User(
-              null,
-              "teacher",
-              passwordEncoder.encode("teacher"),
-              User.Role.TEACHER,
-              totpService.generateSecret());
-      userRepository.save(teacher);
-    }
+    createIfMissing("manager", "manager", User.Role.MANAGER);
+    createIfMissing("teacher", "teacher", User.Role.TEACHER);
+    createIfMissing("admin", "admin", User.Role.ADMIN);
   }
 }
