@@ -5,6 +5,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
@@ -23,6 +24,7 @@ public class TelegramNotificationService implements NotificationService {
     private final RestTemplate restTemplate;
     private final String apiUrl;
 
+    @Autowired
     public TelegramNotificationService(@Value("${telegram.bot-token}") String token) {
         this(new RestTemplate(), token);
     }
