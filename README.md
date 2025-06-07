@@ -79,7 +79,12 @@ docker run --rm -it --network app-network \
 
 Для удобства можно воспользоваться `infra/docker-compose.dev.yml`, который
 поднимет PostgreSQL, само приложение и Nginx в роли обратного прокси. Перед
-запуском убедитесь, что в каталоге `backend/` есть `app.jar`:
+запуском убедитесь, что в каталоге `backend/` есть `app.jar`. Также
+создайте самоподписанный сертификат в `infra/nginx/certs`:
+
+```bash
+openssl req -x509 -newkey rsa:2048 -nodes -keyout infra/nginx/certs/server.key -out infra/nginx/certs/server.crt -days 365 -subj "/CN=localhost"
+```
 
 ```bash
 ./gradlew build
