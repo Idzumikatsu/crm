@@ -10,5 +10,6 @@ This directory contains all NGINX related documents. Each file focuses on a spec
 - `SECURITY_CHECKLIST.md` – release checklist covering security controls.
 - `NGINX_TRAINING.md` – training materials for developers and SREs.
 - `DNS_SETUP.md` – required DNS records for production deployment.
+- `../infra/dns` – BIND zone files reflecting the recommended records.
 
 Documentation is reviewed **quarterly**. The SRE Lead tracks outdated sections and opens issues for updates.
