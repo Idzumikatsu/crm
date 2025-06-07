@@ -33,7 +33,7 @@ public class LessonServiceImpl implements LessonService {
     // check that lesson fits teacher time slots
     List<TimeSlot> slots = slotRepo.findByTeacher(lesson.getTeacher());
     boolean withinSlot =
-        slots.stream().anyMatch(s -> !s.getStart().isAfter(start) && !s.getEndTime().isBefore(end));
+        slots.stream().anyMatch(s -> !s.getStartTs().isAfter(start) && !s.getEndTs().isBefore(end));
     if (!withinSlot) {
       throw new IllegalArgumentException("Lesson time outside teacher slots");
     }

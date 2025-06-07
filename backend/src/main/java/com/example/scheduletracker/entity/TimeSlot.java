@@ -19,19 +19,19 @@ public class TimeSlot {
   @JoinColumn(name = "teacher_id")
   private Teacher teacher;
 
-  @Column(nullable = false)
-  private OffsetDateTime start;
+  @Column(name = "start_ts", nullable = false)
+  private OffsetDateTime startTs;
 
-  @Column(name = "end_time", nullable = false)
-  private OffsetDateTime endTime;
+  @Column(name = "end_ts", nullable = false)
+  private OffsetDateTime endTs;
 
   public TimeSlot() {}
 
-  public TimeSlot(UUID id, Teacher teacher, OffsetDateTime start, OffsetDateTime endTime) {
+  public TimeSlot(UUID id, Teacher teacher, OffsetDateTime startTs, OffsetDateTime endTs) {
     this.id = id;
     this.teacher = teacher;
-    this.start = start;
-    this.endTime = endTime;
+    this.startTs = startTs;
+    this.endTs = endTs;
   }
 
   public UUID getId() {
@@ -50,20 +50,20 @@ public class TimeSlot {
     this.teacher = teacher;
   }
 
-  public OffsetDateTime getStart() {
-    return start;
+  public OffsetDateTime getStartTs() {
+    return startTs;
   }
 
-  public void setStart(OffsetDateTime start) {
-    this.start = start;
+  public void setStartTs(OffsetDateTime startTs) {
+    this.startTs = startTs;
   }
 
-  public OffsetDateTime getEndTime() {
-    return endTime;
+  public OffsetDateTime getEndTs() {
+    return endTs;
   }
 
-  public void setEndTime(OffsetDateTime endTime) {
-    this.endTime = endTime;
+  public void setEndTs(OffsetDateTime endTs) {
+    this.endTs = endTs;
   }
 
   public static Builder builder() {
@@ -73,8 +73,8 @@ public class TimeSlot {
   public static class Builder {
     private UUID id;
     private Teacher teacher;
-    private OffsetDateTime start;
-    private OffsetDateTime endTime;
+    private OffsetDateTime startTs;
+    private OffsetDateTime endTs;
 
     public Builder id(UUID id) {
       this.id = id;
@@ -86,18 +86,18 @@ public class TimeSlot {
       return this;
     }
 
-    public Builder start(OffsetDateTime start) {
-      this.start = start;
+    public Builder startTs(OffsetDateTime startTs) {
+      this.startTs = startTs;
       return this;
     }
 
-    public Builder endTime(OffsetDateTime endTime) {
-      this.endTime = endTime;
+    public Builder endTs(OffsetDateTime endTs) {
+      this.endTs = endTs;
       return this;
     }
 
     public TimeSlot build() {
-      return new TimeSlot(id, teacher, start, endTime);
+      return new TimeSlot(id, teacher, startTs, endTs);
     }
   }
 }
