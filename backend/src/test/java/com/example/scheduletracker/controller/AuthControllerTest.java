@@ -48,7 +48,8 @@ class AuthControllerTest {
   void registerCreatesUser() throws Exception {
     when(userService.findByUsername("new")).thenReturn(java.util.Optional.empty());
     when(totpService.generateSecret()).thenReturn("secret");
-    when(userService.save(any())).thenReturn(new User(1L, "new", "p", User.Role.STUDENT, "secret"));
+    when(userService.save(any()))
+        .thenReturn(new User(java.util.UUID.randomUUID(), "new", "p", User.Role.STUDENT, "secret"));
 
     mvc.perform(
             post("/api/auth/register")

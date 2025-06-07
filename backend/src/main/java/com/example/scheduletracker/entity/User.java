@@ -1,19 +1,23 @@
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
+import java.util.UUID;
+import org.hibernate.annotations.GenericGenerator;
 
 /** User of the system. */
 @Entity
 @Table(name = "users")
 public class User {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+  private UUID id;
 
-  @Column(unique = true, nullable = false)
+  @Column(name = "email", unique = true, nullable = false)
   private String username;
 
-  @Column(nullable = false)
+  @Column(name = "pwd", nullable = false)
   private String password;
 
   @Enumerated(EnumType.STRING)
@@ -25,7 +29,7 @@ public class User {
 
   public User() {}
 
-  public User(Long id, String username, String password, Role role, String twoFaSecret) {
+  public User(UUID id, String username, String password, Role role, String twoFaSecret) {
     this.id = id;
     this.username = username;
     this.password = password;
@@ -33,11 +37,11 @@ public class User {
     this.twoFaSecret = twoFaSecret;
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
@@ -78,13 +82,13 @@ public class User {
   }
 
   public static class Builder {
-    private Long id;
+    private UUID id;
     private String username;
     private String password;
     private Role role;
     private String twoFaSecret;
 
-    public Builder id(Long id) {
+    public Builder id(UUID id) {
       this.id = id;
       return this;
     }
