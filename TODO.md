@@ -5,7 +5,7 @@
 
 | P      | ID         | Задача                                                                                     | Est | Зависимость  |
 | ------ | ---------- | ------------------------------------------------------------------------------------------ | --- | ------------ |
-| **P0** | **DNS‑1**  | Перенести DNS зоны (`crm‑synergy.io`) на **Cloudflare**                                    | 1 h | —            |
+| **P0** | **DNS‑1**  | Перенести DNS зоны (`45.15.170.22`) на предоставленные в проекте                                    | 1 h | —            |
 | P0     | **DNS‑2**  | Настроить A/CNAME: `app`, `api`, `static`, `smtp`, `autodiscover`                          | 1 h | DNS‑1        |
 | P0     | **DNS‑3**  | Выпустить TLS certы Let’s Encrypt (Cloudflare DNS‑01) + HSTS preload                       | 1 h | DNS‑2        |
 | **P0** | **NT‑1**   | Production SMTP: Mailgun sandbox → verified domain, SPF, DKIM, DMARC                       | 2 h | DNS‑2        |
