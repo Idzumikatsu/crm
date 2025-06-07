@@ -1,5 +1,14 @@
 # Schedule Tracker
 
+Монорепозиторий включает backend на Spring Boot и SPA на React.
+
+## Структура проекта
+
+- `backend/` — серверная часть и REST API
+- `frontend/` — клиентское приложение Vite/React
+- `infra/` — Docker Compose и конфигурация NGINX
+- `docs/` — документация и ADR
+
 ## Настройка окружения
 
 1. **Java 21**
@@ -18,11 +27,9 @@
       используется встроенная база H2.
     - Для миграций используется Flyway **11.9.1**, что обеспечивает поддержку
       PostgreSQL 15.3.
-4. **Сборка и запуск**
+4. **Сборка и запуск backend**
    - Сборка: `./backend/gradlew build`
    - Запуск: `./backend/gradlew bootRun`
-   - Для упрощения можно использовать скрипт `./backend/start.sh`, который
-     автоматически вызывает Gradle Wrapper и запускает приложение.
    - Приложение слушает порт `8080`. Убедитесь, что этот порт свободен
      перед запуском, иначе старт завершится ошибкой.
    - При первом запуске Gradle скачает зависимости из Maven Central.
@@ -33,12 +40,8 @@
    - Выполните `./backend/gradlew test`.
 
 6. **Сборка CSS**
-   - Для обновления стилей Tailwind выполните:
-     ```bash
-     cd backend
-     npm run build
-     cd ..
-     ```
+   - Для обновления стилей Tailwind запустите `npm run build` из корня
+     репозитория. Результат появится в `backend/src/main/resources/static`.
 
 7. **Прокси**
    - Для получения зависимостей может потребоваться сетевой прокси.
@@ -120,24 +123,23 @@ docker compose -f infra/docker-compose.dev.yml up -d
 
 ## Веб-интерфейс
 
-Основные страницы располагаются в каталоге `src/main/resources/static` и доступны
-без авторизации:
-- `/login` или `/login.html` – форма входа в систему;
-- `/index.html` – стартовая страница после логина;
-- `/manager.html` и `/teacher.html` – кабинеты менеджера и преподавателя.
-- `/teachers.html` и `/students.html` – простые страницы для управления
-  списками преподавателей и студентов.
-Для использования Thymeleaf эти же файлы продублированы в `src/main/resources/templates`.
-Страницы обращаются к REST API через fetch-запросы.
+SPA реализована на React и располагается в каталоге `frontend/`.
+Для локальной разработки выполните в нём:
 
-### Карта сайта
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-- `http://localhost/login.html` – вход в систему
-- `http://localhost/index.html` – стартовая страница после логина
-- `http://localhost/manager.html` – кабинет менеджера
-- `http://localhost/teacher.html` – кабинет преподавателя
-- `http://localhost/teachers.html` – управление преподавателями
-- `http://localhost/students.html` – управление студентами
+Приложение будет доступно на `http://localhost:5173` и использует REST API
+бэкэнда на порту 8080.
+
+Производственная сборка выполняется командой `npm run build`, после чего файлы
+появятся в `frontend/dist`. Их можно раздавать через NGINX или другой web-сервер.
+
+Для совместимости в каталоге `backend/src/main/resources/static` остаются
+упрощённые HTML-страницы, доступные без авторизации.
 
 ### REST API
 Основные эндпоинты:
