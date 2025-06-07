@@ -9,5 +9,6 @@ This directory contains all NGINX related documents. Each file focuses on a spec
 - `RUNBOOK_NGINX.md` – operational runbook for common incidents.
 - `SECURITY_CHECKLIST.md` – release checklist covering security controls.
 - `NGINX_TRAINING.md` – training materials for developers and SREs.
+- `DNS_SETUP.md` – required DNS records for production deployment.
 
 Documentation is reviewed **quarterly**. The SRE Lead tracks outdated sections and opens issues for updates.
