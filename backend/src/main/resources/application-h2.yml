@@ -11,4 +11,3 @@ spring:
   flyway:
     locations: classpath:db/migration
     baseline-on-migrate: true
-    target: 8
