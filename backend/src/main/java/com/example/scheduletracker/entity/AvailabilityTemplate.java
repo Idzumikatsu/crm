@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 /** Weekly availability template for teacher */
 @Entity
-@Table(name = "availability_templates")
+@Table(name = "availability_template")
 public class AvailabilityTemplate {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

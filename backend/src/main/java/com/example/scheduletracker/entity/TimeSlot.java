@@ -5,7 +5,7 @@ import java.time.OffsetDateTime;
 
 /** Time slot for teacher availability. */
 @Entity
-@Table(name = "time_slots")
+@Table(name = "time_slot")
 public class TimeSlot {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

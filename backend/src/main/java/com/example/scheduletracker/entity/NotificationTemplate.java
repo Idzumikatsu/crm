@@ -3,7 +3,7 @@ package com.example.scheduletracker.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "notification_templates")
+@Table(name = "notification_template")
 public class NotificationTemplate {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
