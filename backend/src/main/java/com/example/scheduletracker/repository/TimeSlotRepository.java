@@ -17,7 +17,7 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot, UUID> {
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query(
-      "select t from TimeSlot t where t.teacher.id = :teacherId and t.start <= :start and t.endTime >= :end")
+      "select t from TimeSlot t where t.teacher.id = :teacherId and t.startTs <= :start and t.endTs >= :end")
   Optional<TimeSlot> findSlotForPeriodLocked(
       @Param("teacherId") UUID teacherId,
       @Param("start") OffsetDateTime start,

@@ -76,8 +76,8 @@ public class AvailabilityServiceImpl implements AvailabilityService {
           TimeSlot slot =
               TimeSlot.builder()
                   .teacher(teacher)
-                  .start(startDateTime.atOffset(java.time.ZoneOffset.UTC))
-                  .endTime(endDateTime.atOffset(java.time.ZoneOffset.UTC))
+                  .startTs(startDateTime.atOffset(java.time.ZoneOffset.UTC))
+                  .endTs(endDateTime.atOffset(java.time.ZoneOffset.UTC))
                   .build();
           created.add(slotRepository.save(slot));
         }
@@ -94,7 +94,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         teacherRepository.findById(teacherId).orElseThrow(() -> new IllegalArgumentException("teacher"));
     List<TimeSlot> slots = slotRepository.findByTeacher(teacher);
     for (TimeSlot s : slots) {
-      if (!s.getStart().toLocalDate().isBefore(from)) {
+      if (!s.getStartTs().toLocalDate().isBefore(from)) {
         slotRepository.delete(s);
       }
     }
