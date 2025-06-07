@@ -13,6 +13,7 @@ export const Sidebar = () => {
         <NavLink className={linkClass} to="/calendar">Calendar</NavLink>
         <NavLink className={linkClass} to="/manager">Timeline</NavLink>
         <NavLink className={linkClass} to="/students">Students</NavLink>
+        <NavLink className={linkClass} to="/templates">Templates</NavLink>
         <NavLink className={linkClass} to="/settings">Settings</NavLink>
       </nav>
       <button onClick={logout} className="text-red-600 mt-auto">Logout</button>

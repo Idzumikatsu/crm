@@ -8,6 +8,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { TeacherCalendarPage } from './pages/TeacherCalendarPage';
 import { ManagerCalendarPage } from './pages/ManagerCalendarPage';
 import { StudentsPage } from './pages/StudentsPage';
+import { TemplatesPage } from './pages/TemplatesPage';
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,14 @@ function App() {
             element={
               <AuthGate>
                 <StudentsPage />
+              </AuthGate>
+            }
+          />
+          <Route
+            path="/templates"
+            element={
+              <AuthGate>
+                <TemplatesPage />
               </AuthGate>
             }
           />
