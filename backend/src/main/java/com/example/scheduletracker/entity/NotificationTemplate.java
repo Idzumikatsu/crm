@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "notification_templates")
+@Table(name = "notification_template")
 public class NotificationTemplate {
   @Id
   @GeneratedValue(generator = "UUID")

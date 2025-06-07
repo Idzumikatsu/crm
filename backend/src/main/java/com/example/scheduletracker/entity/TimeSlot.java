@@ -7,7 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 /** Time slot for teacher availability. */
 @Entity
-@Table(name = "time_slots")
+@Table(name = "time_slot")
 public class TimeSlot {
   @Id
   @GeneratedValue(generator = "UUID")

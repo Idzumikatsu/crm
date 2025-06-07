@@ -9,7 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 /** Weekly availability template for teacher */
 @Entity
-@Table(name = "availability_templates")
+@Table(name = "availability_template")
 public class AvailabilityTemplate {
   @Id
   @GeneratedValue(generator = "UUID")
@@ -21,7 +21,7 @@ public class AvailabilityTemplate {
   @JoinColumn(name = "teacher_id")
   private Teacher teacher;
 
-  @Column(name = "week_day", nullable = false)
+  @Column(name = "weekday", nullable = false)
   @Enumerated(EnumType.STRING)
   private DayOfWeek weekDay;
 

@@ -7,7 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 /** Lesson entity. */
 @Entity
-@Table(name = "lessons")
+@Table(name = "lesson")
 public class Lesson {
   @Id
   @GeneratedValue(generator = "UUID")
