@@ -28,5 +28,11 @@ public class FlywaySchemaTest {
             "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'LESSON' AND COLUMN_NAME = 'GROUP_ID'",
             Integer.class);
     assertThat(colExists).isEqualTo(1);
+
+    Integer constraintCount =
+        jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM INFORMATION_SCHEMA.CONSTRAINTS WHERE TABLE_NAME = 'NOTIFICATION_TEMPLATE' AND CONSTRAINT_TYPE = 'UNIQUE'",
+            Integer.class);
+    assertThat(constraintCount).isEqualTo(1);
   }
 }

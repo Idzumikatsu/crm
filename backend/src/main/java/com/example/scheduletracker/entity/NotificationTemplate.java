@@ -5,7 +5,9 @@ import java.util.UUID;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "notification_template")
+@Table(
+    name = "notification_template",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"code", "lang"}))
 public class NotificationTemplate {
   @Id
   @GeneratedValue(generator = "UUID")
