@@ -1,53 +1,14 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добро пожаловать</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.4/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded shadow-md w-96 text-center">
-        <h1 id="greeting" class="text-2xl font-bold mb-4"></h1>
-        <p id="username" class="mb-4"></p>
-        <form method="post" action="/logout" class="mb-2">
-            <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded" type="submit">Выйти</button>
-        </form>
-        <div id="links" class="mb-4"></div>
-        <div class="mt-6 text-left">
-            <h2 class="font-semibold mb-2">Ближайшие занятия</h2>
-            <ul id="lessons" class="list-disc list-inside text-sm"></ul>
-        </div>
-    </div>
-    <script>
-        fetch('/api/hello')
-            .then(r => r.text())
-            .then(text => {
-                document.getElementById('greeting').innerText = text;
-            });
-        fetch('/api/users/me')
-            .then(r => r.json())
-            .then(u => {
-                document.getElementById('username').innerText = 'Вы вошли как ' + u.username;
-                const links = document.getElementById('links');
-                if(u.role === 'TEACHER') {
-                    links.innerHTML = '<a href="teacher.html" class="text-blue-500 underline">Кабинет преподавателя</a>';
-                } else if(u.role === 'MANAGER') {
-                    links.innerHTML = '<a href="manager.html" class="text-blue-500 underline">Кабинет менеджера</a>';
-                }
-            });
-
-        fetch('/api/lessons')
-            .then(r => r.json())
-            .then(data => {
-                const list = document.getElementById('lessons');
-                data.forEach(l => {
-                    const li = document.createElement('li');
-                    const dt = new Date(l.dateTime);
-                    li.innerText = dt.toLocaleString() + ' — ' + l.group.name;
-                    list.appendChild(li);
-                });
-            });
-    </script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+    <script type="module" crossorigin src="/assets/index-BfHQNIXK.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Dtn62Xmo.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
