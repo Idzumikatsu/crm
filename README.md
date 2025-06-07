@@ -40,6 +40,7 @@
    - Выполните `./backend/gradlew test`.
 
 6. **Сборка CSS**
+   - Выполните `npm install` (или `npm ci`) из корня репозитория.
    - Для обновления стилей Tailwind запустите `npm run build` из корня
      репозитория. Результат появится в `backend/src/main/resources/static`.
 
