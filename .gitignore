@@ -14,7 +14,7 @@ backend/.gradle/
 backend/build/
 frontend/node_modules/
 frontend/dist/
-package-lock.json
+# Keep package-lock files to ensure deterministic installs
 client/package-lock.json
 server/package-lock.json
 
