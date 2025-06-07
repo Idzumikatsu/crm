@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
-import { Student } from '../components/StudentCombobox';
+import type { Student } from '../components/StudentCombobox';
 import { StudentDialog } from '../components/StudentDialog';
 
 export const StudentsPage = () => {
