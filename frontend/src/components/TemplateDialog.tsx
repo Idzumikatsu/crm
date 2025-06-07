@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export interface Template {
-  id?: number;
+  id?: string;
   code: string;
   lang: string;
   subject: string;

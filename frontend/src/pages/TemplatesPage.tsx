@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
-import { TemplateDialog, Template } from '../components/TemplateDialog';
+import { TemplateDialog } from '../components/TemplateDialog';
+import type { Template } from '../components/TemplateDialog';
 
 export const TemplatesPage = () => {
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -15,7 +16,7 @@ export const TemplatesPage = () => {
 
   useEffect(load, []);
 
-  const remove = (id: number) => {
+  const remove = (id: string) => {
     fetch(`/api/templates/${id}`, { method: 'DELETE' }).then(load);
   };
 

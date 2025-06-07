@@ -5,12 +5,12 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { type EventInput } from '@fullcalendar/core';
 
 interface Teacher {
-  id: number;
+  id: string;
   name: string;
 }
 
 interface Lesson {
-  id: number;
+  id: string;
   dateTime: string;
   duration: number;
   group?: { name: string };
@@ -18,7 +18,7 @@ interface Lesson {
 
 export const ManagerCalendar = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [teacherId, setTeacherId] = useState<number | null>(null);
+  const [teacherId, setTeacherId] = useState<string | null>(null);
   const [events, setEvents] = useState<EventInput[]>([]);
   const [modalLesson, setModalLesson] = useState<Lesson | null>(null);
 
@@ -27,7 +27,7 @@ export const ManagerCalendar = () => {
       .then((r) => r.json())
       .then((data: Teacher[]) => {
         setTeachers(data);
-        if (data.length > 0) setTeacherId(data[0].id);
+        if (data.length > 0) setTeacherId(String(data[0].id));
       });
   }, []);
 
@@ -55,7 +55,7 @@ export const ManagerCalendar = () => {
         <select
           id="teacher"
           value={teacherId ?? ''}
-          onChange={(e) => setTeacherId(Number(e.target.value))}
+          onChange={(e) => setTeacherId(e.target.value)}
           className="border p-1"
         >
           {teachers.map((t) => (

@@ -5,7 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { type EventInput } from '@fullcalendar/core';
 
 interface Lesson {
-  id: number;
+  id: string;
   dateTime: string;
   duration: number;
   group?: { name: string };

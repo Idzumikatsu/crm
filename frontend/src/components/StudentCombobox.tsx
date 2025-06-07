@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 
 export interface Student {
-  id: number;
+  id: string;
   name: string;
   email: string;
 }
 
 interface Props {
-  value: number | null;
-  onChange: (id: number | null) => void;
+  value: string | null;
+  onChange: (id: string | null) => void;
 }
 
 export const StudentCombobox = ({ value, onChange }: Props) => {
@@ -24,7 +24,7 @@ export const StudentCombobox = ({ value, onChange }: Props) => {
     <select
       className="border p-1"
       value={value ?? ''}
-      onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
+      onChange={(e) => onChange(e.target.value || null)}
     >
       <option value="">Select student</option>
       {students.map((s) => (

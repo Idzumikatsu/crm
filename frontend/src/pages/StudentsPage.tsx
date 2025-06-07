@@ -23,7 +23,7 @@ export const StudentsPage = () => {
       s.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  const remove = (id: number) => {
+  const remove = (id: string) => {
     fetch(`/api/students/${id}`, { method: 'DELETE' }).then(load);
   };
 
