@@ -34,26 +34,26 @@ class ManagerControllerTest {
   @Test
   @DisplayName("GET /api/manager/teachers returns list")
   void teachersList() throws Exception {
-    Teacher t = new Teacher(1L, "T1", null, "RUB");
+    Teacher t = new Teacher(java.util.UUID.randomUUID(), "T1", null, "RUB");
     when(teacherService.findAll()).thenReturn(List.of(t));
 
     mvc.perform(get("/api/manager/teachers"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].id").value(1L));
+        .andExpect(jsonPath("$[0].id").value(t.getId().toString()));
   }
 
   @Test
   @DisplayName("POST /api/manager/assign assigns student")
   void assignCreatesRelation() throws Exception {
-    Teacher t = new Teacher(1L, "T1", null, "RUB");
-    Student s = new Student(2L, "S1", "s@e.com");
-    when(teacherService.findById(1L)).thenReturn(Optional.of(t));
-    when(studentService.findById(2L)).thenReturn(Optional.of(s));
+    Teacher t = new Teacher(java.util.UUID.randomUUID(), "T1", null, "RUB");
+    Student s = new Student(java.util.UUID.randomUUID(), "S1", "s@e.com");
+    when(teacherService.findById(t.getId())).thenReturn(Optional.of(t));
+    when(studentService.findById(s.getId())).thenReturn(Optional.of(s));
     when(teacherStudentService.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-    mvc.perform(post("/api/manager/assign?teacherId=1&studentId=2"))
+    mvc.perform(post("/api/manager/assign?teacherId=" + t.getId() + "&studentId=" + s.getId()))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.teacher.id").value(1L))
-        .andExpect(jsonPath("$.student.id").value(2L));
+        .andExpect(jsonPath("$.teacher.id").value(t.getId().toString()))
+        .andExpect(jsonPath("$.student.id").value(s.getId().toString()));
   }
 }

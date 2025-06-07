@@ -5,17 +5,18 @@ import com.example.scheduletracker.entity.TimeSlot;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface AvailabilityService {
   AvailabilityTemplate saveTemplate(AvailabilityTemplate template);
 
-  List<AvailabilityTemplate> findTemplates(Long teacherId);
+  List<AvailabilityTemplate> findTemplates(UUID teacherId);
 
-  Optional<AvailabilityTemplate> findTemplate(Long id);
+  Optional<AvailabilityTemplate> findTemplate(UUID id);
 
-  void deleteTemplate(Long id);
+  void deleteTemplate(UUID id);
 
-  List<TimeSlot> generateSlots(Long teacherId, LocalDate from, LocalDate to);
+  List<TimeSlot> generateSlots(UUID teacherId, LocalDate from, LocalDate to);
 
-  void deleteSlots(Long teacherId, LocalDate from);
+  void deleteSlots(UUID teacherId, LocalDate from);
 }

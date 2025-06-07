@@ -29,19 +29,19 @@ class GroupControllerTest {
   @Test
   @DisplayName("GET /api/groups возвращает список групп")
   void allReturnsGroups() throws Exception {
-    Group g = new Group(1L, "G1", null);
+    Group g = new Group(java.util.UUID.randomUUID(), "G1", null);
     when(svc.findAll()).thenReturn(List.of(g));
 
     mvc.perform(get("/api/groups"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].id").value(1L));
+        .andExpect(jsonPath("$[0].id").value(g.getId().toString()));
   }
 
   @Test
   @DisplayName("GET /api/groups/{id} при отсутствии возвращает 404")
   void getNotFound() throws Exception {
-    when(svc.findById(1L)).thenReturn(Optional.empty());
-
-    mvc.perform(get("/api/groups/1")).andExpect(status().isNotFound());
+    when(svc.findById(java.util.UUID.fromString("00000000-0000-0000-0000-000000000001"))).thenReturn(Optional.empty());
+    mvc.perform(get("/api/groups/00000000-0000-0000-0000-000000000001"))
+        .andExpect(status().isNotFound());
   }
 }

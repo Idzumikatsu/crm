@@ -5,21 +5,22 @@ import com.example.scheduletracker.entity.Lesson;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface LessonService {
   Lesson save(Lesson lesson);
 
   List<Lesson> findAll();
 
-  Optional<Lesson> findById(Long id);
+  Optional<Lesson> findById(UUID id);
 
-  void deleteById(Long id);
+  void deleteById(UUID id);
 
   List<Lesson> findBetween(OffsetDateTime from, OffsetDateTime to);
 
-  Lesson updateStatus(Long id, Lesson.Status status);
+  Lesson updateStatus(UUID id, Lesson.Status status);
 
-  Lesson book(Long teacherId, Long groupId, OffsetDateTime start, int duration);
+  Lesson book(UUID teacherId, UUID groupId, OffsetDateTime start, int duration);
 
   /**
    * Search lessons by optional filters. Any {@code null} parameter is ignored.
@@ -30,5 +31,5 @@ public interface LessonService {
    * @param groupId filter by group id
    * @return list of lessons matching all provided filters
    */
-  List<Lesson> search(OffsetDateTime from, OffsetDateTime to, Long teacherId, Long groupId);
+  List<Lesson> search(OffsetDateTime from, OffsetDateTime to, UUID teacherId, UUID groupId);
 }

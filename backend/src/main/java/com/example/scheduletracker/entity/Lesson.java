@@ -2,14 +2,18 @@ package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.UUID;
+import org.hibernate.annotations.GenericGenerator;
 
 /** Lesson entity. */
 @Entity
 @Table(name = "lessons")
 public class Lesson {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+  private UUID id;
 
   @Column(nullable = false)
   private OffsetDateTime dateTime;
@@ -31,7 +35,7 @@ public class Lesson {
 
   public Lesson() {}
 
-  public Lesson(Long id, OffsetDateTime dateTime, Integer duration, Status status, Teacher teacher, Group group) {
+  public Lesson(UUID id, OffsetDateTime dateTime, Integer duration, Status status, Teacher teacher, Group group) {
     this.id = id;
     this.dateTime = dateTime;
     this.duration = duration;
@@ -40,11 +44,11 @@ public class Lesson {
     this.group = group;
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
@@ -93,14 +97,14 @@ public class Lesson {
   }
 
   public static class Builder {
-    private Long id;
+    private UUID id;
     private OffsetDateTime dateTime;
     private Integer duration;
     private Status status = Status.SCHEDULED;
     private Teacher teacher;
     private Group group;
 
-    public Builder id(Long id) {
+    public Builder id(UUID id) {
       this.id = id;
       return this;
     }

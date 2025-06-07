@@ -2,14 +2,18 @@ package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.UUID;
+import org.hibernate.annotations.GenericGenerator;
 
 /** Time slot for teacher availability. */
 @Entity
 @Table(name = "time_slots")
 public class TimeSlot {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+  private UUID id;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "teacher_id")
@@ -23,18 +27,18 @@ public class TimeSlot {
 
   public TimeSlot() {}
 
-  public TimeSlot(Long id, Teacher teacher, OffsetDateTime start, OffsetDateTime endTime) {
+  public TimeSlot(UUID id, Teacher teacher, OffsetDateTime start, OffsetDateTime endTime) {
     this.id = id;
     this.teacher = teacher;
     this.start = start;
     this.endTime = endTime;
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
@@ -67,12 +71,12 @@ public class TimeSlot {
   }
 
   public static class Builder {
-    private Long id;
+    private UUID id;
     private Teacher teacher;
     private OffsetDateTime start;
     private OffsetDateTime endTime;
 
-    public Builder id(Long id) {
+    public Builder id(UUID id) {
       this.id = id;
       return this;
     }

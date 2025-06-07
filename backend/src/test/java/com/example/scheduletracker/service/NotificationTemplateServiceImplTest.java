@@ -38,11 +38,11 @@ class NotificationTemplateServiceImplTest {
 
   @Test
   void findByCodeAndLangCallsRepo() {
-    NotificationTemplate t = new NotificationTemplate(1L, "reminder", "en", null, null);
+    NotificationTemplate t = new NotificationTemplate(java.util.UUID.randomUUID(), "reminder", "en", null, null);
     when(repo.findByCodeAndLang("reminder", "en")).thenReturn(Optional.of(t));
     Optional<NotificationTemplate> result = service.findByCodeAndLang("reminder", "en");
     assertTrue(result.isPresent());
-    assertEquals(1L, result.get().getId());
+    assertEquals(t.getId(), result.get().getId());
   }
 
   @Test

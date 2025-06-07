@@ -3,6 +3,7 @@ package com.example.scheduletracker.controller;
 import com.example.scheduletracker.entity.NotificationTemplate;
 import com.example.scheduletracker.service.NotificationTemplateService;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class TemplateController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<NotificationTemplate> get(@PathVariable Long id) {
+  public ResponseEntity<NotificationTemplate> get(@PathVariable UUID id) {
     return service.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
@@ -34,7 +35,7 @@ public class TemplateController {
 
   @PutMapping("/{id}")
   public ResponseEntity<NotificationTemplate> update(
-      @PathVariable Long id, @RequestBody NotificationTemplate t) {
+      @PathVariable UUID id, @RequestBody NotificationTemplate t) {
     return service
         .findById(id)
         .map(
@@ -46,7 +47,7 @@ public class TemplateController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
     service.deleteById(id);
     return ResponseEntity.noContent().build();
   }

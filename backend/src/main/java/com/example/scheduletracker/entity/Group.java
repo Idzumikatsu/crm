@@ -1,14 +1,18 @@
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
+import java.util.UUID;
+import org.hibernate.annotations.GenericGenerator;
 
 /** Group of students. */
 @Entity
 @Table(name = "groups")
 public class Group {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+  private UUID id;
 
   @Column(nullable = false)
   private String name;
@@ -17,17 +21,17 @@ public class Group {
 
   public Group() {}
 
-  public Group(Long id, String name, String description) {
+  public Group(UUID id, String name, String description) {
     this.id = id;
     this.name = name;
     this.description = description;
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
@@ -52,11 +56,11 @@ public class Group {
   }
 
   public static class Builder {
-    private Long id;
+    private UUID id;
     private String name;
     private String description;
 
-    public Builder id(Long id) {
+    public Builder id(UUID id) {
       this.id = id;
       return this;
     }

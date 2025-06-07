@@ -7,6 +7,7 @@ import com.example.scheduletracker.service.StudentService;
 import com.example.scheduletracker.service.TeacherService;
 import com.example.scheduletracker.service.TeacherStudentService;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class ManagerController {
 
   @PostMapping("/assign")
   public ResponseEntity<TeacherStudent> assign(
-      @RequestParam Long teacherId, @RequestParam Long studentId) {
+      @RequestParam UUID teacherId, @RequestParam UUID studentId) {
     Teacher teacher = teacherService.findById(teacherId).orElse(null);
     Student student = studentService.findById(studentId).orElse(null);
     if (teacher == null || student == null) {

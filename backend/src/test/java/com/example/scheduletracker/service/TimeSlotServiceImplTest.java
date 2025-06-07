@@ -31,9 +31,10 @@ class TimeSlotServiceImplTest {
 
   @Test
   void findByTeacherIdReturnsEmptyWhenTeacherMissing() {
-    when(teacherRepo.findById(1L)).thenReturn(Optional.empty());
+    java.util.UUID tid = java.util.UUID.randomUUID();
+    when(teacherRepo.findById(tid)).thenReturn(Optional.empty());
 
-    List<TimeSlot> result = service.findByTeacherId(1L);
+    List<TimeSlot> result = service.findByTeacherId(tid);
 
     assertTrue(result.isEmpty());
     verify(repo, never()).findByTeacher(any());
@@ -41,14 +42,14 @@ class TimeSlotServiceImplTest {
 
   @Test
   void findByTeacherIdReturnsRepoData() {
-    Teacher t = new Teacher(1L, "T1", null, "RUB");
-    TimeSlot slot = new TimeSlot(1L, t, null, null);
-    when(teacherRepo.findById(1L)).thenReturn(Optional.of(t));
+    Teacher t = new Teacher(java.util.UUID.randomUUID(), "T1", null, "RUB");
+    TimeSlot slot = new TimeSlot(java.util.UUID.randomUUID(), t, null, null);
+    when(teacherRepo.findById(t.getId())).thenReturn(Optional.of(t));
     when(repo.findByTeacher(t)).thenReturn(List.of(slot));
 
-    List<TimeSlot> result = service.findByTeacherId(1L);
+    List<TimeSlot> result = service.findByTeacherId(t.getId());
 
     assertEquals(1, result.size());
-    assertEquals(1L, result.get(0).getId());
+    assertEquals(slot.getId(), result.get(0).getId());
   }
 }

@@ -6,6 +6,7 @@ import com.example.scheduletracker.repository.TeacherRepository;
 import com.example.scheduletracker.service.TeacherService;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,12 +28,12 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public Optional<Teacher> findById(Long id) {
+  public Optional<Teacher> findById(UUID id) {
     return repo.findById(id);
   }
 
   @Override
-  public void deleteById(Long id) {
+  public void deleteById(UUID id) {
     repo.deleteById(id);
   }
 }

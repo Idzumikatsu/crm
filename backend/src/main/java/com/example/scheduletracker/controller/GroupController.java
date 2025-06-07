@@ -4,6 +4,7 @@ package com.example.scheduletracker.controller;
 import com.example.scheduletracker.entity.Group;
 import com.example.scheduletracker.service.GroupService;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class GroupController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Group> get(@PathVariable Long id) {
+  public ResponseEntity<Group> get(@PathVariable UUID id) {
     return svc.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
@@ -32,7 +33,7 @@ public class GroupController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Group> update(@PathVariable Long id, @RequestBody Group g) {
+  public ResponseEntity<Group> update(@PathVariable UUID id, @RequestBody Group g) {
     return svc.findById(id)
         .map(
             existing -> {
@@ -43,7 +44,7 @@ public class GroupController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
     svc.deleteById(id);
     return ResponseEntity.noContent().build();
   }

@@ -1,13 +1,17 @@
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
+import java.util.UUID;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "notification_templates")
 public class NotificationTemplate {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+  private UUID id;
 
   @Column(nullable = false)
   private String code;
@@ -23,7 +27,7 @@ public class NotificationTemplate {
 
   public NotificationTemplate() {}
 
-  public NotificationTemplate(Long id, String code, String lang, String subject, String bodyHtml) {
+  public NotificationTemplate(UUID id, String code, String lang, String subject, String bodyHtml) {
     this.id = id;
     this.code = code;
     this.lang = lang;
@@ -31,11 +35,11 @@ public class NotificationTemplate {
     this.bodyHtml = bodyHtml;
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 

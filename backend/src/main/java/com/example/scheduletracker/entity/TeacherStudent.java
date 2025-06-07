@@ -1,6 +1,7 @@
 package com.example.scheduletracker.entity;
 
 import jakarta.persistence.*;
+import java.util.UUID;
 
 /** Assignment of teacher to student. */
 @Entity
@@ -87,31 +88,31 @@ public class TeacherStudent {
   public static class Id implements java.io.Serializable {
 
     @Column(name = "teacher_id")
-    private Long teacherId;
+    private UUID teacherId;
 
     @Column(name = "student_id")
-    private Long studentId;
+    private UUID studentId;
 
     public Id() {}
 
-    public Id(Long teacherId, Long studentId) {
+    public Id(UUID teacherId, UUID studentId) {
       this.teacherId = teacherId;
       this.studentId = studentId;
     }
 
-    public Long getTeacherId() {
+    public UUID getTeacherId() {
       return teacherId;
     }
 
-    public void setTeacherId(Long teacherId) {
+    public void setTeacherId(UUID teacherId) {
       this.teacherId = teacherId;
     }
 
-    public Long getStudentId() {
+    public UUID getStudentId() {
       return studentId;
     }
 
-    public void setStudentId(Long studentId) {
+    public void setStudentId(UUID studentId) {
       this.studentId = studentId;
     }
 

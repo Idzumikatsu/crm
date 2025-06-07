@@ -36,7 +36,7 @@ class ReminderServiceImplTest {
     OffsetDateTime now = OffsetDateTime.now();
     Lesson lesson =
         new Lesson(
-            1L,
+            java.util.UUID.randomUUID(),
             now.plusMinutes(10),
             60,
             Lesson.Status.SCHEDULED,
@@ -46,7 +46,7 @@ class ReminderServiceImplTest {
     when(templateService.findByCodeAndLang(any(), any()))
         .thenReturn(
             java.util.Optional.of(
-                new NotificationTemplate(1L, "reminder", "en", "sub", "body {{time}}")));
+                new NotificationTemplate(java.util.UUID.randomUUID(), "reminder", "en", "sub", "body {{time}}")));
 
     service.processReminders();
 

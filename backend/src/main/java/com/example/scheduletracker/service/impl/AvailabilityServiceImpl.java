@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +37,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
   }
 
   @Override
-  public List<AvailabilityTemplate> findTemplates(Long teacherId) {
+  public List<AvailabilityTemplate> findTemplates(UUID teacherId) {
     if (teacherId == null) {
       return templateRepository.findAll();
     }
@@ -47,18 +48,18 @@ public class AvailabilityServiceImpl implements AvailabilityService {
   }
 
   @Override
-  public Optional<AvailabilityTemplate> findTemplate(Long id) {
+  public Optional<AvailabilityTemplate> findTemplate(UUID id) {
     return templateRepository.findById(id);
   }
 
   @Override
-  public void deleteTemplate(Long id) {
+  public void deleteTemplate(UUID id) {
     templateRepository.deleteById(id);
   }
 
   @Override
   @Transactional
-  public List<TimeSlot> generateSlots(Long teacherId, LocalDate from, LocalDate to) {
+  public List<TimeSlot> generateSlots(UUID teacherId, LocalDate from, LocalDate to) {
     Teacher teacher =
         teacherRepository.findById(teacherId).orElseThrow(() -> new IllegalArgumentException("teacher"));
     List<AvailabilityTemplate> templates = templateRepository.findByTeacher(teacher);
@@ -88,7 +89,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
   @Override
   @Transactional
-  public void deleteSlots(Long teacherId, LocalDate from) {
+  public void deleteSlots(UUID teacherId, LocalDate from) {
     Teacher teacher =
         teacherRepository.findById(teacherId).orElseThrow(() -> new IllegalArgumentException("teacher"));
     List<TimeSlot> slots = slotRepository.findByTeacher(teacher);

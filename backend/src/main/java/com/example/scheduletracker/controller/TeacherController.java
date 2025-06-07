@@ -4,6 +4,7 @@ package com.example.scheduletracker.controller;
 import com.example.scheduletracker.entity.Teacher;
 import com.example.scheduletracker.service.TeacherService;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class TeacherController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Teacher> get(@PathVariable Long id) {
+  public ResponseEntity<Teacher> get(@PathVariable UUID id) {
     return svc.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
@@ -34,7 +35,7 @@ public class TeacherController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Teacher> update(@PathVariable Long id, @RequestBody Teacher t) {
+  public ResponseEntity<Teacher> update(@PathVariable UUID id, @RequestBody Teacher t) {
     return svc.findById(id)
         .map(
             existing -> {
@@ -45,7 +46,7 @@ public class TeacherController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
     svc.deleteById(id);
     return ResponseEntity.noContent().build();
   }
