@@ -18,6 +18,7 @@
 3. **Node.js**
    - Use Node 20 or 22 as in the CI matrix.
    - Run `npm install` (or `npm ci`) before any npm script (`npm run build`, `npm run lint`, `npm run dev`).
+   - Проверить стиль кода можно командой `cd frontend && npm run lint`.
 4. **PostgreSQL**
    - Приложение ожидает базу `schedule` с пользователем `postgres` и паролем `postgres`.
    - Быстрый вариант через Docker:
@@ -205,6 +206,13 @@ npm run dev
 Workflow собирает JAR, копирует его и файлы инфраструктуры на сервер и запускает `docker compose -f infra/docker-compose.dev.yml up -d`.
 Сервер должен иметь установленный Docker версии **27.5.1** или новее (API 1.47), так как деплой тестировался на этой версии.
 После успешного завершения всех проверок Pull Request в `main` автоматически сливается через auto-merge.
+
+Чтобы воспроизвести проверки CI локально, выполните:
+
+```bash
+./backend/gradlew test
+cd frontend && npm run lint
+```
 
 
 
