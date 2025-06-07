@@ -1,6 +1,7 @@
 # Frontend
 
 Single Page Application built with **React 19** and **Vite**.
+Requires Node 20 or 22. Run `npm install` (or `npm ci`) before any npm script (`npm run build`, `npm run lint`, `npm run dev`).
 
 ## Development
 
