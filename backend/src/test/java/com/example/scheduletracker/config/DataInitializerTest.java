@@ -1,6 +1,7 @@
 package com.example.scheduletracker.config;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import com.example.scheduletracker.entity.User;
@@ -28,15 +29,17 @@ class DataInitializerTest {
 
   @Test
   void createsDefaultUsersWhenEmpty() {
-    when(repo.count()).thenReturn(0L);
+    when(repo.findByUsername("manager")).thenReturn(java.util.Optional.empty());
+    when(repo.findByUsername("teacher")).thenReturn(java.util.Optional.empty());
+    when(repo.findByUsername("admin")).thenReturn(java.util.Optional.empty());
     when(encoder.encode(any())).thenReturn("enc");
     initializer.run(null);
-    verify(repo, times(2)).save(any(User.class));
+    verify(repo, times(3)).save(any(User.class));
   }
 
   @Test
   void doesNothingWhenUsersExist() {
-    when(repo.count()).thenReturn(1L);
+    when(repo.findByUsername(anyString())).thenReturn(java.util.Optional.of(new User()));
     initializer.run(null);
     verify(repo, never()).save(any());
   }
