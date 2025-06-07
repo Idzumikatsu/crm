@@ -131,5 +131,52 @@
 
 ---
 
-> **Всего:** 16 главных задач, 72 ideal-hours.  
+> **Всего:** 16 главных задач, 72 ideal-hours.
 > Обновление: 07 Jun 2025 — синхронизировано с текущим кодом `main@HEAD`.
+
+## Статус выполнения
+
+- [ ] DNS-1 – blocked: требует доступ к DNS провайдеру
+- [ ] DNS-2 – blocked: зависит от DNS-1
+- [ ] DNS-3 – blocked: зависит от DNS-2
+- [ ] NT-1 – blocked: требуется Mailgun
+- [ ] NT-2 – blocked: регистрация бота вне рамок
+- [x] DATA-1 – выполнено
+- [ ] UX-1 – pending
+- [ ] UX-2 – pending
+- [ ] UX-3 – pending
+- [ ] NT-3 – pending
+- [ ] NT-4 – pending
+- [ ] UX-4 – pending
+- [ ] UX-5 – pending
+- [ ] ONB-1 – pending
+- [ ] ONB-2 – pending
+- [ ] DATA-2 – pending
+- [ ] BR-1 – pending
+- [ ] QOS-1 – pending
+- [ ] QOS-2 – pending
+- [ ] GL-1 – pending
+- [ ] GL-2 – pending
+- [ ] GL-3 – pending
+- [ ] GL-4 – pending
+- [ ] SB-1 – pending
+- [ ] SB-2 – pending
+- [ ] SB-3 – pending
+- [ ] SB-4 – pending
+- [ ] PY-1 – pending
+- [ ] PY-2 – pending
+- [ ] PY-3 – pending
+- [ ] GC-1 – pending
+- [ ] GC-2 – pending
+- [ ] GC-3 – pending
+- [ ] PWA-1 – pending
+- [ ] PWA-2 – pending
+- [ ] PWA-3 – pending
+- [ ] OB-1 – pending
+- [ ] OB-2 – pending
+- [ ] OB-3 – pending
+- [ ] AI-1 – pending
+- [ ] AI-2 – pending
+- [ ] DOC-1 – pending
+- [x] CI-1 – выполнено
+- [ ] DEV-1 – pending
