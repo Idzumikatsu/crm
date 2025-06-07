@@ -1,8 +1,15 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+export interface UserInfo {
+  id: string;
+  username: string;
+  role: string;
+}
+
 export interface AuthContextValue {
   token: string | null;
+  user: UserInfo | null;
   login: (t: string) => void;
   logout: () => void;
 }
@@ -11,6 +18,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
+  const [user, setUser] = useState<UserInfo | null>(null);
   const navigate = useNavigate();
 
   const login = (t: string) => {
@@ -22,16 +30,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
+    setUser(null);
     navigate('/login');
   };
 
   useEffect(() => {
     if (!token) {
+      setUser(null);
       navigate('/login');
+      return;
     }
+    fetch('/api/users/me', { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((u: UserInfo) => setUser(u))
+      .catch(() => setUser(null));
   }, [token, navigate]);
 
-  const value: AuthContextValue = { token, login, logout };
+  const value: AuthContextValue = { token, user, login, logout };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 

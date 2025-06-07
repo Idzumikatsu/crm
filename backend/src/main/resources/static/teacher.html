@@ -21,21 +21,34 @@
     </table>
 
 <script>
-fetch('/api/lessons?teacherId=1')
-  .then(r => r.json())
-  .then(data => {
-    const body = document.querySelector('#lesson-table tbody');
-    data.forEach(l => {
-        const tr = document.createElement('tr');
-        const dt = new Date(l.dateTime);
-        tr.innerHTML = `<td class="border px-4 py-2">${dt.toLocaleString()}</td>`+
-            `<td class="border px-4 py-2">${l.group.name}</td>`+
-            `<td class="border px-4 py-2">${l.status}</td>`+
-            `<td class="border px-4 py-2"><button data-id="${l.id}" class="confirm bg-green-500 text-white px-2 py-1 mr-2">✔</button>`+
-            `<button data-id="${l.id}" class="cancel bg-red-500 text-white px-2 py-1">✖</button></td>`;
-        body.appendChild(tr);
-    });
+const token = localStorage.getItem('token');
+fetch('/api/users/me', { headers: { Authorization: `Bearer ${token}` } })
+  .then(r => r.ok ? r.json() : Promise.reject('unauthorized'))
+  .then(u => {
+    if (u.role !== 'TEACHER') throw 'no teacher';
+    loadLessons(u.id);
+  })
+  .catch(err => {
+    document.body.innerHTML = `<p class="text-red-600">${err}</p>`;
   });
+
+function loadLessons(tid) {
+  fetch(`/api/lessons?teacherId=${tid}`, { headers: { Authorization: `Bearer ${token}` } })
+    .then(r => r.json())
+    .then(data => {
+      const body = document.querySelector('#lesson-table tbody');
+      data.forEach(l => {
+          const tr = document.createElement('tr');
+          const dt = new Date(l.dateTime);
+          tr.innerHTML = `<td class="border px-4 py-2">${dt.toLocaleString()}</td>`+
+              `<td class="border px-4 py-2">${l.group.name}</td>`+
+              `<td class="border px-4 py-2">${l.status}</td>`+
+              `<td class="border px-4 py-2"><button data-id="${l.id}" class="confirm bg-green-500 text-white px-2 py-1 mr-2">✔</button>`+
+              `<button data-id="${l.id}" class="cancel bg-red-500 text-white px-2 py-1">✖</button></td>`;
+          body.appendChild(tr);
+      });
+    });
+}
 
 document.addEventListener('click', e => {
   if(e.target.classList.contains('confirm')) {
@@ -47,7 +60,10 @@ document.addEventListener('click', e => {
 });
 
 function updateStatus(id, status) {
-  fetch(`/api/lessons/${id}/status?status=${status}`, {method:'PATCH'})
+  fetch(`/api/lessons/${id}/status?status=${status}`, {
+    method:'PATCH',
+    headers: { Authorization: `Bearer ${token}` }
+  })
     .then(() => location.reload());
 }
 </script>

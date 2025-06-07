@@ -3,6 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { type EventInput } from '@fullcalendar/core';
+import { useAuth } from '../auth';
 
 interface Lesson {
   id: string;
@@ -12,11 +13,20 @@ interface Lesson {
 }
 
 export const TeacherCalendar = () => {
+  const { user, token } = useAuth();
   const [events, setEvents] = useState<EventInput[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/teacher/lessons?teacherId=1')
-      .then((r) => r.json())
+    if (!user) return;
+    if (user.role !== 'TEACHER') {
+      setError('No teacher account associated with user');
+      return;
+    }
+    fetch(`/api/teacher/lessons?teacherId=${user.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((data: Lesson[]) => {
         setEvents(
           data.map((l) => ({
@@ -26,8 +36,12 @@ export const TeacherCalendar = () => {
             end: new Date(new Date(l.dateTime).getTime() + l.duration * 60000).toISOString(),
           }))
         );
-      });
-  }, []);
+      })
+      .catch(() => setError('Failed to load lessons'));
+  }, [user, token]);
+
+  if (!user) return <div>Loading...</div>;
+  if (error) return <div className="text-red-600">{error}</div>;
 
   return (
     <FullCalendar plugins={[dayGridPlugin, timeGridPlugin]} initialView="timeGridWeek" events={events} />
