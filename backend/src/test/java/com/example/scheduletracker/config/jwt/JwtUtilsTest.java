@@ -21,4 +21,11 @@ class JwtUtilsTest {
     assertEquals("alice", claims.getSubject());
     assertEquals("MANAGER", claims.get("role"));
   }
+
+  @Test
+  void insecureSecretThrowsException() {
+    IllegalArgumentException ex =
+        assertThrows(IllegalArgumentException.class, () -> new JwtUtils("weak"));
+    assertTrue(ex.getMessage().contains("32 bytes"));
+  }
 }
