@@ -152,8 +152,8 @@ jobs:
         script: |
           set -e
           cd "$HOME/$DEPLOY_DIR"
-          # if any other container is using port 8080, force remove it
-          docker ps -q --filter "publish=8080" | xargs -r docker rm -f
+          # remove old containers from the schedule-app Compose project
+          docker ps -aq --filter "label=com.docker.compose.project=schedule-app" | xargs -r docker rm -f
           docker compose -f infra/docker-compose.yml down --remove-orphans
           docker compose -f infra/docker-compose.yml build --no-cache
           docker compose -f infra/docker-compose.yml up -d
