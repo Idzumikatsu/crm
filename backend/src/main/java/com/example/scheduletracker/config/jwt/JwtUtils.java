@@ -14,7 +14,12 @@ public class JwtUtils {
   private final long expirationMs = 3600_000; // 1h
 
   public JwtUtils(@Value("${jwt.secret}") String secret) {
-    this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    byte[] bytes = secret.getBytes(StandardCharsets.UTF_8);
+    if (bytes.length < 32) {
+      throw new IllegalArgumentException(
+          "JWT secret key must be at least 32 bytes long for HS256 algorithm");
+    }
+    this.key = Keys.hmacShaKeyFor(bytes);
   }
 
   public String generateToken(String username, String role) {
