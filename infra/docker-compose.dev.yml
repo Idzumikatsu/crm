@@ -66,6 +66,7 @@ services:
       - "8080:8080"
 
   nginx:
+    profiles: ["prod"]
     image: nginx:alpine
     depends_on:
       app:
@@ -89,6 +90,7 @@ services:
       - "443:443"
 
   nginx-exporter:
+    profiles: ["prod"]
     image: nginx/nginx-prometheus-exporter:1.1.0
     depends_on:
       - nginx

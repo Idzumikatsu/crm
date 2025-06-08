@@ -94,8 +94,16 @@
    Dockerfile собирает JAR внутри образа, поэтому Gradle на хосте не требуется.
 4. Для остановки используйте `make down`, логи можно смотреть через `make logs`.
 
+При необходимости можно обойтись без Makefile и запустить `docker compose` напрямую:
+
+```bash
+docker compose -f infra/docker-compose.dev.yml up -d
+COMPOSE_PROFILES=dev docker compose -f infra/docker-compose.dev.yml up -d
+```
+
 Контейнер `app` предназначен для production-профиля, а `app-dev` активируется
-при запуске с профилем `dev`. Это упрощает локальную отладку.
+при запуске с профилем `dev`. Это упрощает локальную отладку. Контейнер `nginx`
+запускается только в профиле `prod` и автоматически ждёт готовности бэкенда.
 
 При запуске `nginx` отдельно задайте `APP_HOST` и `APP_PORT` для указания адреса
 бэкенда. Контейнер подставит их в `nginx.conf.template`.
