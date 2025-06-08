@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
   app:
     build:
       context: ..
@@ -16,8 +16,9 @@ services:
     depends_on:
       - db
     environment:
-      SPRING_PROFILES_ACTIVE: postgres
-      DB_HOST: db
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-postgres}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
       JWT_SECRET: ${JWT_SECRET:-changeme}
     restart: unless-stopped
     ports:
