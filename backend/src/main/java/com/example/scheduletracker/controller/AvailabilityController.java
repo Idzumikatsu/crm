@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/availability")
 public class AvailabilityController {
   private final AvailabilityService service;
 
