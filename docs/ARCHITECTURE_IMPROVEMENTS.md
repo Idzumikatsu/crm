@@ -27,11 +27,9 @@ The Dockerfile expects a pre-built `app.jar` copied into the repository root.
    - Store variables like `SPRING_PROFILES_ACTIVE`, `DB_HOST` and `JWT_SECRET` in an `.env` file. Compose will pick them up automatically, simplifying local runs.
 3. **Health checks**
    - Add `healthcheck` instructions for the app and database containers. Restart policies can then rely on container health instead of repeated crashes.
-4. **docker compose profiles**
-   - Separate dev and prod options via Compose profiles. Development would mount source code volumes, while production builds a slim image.
-5. **Makefile helpers**
+4. **Makefile helpers**
    - Provide `make build` and `make up` targets that wrap the common steps (building images, running Compose, tailing logs).
-6. **Logging and troubleshooting**
+5. **Logging and troubleshooting**
    - Document how to inspect `docker compose logs app` and typical startup issues. Include this in the runbook.
 
 ## Action plan

@@ -84,21 +84,20 @@
      -out infra/nginx/certs/server.crt \
      -days 365 -subj "/CN=localhost"
    ```
-3. Соберите и запустите контейнеры через Makefile:
+3. Соберите и запустите контейнеры через Makefile. Он использует
+   `infra/docker-compose.yml`:
 
    ```bash
-  make build
-  make up
+   make build
+   make up
+   docker compose ps
+   curl -f http://localhost:8080/actuator/health
+   make down
    ```
 
    Dockerfile собирает JAR внутри образа, поэтому Gradle на хосте не требуется.
-4. Для остановки используйте `make down`, логи можно смотреть через `make logs`.
-
-При необходимости можно обойтись без Makefile и запустить `docker compose` напрямую:
-
-```bash
-docker compose -f infra/docker-compose.yml up -d
-```
+   Логи можно смотреть через `make logs`. При необходимости можно запустить
+   `docker compose -f infra/docker-compose.yml up -d` напрямую без Makefile.
 
 Контейнер `app` используется как в production, так и при локальной разработке.
 `nginx` запускается вместе с приложением и автоматически ждёт готовности бэкенда.
@@ -120,11 +119,9 @@ docker compose ps -a
 docker compose logs app
 ```
 Частая причина ошибки 502/503 — приложение не смогло подключиться к базе.
-Запустите контейнеры повторно:
-```bash
-make up
-```
-Остановить контейнеры можно командой `make down`.
+Логи можно просмотреть командой `docker compose logs app` и при необходимости
+перезапустить инфраструктуру через `make up`. После проверки завершите работу
+командой `make down`.
 
 Проверить здоровье приложения можно запросом к эндпоинту `/actuator/health`:
 ```bash
