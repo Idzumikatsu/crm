@@ -94,14 +94,16 @@ openssl req -x509 -newkey rsa:2048 -nodes -keyout infra/nginx/certs/server.key -
 ```bash
 ./gradlew build
 cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
-export JWT_SECRET=$(openssl rand -hex 32)  # или добавьте значение в файл .env
+export JWT_SECRET=$(openssl rand -hex 32)  # опционально, иначе используется changeme
 cd ..
 docker compose -f infra/docker-compose.dev.yml up --build
+```
+Если переменная `JWT_SECRET` не задана, docker compose подставит `changeme`.
+Не используйте этот ключ в production.
 
 При запуске `nginx` отдельно используйте переменные окружения `APP_HOST` и
 `APP_PORT` для указания адреса backend-сервиса. Контейнер автоматически
 подставит их в `nginx.conf.template`.
-```
 
 После старта контейнеров веб-интерфейс доступен по адресу
 `https://localhost` (порт `443`). Обращения к `http://localhost` будут
