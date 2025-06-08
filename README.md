@@ -127,10 +127,14 @@ curl -f http://localhost:8080/actuator/health
 curl http://localhost:8080/actuator/prometheus
 ```
 
+
 После запуска метрики Nginx доступны на `http://localhost:9114/metrics`.
 Экспортер считывает данные со страницы `/nginx_status` внутри контейнера.
-Добавьте оба адреса в конфигурацию Prometheus, чтобы собирать показатели от
-приложения и `nginx-exporter`.
+
+Инфраструктура включает сервис `prometheus`, который читает конфигурацию из
+`infra/prometheus/prometheus.yml` и автоматически опрашивает приложение и
+`nginx-exporter`. Веб‑интерфейс Prometheus доступен на
+`http://localhost:9090`.
 
 
 
