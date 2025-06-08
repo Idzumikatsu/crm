@@ -74,7 +74,8 @@
    переменную `JWT_SECRET` случайной строкой длиной не менее 32 байт,
    например `openssl rand -hex 32`.
    При необходимости измените `SPRING_PROFILES_ACTIVE`, `DB_HOST` и `DB_PORT`.
-   Файл автоматически читается `docker compose`.
+   Файл автоматически читается `docker compose`. Если переменная не
+   задана, `docker compose` завершится ошибкой `JWT_SECRET: set JWT_SECRET in .env`.
 2. Создайте сертификат для Nginx:
 
    ```bash
@@ -243,7 +244,9 @@ cd frontend && npm run lint
 В `application.yml` он задан как `${JWT_SECRET:changeme}`, поэтому
 в production его нужно обязательно переопределить и использовать
 случайную строку не менее 32 байт,
-например `openssl rand -hex 32`.
+например `openssl rand -hex 32`. Файл
+`infra/docker-compose.dev.yml` требует эту переменную, поэтому запуск
+контейнеров завершится ошибкой, если `JWT_SECRET` не задан.
 
 ## Backup
 
