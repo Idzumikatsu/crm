@@ -9,24 +9,37 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
   app:
     build:
       context: ..
       dockerfile: backend/Dockerfile
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: postgres
       DB_HOST: db
       JWT_SECRET: ${JWT_SECRET:-changeme}
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - "8080:8080"
 
   nginx:
     image: nginx:alpine
     depends_on:
-      - app
+      app:
+        condition: service_healthy
     restart: unless-stopped
     environment:
       APP_HOST: app
@@ -49,6 +62,7 @@ services:
     image: nginx/nginx-prometheus-exporter:1.1.0
     depends_on:
       - nginx
+    restart: unless-stopped
     command:
       - --nginx.scrape-uri=http://nginx/nginx_status
     ports:

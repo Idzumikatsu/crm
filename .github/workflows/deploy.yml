@@ -154,5 +154,6 @@ jobs:
           docker compose -f infra/docker-compose.dev.yml down --remove-orphans
           docker compose -f infra/docker-compose.dev.yml build --no-cache
           docker compose -f infra/docker-compose.dev.yml up -d
+          docker compose -f infra/docker-compose.dev.yml wait db app
           docker compose -f infra/docker-compose.dev.yml ps
           docker compose -f infra/docker-compose.dev.yml logs app --tail=20
