@@ -117,8 +117,20 @@ make up
 ```
 Остановить контейнеры можно командой `make down`.
 
+Проверить здоровье приложения можно запросом к эндпоинту `/actuator/health`:
+```bash
+curl -f http://localhost:8080/actuator/health
+```
+Метрики Spring Boot доступны на `/actuator/prometheus` и могут быть
+собраны Prometheus:
+```bash
+curl http://localhost:8080/actuator/prometheus
+```
+
 После запуска метрики Nginx доступны на `http://localhost:9114/metrics`.
 Экспортер считывает данные со страницы `/nginx_status` внутри контейнера.
+Добавьте оба адреса в конфигурацию Prometheus, чтобы собирать показатели от
+приложения и `nginx-exporter`.
 
 
 

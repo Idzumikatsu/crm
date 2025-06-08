@@ -26,3 +26,17 @@
 ## Неожиданный перезапуск
 1. Проверить логи автоматизации CI/CD.
 2. Удостовериться в успешной валидации конфигурации.
+
+## Проверка эндпоинтов
+1. Запросите `/actuator/health` приложения, чтобы убедиться в его работоспособности:
+   ```bash
+   curl -f http://localhost:8080/actuator/health
+   ```
+2. Убедитесь, что метрики доступны по `/actuator/prometheus`:
+   ```bash
+   curl http://localhost:8080/actuator/prometheus
+   ```
+3. Метрики Nginx предоставляет контейнер `nginx-exporter` на порту `9114`:
+   ```bash
+   curl http://localhost:9114/metrics
+   ```
