@@ -27,6 +27,10 @@ key.pem
 .DS_Store
 Thumbs.db
 
+# Environment
+.env
+infra/.env
+
 # Generated NGINX config
 infra/nginx/nginx.conf
 
