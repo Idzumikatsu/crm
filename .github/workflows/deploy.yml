@@ -64,7 +64,8 @@ jobs:
     needs: build-matrix
     runs-on: ubuntu-latest
     env:
-      DEPLOY_DIR: ~/myapp
+      # Store files in the user's home directory
+      DEPLOY_DIR: myapp
 
     steps:
     # 1. Клонируем репозиторий
@@ -136,7 +137,7 @@ jobs:
         # port:     ${{ secrets.VPS_PORT }}
         envs: DEPLOY_DIR
         script: |
-          mkdir -p "$DEPLOY_DIR"
+          mkdir -p "$HOME/$DEPLOY_DIR"
 
 
     # 7. Собираем Docker-образ и перезапускаем контейнер через SSH
@@ -150,7 +151,7 @@ jobs:
         envs: DEPLOY_DIR
         script: |
           set -e
-          cd "$DEPLOY_DIR"
+          cd "$HOME/$DEPLOY_DIR"
           # remove any leftover containers using the app port
           docker ps -aqf "name=myapp-app-1" | xargs -r docker rm -f
           # remove any leftover db container as well
