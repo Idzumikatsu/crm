@@ -102,6 +102,6 @@ services:
     image: prom/prometheus:latest
     restart: unless-stopped
     volumes:
-      - ./prometheus:/etc/prometheus
+      - ./infra/prometheus:/etc/prometheus
     ports:
       - "9090:9090"
