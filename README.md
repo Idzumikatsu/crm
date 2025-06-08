@@ -93,10 +93,10 @@ openssl req -x509 -newkey rsa:2048 -nodes -keyout infra/nginx/certs/server.key -
 ```
 
 ```bash
-./gradlew build
-cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
-cd ..
-docker compose -f infra/docker-compose.dev.yml up --build
+./backend/gradlew build
+cp $(ls backend/build/libs/*.jar | grep -v plain | head -n 1) backend/app.jar
+make build
+make up
 ```
 Секрет `JWT_SECRET` можно сгенерировать командой `openssl rand -hex 32` и
 записать его в `.env`. Не используйте значение `changeme` в production.
@@ -117,12 +117,13 @@ docker compose ps -a
 Если сервис `app` отсутствует или имеет статус `Exited`, убедитесь,
 что перед сборкой был создан `app.jar`, и просмотрите лог:
 ```bash
-docker compose logs app
+make logs
 ```
 Частая причина ошибки 502/503 — приложение не смогло подключиться к базе. Запустите контейнеры повторно:
 ```bash
-docker compose -f infra/docker-compose.dev.yml up -d
+make up
 ```
+Остановить контейнеры можно командой `make down`.
 
 После запуска метрики Nginx доступны на `http://localhost:9114/metrics`.
 Экспортер считывает данные со страницы `/nginx_status` внутри контейнера.
