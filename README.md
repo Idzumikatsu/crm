@@ -108,6 +108,14 @@ docker compose down --remove-orphans
 Статус контейнеров можно проверить командой `docker compose ps`.
 Убедитесь, что порт `8080` свободен: `lsof -i :8080` или `docker ps`.
 
+Если ранее использовалась версия `docker-compose` без явного указания имени проекта,
+могли сохраниться контейнеры с префиксом `infra`, занимающие те же порты.
+Удалите их вручную:
+
+```bash
+docker ps -aq --filter "label=com.docker.compose.project=infra" | xargs -r docker rm -f
+```
+
    Dockerfile собирает JAR внутри образа, поэтому Gradle на хосте не требуется.
    Логи можно смотреть через `make logs`. При необходимости можно запустить
    `docker compose -f infra/docker-compose.yml up -d` напрямую без Makefile.
