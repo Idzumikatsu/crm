@@ -87,8 +87,8 @@
 3. Соберите и запустите контейнеры через Makefile:
 
    ```bash
-   make build
-   make up           # COMPOSE_PROFILES=dev make up для режима разработки
+  make build
+  make up
    ```
 
    Dockerfile собирает JAR внутри образа, поэтому Gradle на хосте не требуется.
@@ -97,13 +97,11 @@
 При необходимости можно обойтись без Makefile и запустить `docker compose` напрямую:
 
 ```bash
-docker compose -f infra/docker-compose.dev.yml up -d
-COMPOSE_PROFILES=dev docker compose -f infra/docker-compose.dev.yml up -d
+docker compose -f infra/docker-compose.yml up -d
 ```
 
-Контейнер `app` предназначен для production-профиля, а `app-dev` активируется
-при запуске с профилем `dev`. Это упрощает локальную отладку. Контейнер `nginx`
-запускается только в профиле `prod` и автоматически ждёт готовности бэкенда.
+Контейнер `app` используется как в production, так и при локальной разработке.
+`nginx` запускается вместе с приложением и автоматически ждёт готовности бэкенда.
 
 При запуске `nginx` отдельно задайте `APP_HOST` и `APP_PORT` для указания адреса
 бэкенда. Контейнер подставит их в `nginx.conf.template`.
@@ -117,7 +115,7 @@ COMPOSE_PROFILES=dev docker compose -f infra/docker-compose.dev.yml up -d
 docker compose ps -a
 ```
 Если сервис `app` отсутствует или имеет статус `Exited`, проверьте лог
-следующей командой (в режиме разработки контейнер называется `app-dev`):
+следующей командой:
 ```bash
 docker compose logs app
 ```
@@ -144,7 +142,7 @@ curl http://localhost:8080/actuator/prometheus
 
 Инфраструктура включает сервис `prometheus`, который читает конфигурацию из
 каталога `infra/prometheus` и автоматически опрашивает приложение и
-`nginx-exporter`. Запускайте `docker compose -f infra/docker-compose.dev.yml`
+`nginx-exporter`. Запускайте `docker compose -f infra/docker-compose.yml`
 из корня проекта, чтобы Docker корректно смонтировал каталог. Веб‑интерфейс
 Prometheus доступен на `http://localhost:9090`.
 
@@ -229,7 +227,7 @@ npm run dev
 - `VPS_PORT` – SSH‑порт, если отличается от `22`;
 - `PROXY_HOST` и `PROXY_PORT` – при необходимости использовать сетевой прокси.
 
-Workflow собирает JAR, копирует его и файлы инфраструктуры на сервер и запускает `docker compose -f infra/docker-compose.dev.yml up -d`.
+Workflow собирает JAR, копирует его и файлы инфраструктуры на сервер и запускает `docker compose -f infra/docker-compose.yml up -d`.
 Сервер должен иметь установленный Docker версии **27.5.1** или новее (API 1.47), так как деплой тестировался на этой версии.
 После успешного завершения всех проверок Pull Request в `main` автоматически сливается через auto-merge.
 
@@ -255,7 +253,7 @@ cd frontend && npm run lint
 в production его нужно обязательно переопределить и использовать
 случайную строку не менее 32 байт,
 например `openssl rand -hex 32`. Файл
-`infra/docker-compose.dev.yml` требует эту переменную, поэтому запуск
+`infra/docker-compose.yml` требует эту переменную, поэтому запуск
 контейнеров завершится ошибкой, если `JWT_SECRET` не задан.
 
 ## Backup

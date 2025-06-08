@@ -15,30 +15,6 @@ services:
       retries: 10
     restart: unless-stopped
   app:
-    profiles: ["prod"]
-    build:
-      context: ..
-      dockerfile: backend/Dockerfile
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file: ./.env
-    environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-postgres}
-      DB_HOST: ${DB_HOST:-db}
-      DB_PORT: ${DB_PORT:-5432}
-      JWT_SECRET: ${JWT_SECRET}
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    ports:
-      - "8080:8080"
-
-  app-dev:
-    profiles: ["dev"]
     build:
       context: ..
       dockerfile: backend/Dockerfile
@@ -65,8 +41,8 @@ services:
     ports:
       - "8080:8080"
 
+
   nginx:
-    profiles: ["prod"]
     image: nginx:alpine
     depends_on:
       app:
@@ -90,7 +66,6 @@ services:
       - "443:443"
 
   nginx-exporter:
-    profiles: ["prod"]
     image: nginx/nginx-prometheus-exporter:1.1.0
     depends_on:
       - nginx
