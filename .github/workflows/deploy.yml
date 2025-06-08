@@ -63,6 +63,8 @@ jobs:
   build-and-deploy:
     needs: build-matrix
     runs-on: ubuntu-latest
+    env:
+      DEPLOY_DIR: ~/myapp
 
     steps:
     # 1. Клонируем репозиторий
@@ -108,7 +110,7 @@ jobs:
           -v ${{ github.workspace }}/infra/nginx/certs:/etc/nginx/certs:ro \
           nginx:1.26 nginx -t -c /etc/nginx/nginx.conf
 
-    # 5. Копируем Dockerfile и docker-compose.yml на VPS (в корень /root/myapp)
+    # 5. Копируем Dockerfile и docker-compose.yml на VPS (в каталог $HOME/myapp)
     - name: Copy infra files to VPS
       if: ${{ hashFiles('backend/Dockerfile', 'infra/docker-compose.dev.yml', 'infra/nginx/nginx.conf', 'infra/nginx/nginx.conf.template') != '' }}
       uses: appleboy/scp-action@v0.1.4
@@ -121,7 +123,7 @@ jobs:
         # Передаём на сервер не только Dockerfile и compose, но и исходники
         # бэкенда, чтобы Docker смог собрать jar внутри контейнера
         source: "backend,infra/docker-compose.dev.yml,scripts/wait-for-db.sh,infra/nginx/nginx.conf"
-        target: /root/myapp
+        target: ${{ env.DEPLOY_DIR }}
         rm:     true
 
     # 5.5. Убеждаемся, что каталог существует (на случай пропуска предыдущего шага)
@@ -132,8 +134,9 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         password:   ${{ secrets.VPS_PASSWORD }}
         # port:     ${{ secrets.VPS_PORT }}
+        envs: DEPLOY_DIR
         script: |
-          mkdir -p /root/myapp
+          mkdir -p "$DEPLOY_DIR"
 
 
     # 7. Собираем Docker-образ и перезапускаем контейнер через SSH
@@ -144,9 +147,10 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         password:   ${{ secrets.VPS_PASSWORD }}
         # port:     ${{ secrets.VPS_PORT }}
+        envs: DEPLOY_DIR
         script: |
           set -e
-          cd /root/myapp
+          cd "$DEPLOY_DIR"
           # remove any leftover containers using the app port
           docker ps -aqf "name=myapp-app-1" | xargs -r docker rm -f
           # remove any leftover db container as well
