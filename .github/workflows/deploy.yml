@@ -152,10 +152,6 @@ jobs:
         script: |
           set -e
           cd "$HOME/$DEPLOY_DIR"
-          # remove any leftover containers using the app port
-          docker ps -aqf "name=myapp-app-1" | xargs -r docker rm -f
-          # remove any leftover db container as well
-          docker ps -aqf "name=myapp-db-1" | xargs -r docker rm -f
           # if any other container is using port 8080, force remove it
           docker ps -q --filter "publish=8080" | xargs -r docker rm -f
           docker compose -f infra/docker-compose.yml down --remove-orphans
