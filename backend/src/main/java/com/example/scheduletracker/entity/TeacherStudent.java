@@ -121,8 +121,8 @@ public class TeacherStudent {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
       Id id = (Id) o;
-      return java.util.Objects.equals(teacherId, id.teacherId) &&
-             java.util.Objects.equals(studentId, id.studentId);
+      return java.util.Objects.equals(teacherId, id.teacherId)
+          && java.util.Objects.equals(studentId, id.studentId);
     }
 
     @Override

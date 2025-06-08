@@ -20,7 +20,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -43,7 +42,12 @@ class AvailabilityServiceImplTest {
     Teacher t = new Teacher(java.util.UUID.randomUUID(), "T", null, "RUB");
     AvailabilityTemplate tpl =
         new AvailabilityTemplate(
-            java.util.UUID.randomUUID(), t, DayOfWeek.MONDAY, LocalTime.of(10, 0), LocalTime.of(11, 0), null);
+            java.util.UUID.randomUUID(),
+            t,
+            DayOfWeek.MONDAY,
+            LocalTime.of(10, 0),
+            LocalTime.of(11, 0),
+            null);
     when(teacherRepo.findById(t.getId())).thenReturn(Optional.of(t));
     when(templateRepo.findByTeacher(t)).thenReturn(List.of(tpl));
     when(slotRepo.save(any())).thenAnswer(inv -> inv.getArgument(0));

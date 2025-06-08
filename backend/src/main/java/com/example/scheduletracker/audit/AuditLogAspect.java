@@ -1,7 +1,6 @@
 package com.example.scheduletracker.audit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.UUID;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;

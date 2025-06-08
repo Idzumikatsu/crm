@@ -94,6 +94,7 @@ openssl req -x509 -newkey rsa:2048 -nodes -keyout infra/nginx/certs/server.key -
 ```bash
 ./gradlew build
 cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
+export JWT_SECRET=$(openssl rand -hex 32)  # или добавьте значение в файл .env
 cd ..
 docker compose -f infra/docker-compose.dev.yml up --build
 

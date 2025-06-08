@@ -1,8 +1,8 @@
 // src/main/java/com/example/scheduletracker/controller/UserController.java
 package com.example.scheduletracker.controller;
 
-import com.example.scheduletracker.entity.User;
 import com.example.scheduletracker.dto.UserDto;
+import com.example.scheduletracker.entity.User;
 import com.example.scheduletracker.mapper.UserMapper;
 import com.example.scheduletracker.service.UserService;
 import java.util.Optional;
@@ -21,7 +21,8 @@ public class UserController {
   }
 
   @GetMapping("/me")
-  public ResponseEntity<UserDto> currentUser(org.springframework.security.core.Authentication auth) {
+  public ResponseEntity<UserDto> currentUser(
+      org.springframework.security.core.Authentication auth) {
     String username = auth.getName();
     return svc.findByUsername(username)
         .map(mapper::toDto)
@@ -32,7 +33,9 @@ public class UserController {
   @GetMapping("/{username}")
   public ResponseEntity<UserDto> getByUsername(@PathVariable String username) {
     Optional<User> user = svc.findByUsername(username);
-    return user.map(mapper::toDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    return user.map(mapper::toDto)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
   }
 
   @PostMapping

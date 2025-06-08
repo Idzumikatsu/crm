@@ -42,8 +42,12 @@ class LessonServiceImplTest {
 
   @Test
   void searchByTeacherFiltersResults() {
-    Lesson l1 = new Lesson(java.util.UUID.randomUUID(), OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
-    Lesson l2 = new Lesson(java.util.UUID.randomUUID(), OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t2, g1);
+    Lesson l1 =
+        new Lesson(
+            java.util.UUID.randomUUID(), OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
+    Lesson l2 =
+        new Lesson(
+            java.util.UUID.randomUUID(), OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t2, g1);
     when(repo.findAll()).thenReturn(List.of(l1, l2));
 
     List<Lesson> result = service.search(null, null, t1.getId(), null);
@@ -54,7 +58,9 @@ class LessonServiceImplTest {
 
   @Test
   void updateStatusChangesEntity() {
-    Lesson lesson = new Lesson(java.util.UUID.randomUUID(), OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
+    Lesson lesson =
+        new Lesson(
+            java.util.UUID.randomUUID(), OffsetDateTime.now(), 60, Lesson.Status.SCHEDULED, t1, g1);
     when(repo.findById(lesson.getId())).thenReturn(java.util.Optional.of(lesson));
     when(repo.save(any(Lesson.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -76,7 +82,8 @@ class LessonServiceImplTest {
     OffsetDateTime dt = OffsetDateTime.now();
     TimeSlot slot = new TimeSlot(null, t1, dt.minusMinutes(30), dt.plusMinutes(90));
     when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
-    Lesson existing = new Lesson(java.util.UUID.randomUUID(), dt, 60, Lesson.Status.SCHEDULED, t1, g1);
+    Lesson existing =
+        new Lesson(java.util.UUID.randomUUID(), dt, 60, Lesson.Status.SCHEDULED, t1, g1);
     when(repo.findByTeacher(t1)).thenReturn(List.of(existing));
 
     Lesson newLesson = new Lesson(null, dt.plusMinutes(30), 60, Lesson.Status.SCHEDULED, t1, g1);
@@ -104,15 +111,15 @@ class LessonServiceImplTest {
     when(slotRepo.findSlotForPeriodLocked(any(), any(), any())).thenReturn(Optional.empty());
 
     assertThrows(
-        BookingConflictException.class,
-        () -> service.book(t1.getId(), g1.getId(), dt, 60));
+        BookingConflictException.class, () -> service.book(t1.getId(), g1.getId(), dt, 60));
   }
 
   @Test
   void bookSuccessPersistsLesson() {
     OffsetDateTime dt = OffsetDateTime.now();
     TimeSlot slot = new TimeSlot(java.util.UUID.randomUUID(), t1, dt, dt.plusMinutes(60));
-    when(slotRepo.findSlotForPeriodLocked(eq(t1.getId()), any(), any())).thenReturn(Optional.of(slot));
+    when(slotRepo.findSlotForPeriodLocked(eq(t1.getId()), any(), any()))
+        .thenReturn(Optional.of(slot));
     when(slotRepo.findByTeacher(t1)).thenReturn(List.of(slot));
     when(repo.findByTeacher(t1)).thenReturn(List.of());
     when(repo.save(any(Lesson.class))).thenAnswer(invocation -> invocation.getArgument(0));

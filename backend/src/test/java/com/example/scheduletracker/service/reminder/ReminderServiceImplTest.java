@@ -46,7 +46,8 @@ class ReminderServiceImplTest {
     when(templateService.findByCodeAndLang(any(), any()))
         .thenReturn(
             java.util.Optional.of(
-                new NotificationTemplate(java.util.UUID.randomUUID(), "reminder", "en", "sub", "body {{time}}")));
+                new NotificationTemplate(
+                    java.util.UUID.randomUUID(), "reminder", "en", "sub", "body {{time}}")));
 
     service.processReminders();
 

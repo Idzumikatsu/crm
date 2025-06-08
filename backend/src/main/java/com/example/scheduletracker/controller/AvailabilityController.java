@@ -34,16 +34,12 @@ public class AvailabilityController {
 
   @PostMapping("/slots/generate")
   public List<TimeSlot> generate(
-      @RequestParam UUID teacherId,
-      @RequestParam LocalDate from,
-      @RequestParam LocalDate to) {
+      @RequestParam UUID teacherId, @RequestParam LocalDate from, @RequestParam LocalDate to) {
     return service.generateSlots(teacherId, from, to);
   }
 
   @DeleteMapping("/slots")
-  public void delete(
-      @RequestParam UUID teacherId,
-      @RequestParam LocalDate from) {
+  public void delete(@RequestParam UUID teacherId, @RequestParam LocalDate from) {
     service.deleteSlots(teacherId, from);
   }
 }

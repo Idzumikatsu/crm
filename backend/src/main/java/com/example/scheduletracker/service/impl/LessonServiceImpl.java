@@ -4,14 +4,14 @@ package com.example.scheduletracker.service.impl;
 import com.example.scheduletracker.entity.Group;
 import com.example.scheduletracker.entity.Lesson;
 import com.example.scheduletracker.entity.TimeSlot;
+import com.example.scheduletracker.exception.BookingConflictException;
 import com.example.scheduletracker.repository.LessonRepository;
 import com.example.scheduletracker.repository.TimeSlotRepository;
 import com.example.scheduletracker.service.LessonService;
-import com.example.scheduletracker.exception.BookingConflictException;
-import java.util.UUID;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +61,8 @@ public class LessonServiceImpl implements LessonService {
     var end = start.plusMinutes(duration);
 
     var slot =
-        slotRepo.findSlotForPeriodLocked(teacherId, start, end)
+        slotRepo
+            .findSlotForPeriodLocked(teacherId, start, end)
             .orElseThrow(() -> new BookingConflictException("slot not available"));
 
     Lesson lesson =

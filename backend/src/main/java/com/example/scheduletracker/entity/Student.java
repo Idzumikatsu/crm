@@ -37,7 +37,8 @@ public class Student {
     this(id, name, email, null, false);
   }
 
-  public Student(UUID id, String name, String email, String telegramUsername, boolean validContact) {
+  public Student(
+      UUID id, String name, String email, String telegramUsername, boolean validContact) {
     this.id = id;
     this.name = name;
     this.email = email;

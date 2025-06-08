@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LoggingNotificationService implements NotificationService {
-    private static final Logger log = LoggerFactory.getLogger(LoggingNotificationService.class);
+  private static final Logger log = LoggerFactory.getLogger(LoggingNotificationService.class);
 
-    @Override
-    public void sendEmail(String to, String subject, String body) {
-        log.info("Send email to {} subject {}", to, subject);
-    }
+  @Override
+  public void sendEmail(String to, String subject, String body) {
+    log.info("Send email to {} subject {}", to, subject);
+  }
 
-    @Override
-    public void sendTelegram(String chatId, String text) {
-        log.info("Send telegram to {}: {}", chatId, text);
-    }
+  @Override
+  public void sendTelegram(String chatId, String text) {
+    log.info("Send telegram to {}: {}", chatId, text);
+  }
 }

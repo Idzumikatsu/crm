@@ -5,6 +5,4 @@ import jakarta.validation.constraints.Size;
 
 /** Credentials provided by a user when logging in. */
 public record LoginRequest(
-    @NotBlank String username,
-    @NotBlank String password,
-    @Size(min = 6, max = 6) String code) {}
+    @NotBlank String username, @NotBlank String password, @Size(min = 6, max = 6) String code) {}

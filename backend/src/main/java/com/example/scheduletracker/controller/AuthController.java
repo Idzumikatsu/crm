@@ -4,10 +4,10 @@ import com.example.scheduletracker.config.jwt.JwtUtils;
 import com.example.scheduletracker.dto.JwtResponse;
 import com.example.scheduletracker.dto.LoginRequest;
 import com.example.scheduletracker.dto.SignupRequest;
+import com.example.scheduletracker.dto.SignupResponse;
 import com.example.scheduletracker.entity.User;
 import com.example.scheduletracker.service.UserService;
 import com.example.scheduletracker.service.security.TotpService;
-import com.example.scheduletracker.dto.SignupResponse;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -60,12 +60,7 @@ public class AuthController {
     String roleName = Optional.ofNullable(req.role()).orElse("STUDENT");
     String secret = totpService.generateSecret();
     User user =
-        new User(
-            null,
-            username,
-            req.password(),
-            User.Role.valueOf(roleName.toUpperCase()),
-            secret);
+        new User(null, username, req.password(), User.Role.valueOf(roleName.toUpperCase()), secret);
     userService.save(user);
     return ResponseEntity.status(HttpStatus.CREATED).body(new SignupResponse(secret));
   }
