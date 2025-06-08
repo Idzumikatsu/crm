@@ -3,6 +3,8 @@ FROM gradle:8-jdk21 AS build
 WORKDIR /workspace
 COPY backend /workspace/backend
 WORKDIR /workspace/backend
+# Убеждаемся, что gradlew имеет права на исполнение
+RUN chmod +x gradlew
 # Собираем исполняемый JAR без запуска тестов
 RUN ./gradlew bootJar --no-daemon
 RUN cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
