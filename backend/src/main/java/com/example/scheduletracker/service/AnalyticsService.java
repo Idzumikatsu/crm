@@ -4,6 +4,7 @@ import com.example.scheduletracker.dto.LessonCountDto;
 import java.util.List;
 
 public interface AnalyticsService {
-    List<LessonCountDto> lessonCountPerTeacher();
-    byte[] exportLessonCountExcel();
+  List<LessonCountDto> lessonCountPerTeacher();
+
+  byte[] exportLessonCountExcel();
 }

@@ -38,7 +38,8 @@ class NotificationTemplateServiceImplTest {
 
   @Test
   void findByCodeAndLangCallsRepo() {
-    NotificationTemplate t = new NotificationTemplate(java.util.UUID.randomUUID(), "reminder", "en", null, null);
+    NotificationTemplate t =
+        new NotificationTemplate(java.util.UUID.randomUUID(), "reminder", "en", null, null);
     when(repo.findByCodeAndLang("reminder", "en")).thenReturn(Optional.of(t));
     Optional<NotificationTemplate> result = service.findByCodeAndLang("reminder", "en");
     assertTrue(result.isPresent());

@@ -23,9 +23,7 @@ class SpaControllerTest {
   @Test
   @DisplayName("SPA routes forward to index.html")
   void spaRoutesForwardToIndex() throws Exception {
-    mvc.perform(get("/calendar"))
-        .andExpect(status().isOk())
-        .andExpect(forwardedUrl("/index.html"));
+    mvc.perform(get("/calendar")).andExpect(status().isOk()).andExpect(forwardedUrl("/index.html"));
     mvc.perform(get("/calendar/day"))
         .andExpect(status().isOk())
         .andExpect(forwardedUrl("/index.html"));

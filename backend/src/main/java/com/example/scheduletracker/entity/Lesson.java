@@ -35,7 +35,13 @@ public class Lesson {
 
   public Lesson() {}
 
-  public Lesson(UUID id, OffsetDateTime dateTime, Integer duration, Status status, Teacher teacher, Group group) {
+  public Lesson(
+      UUID id,
+      OffsetDateTime dateTime,
+      Integer duration,
+      Status status,
+      Teacher teacher,
+      Group group) {
     this.id = id;
     this.dateTime = dateTime;
     this.duration = duration;

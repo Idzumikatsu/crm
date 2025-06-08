@@ -12,25 +12,26 @@ import org.springframework.web.client.RestTemplate;
 
 class TelegramNotificationServiceTest {
 
-    private MockRestServiceServer server;
-    private TelegramNotificationService service;
+  private MockRestServiceServer server;
+  private TelegramNotificationService service;
 
-    @BeforeEach
-    void setup() {
-        RestTemplate rest = new RestTemplate();
-        server = MockRestServiceServer.createServer(rest);
-        service = new TelegramNotificationService(rest, "token");
-    }
+  @BeforeEach
+  void setup() {
+    RestTemplate rest = new RestTemplate();
+    server = MockRestServiceServer.createServer(rest);
+    service = new TelegramNotificationService(rest, "token");
+  }
 
-    @Test
-    void sendTelegramPostsMessage() {
-        server.expect(once(), requestTo("https://api.telegram.org/bottoken/sendMessage"))
-                .andExpect(method(org.springframework.http.HttpMethod.POST))
-                .andExpect(content().json("{\"chat_id\":\"1\",\"text\":\"hi\"}"))
-                .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+  @Test
+  void sendTelegramPostsMessage() {
+    server
+        .expect(once(), requestTo("https://api.telegram.org/bottoken/sendMessage"))
+        .andExpect(method(org.springframework.http.HttpMethod.POST))
+        .andExpect(content().json("{\"chat_id\":\"1\",\"text\":\"hi\"}"))
+        .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
 
-        service.sendTelegram("1", "hi");
+    service.sendTelegram("1", "hi");
 
-        server.verify();
-    }
+    server.verify();
+  }
 }

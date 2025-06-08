@@ -15,8 +15,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
   private final TimeSlotRepository repo;
   private final TeacherRepository teacherRepository;
 
-  public TimeSlotServiceImpl(
-      TimeSlotRepository repo, TeacherRepository teacherRepository) {
+  public TimeSlotServiceImpl(TimeSlotRepository repo, TeacherRepository teacherRepository) {
     this.repo = repo;
     this.teacherRepository = teacherRepository;
   }

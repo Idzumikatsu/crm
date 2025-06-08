@@ -40,7 +40,8 @@ class GroupControllerTest {
   @Test
   @DisplayName("GET /api/groups/{id} при отсутствии возвращает 404")
   void getNotFound() throws Exception {
-    when(svc.findById(java.util.UUID.fromString("00000000-0000-0000-0000-000000000001"))).thenReturn(Optional.empty());
+    when(svc.findById(java.util.UUID.fromString("00000000-0000-0000-0000-000000000001")))
+        .thenReturn(Optional.empty());
     mvc.perform(get("/api/groups/00000000-0000-0000-0000-000000000001"))
         .andExpect(status().isNotFound());
   }

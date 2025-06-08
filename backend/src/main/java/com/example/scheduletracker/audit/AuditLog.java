@@ -24,7 +24,8 @@ public class AuditLog {
   // getters/setters omitted for brevity
   public AuditLog() {}
 
-  public AuditLog(String entity, UUID entityId, String action, String oldJson, String newJson, Long actorId) {
+  public AuditLog(
+      String entity, UUID entityId, String action, String oldJson, String newJson, Long actorId) {
     this.entity = entity;
     this.entityId = entityId;
     this.action = action;

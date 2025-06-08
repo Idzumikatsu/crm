@@ -61,7 +61,9 @@ public class AvailabilityServiceImpl implements AvailabilityService {
   @Transactional
   public List<TimeSlot> generateSlots(UUID teacherId, LocalDate from, LocalDate to) {
     Teacher teacher =
-        teacherRepository.findById(teacherId).orElseThrow(() -> new IllegalArgumentException("teacher"));
+        teacherRepository
+            .findById(teacherId)
+            .orElseThrow(() -> new IllegalArgumentException("teacher"));
     List<AvailabilityTemplate> templates = templateRepository.findByTeacher(teacher);
     List<TimeSlot> created = new ArrayList<>();
     LocalDate date = from;
@@ -91,7 +93,9 @@ public class AvailabilityServiceImpl implements AvailabilityService {
   @Transactional
   public void deleteSlots(UUID teacherId, LocalDate from) {
     Teacher teacher =
-        teacherRepository.findById(teacherId).orElseThrow(() -> new IllegalArgumentException("teacher"));
+        teacherRepository
+            .findById(teacherId)
+            .orElseThrow(() -> new IllegalArgumentException("teacher"));
     List<TimeSlot> slots = slotRepository.findByTeacher(teacher);
     for (TimeSlot s : slots) {
       if (!s.getStartTs().toLocalDate().isBefore(from)) {
