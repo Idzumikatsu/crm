@@ -70,8 +70,10 @@
 
 ## Запуск в Docker
 
-1. Скопируйте `.env.example` в `.env` и при необходимости измените
-   `SPRING_PROFILES_ACTIVE`, `DB_HOST`, `DB_PORT` и `JWT_SECRET`.
+1. Скопируйте `.env.example` в `.env`. Обязательно задайте
+   переменную `JWT_SECRET` случайной строкой длиной не менее 32 байт,
+   например `openssl rand -hex 32`.
+   При необходимости измените `SPRING_PROFILES_ACTIVE`, `DB_HOST` и `DB_PORT`.
    Файл автоматически читается `docker compose`.
 2. Создайте сертификат для Nginx:
 
@@ -237,7 +239,11 @@ cd frontend && npm run lint
 
 ## JWT
 
-Приложение подписывает JWT секретом из переменной окружения `JWT_SECRET`. По умолчанию используется значение `changeme`, поэтому для production окружений обязательно задайте собственный ключ.
+Приложение подписывает JWT секретом из переменной окружения `JWT_SECRET`.
+В `application.yml` он задан как `${JWT_SECRET:changeme}`, поэтому
+в production его нужно обязательно переопределить и использовать
+случайную строку не менее 32 байт,
+например `openssl rand -hex 32`.
 
 ## Backup
 
