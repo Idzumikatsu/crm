@@ -70,13 +70,14 @@
 
 ## Запуск в Docker
 
-1. Скопируйте `infra/.env.example` в `infra/.env` и замените
+1. Создайте файл `infra/.env`, скопировав `infra/.env.example`, и замените
    значение `JWT_SECRET` (по умолчанию `changeme`) случайной строкой
    длиной не менее 32 байт, например `openssl rand -hex 32`.
    При необходимости измените `SPRING_PROFILES_ACTIVE`, `DB_HOST` и `DB_PORT`.
    Переменная `DB_HOST` по умолчанию равна `db`, но её можно переопределить.
-   Файл автоматически читается `docker compose` из `infra/.env`. Если переменная не задана,
-   `docker compose` завершится ошибкой `JWT_SECRET: set JWT_SECRET in .env`.
+   Файл автоматически читается `docker compose` из `infra/.env`. Если переменная
+   не задана, `docker compose` завершится ошибкой `JWT_SECRET: set JWT_SECRET in .env`.
+   Файл добавлен в `.gitignore` и хранится локально.
 2. Создайте сертификат для Nginx:
 
    ```bash
