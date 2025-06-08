@@ -95,3 +95,11 @@ services:
       - --nginx.scrape-uri=http://nginx/nginx_status
     ports:
       - "9114:9113"
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
