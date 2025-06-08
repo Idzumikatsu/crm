@@ -68,58 +68,48 @@
 
 ## Запуск в Docker
 
-Перед первым запуском скопируйте `.env.example` в `.env` и задайте значения
-`SPRING_PROFILES_ACTIVE`, `DB_HOST`, `DB_PORT` и `JWT_SECRET`. `docker compose`
-автоматически подхватит этот файл. Приложение использует профиль `postgres`,
-поэтому переменные по умолчанию подходят для локального запуска. Если вы
-создавали контейнер БД по примеру выше, его имя `schedule-db`. Для связи
-контейнеров понадобится сеть `app-network`; создайте её при необходимости
-командой `docker network create app-network`. Запуск приложения выглядит так:
+1. Скопируйте `.env.example` в `.env` и при необходимости измените
+   `SPRING_PROFILES_ACTIVE`, `DB_HOST`, `DB_PORT` и `JWT_SECRET`.
+   Файл автоматически читается `docker compose`.
+2. Создайте сертификат для Nginx:
 
-```bash
-docker run --rm -it --network app-network \
-  -e DB_HOST=schedule-db \
-  -e SPRING_PROFILES_ACTIVE=postgres \
-  --name my-java-app my-java-app
-```
+   ```bash
+   openssl req -x509 -newkey rsa:2048 -nodes \
+     -keyout infra/nginx/certs/server.key \
+     -out infra/nginx/certs/server.crt \
+     -days 365 -subj "/CN=localhost"
+   ```
+3. Соберите и запустите контейнеры через Makefile:
 
-Для удобства можно воспользоваться `infra/docker-compose.dev.yml`, который
-поднимет PostgreSQL, само приложение и Nginx в роли обратного прокси. Перед
-запуском убедитесь, что в каталоге `backend/` есть `app.jar`. Также
-создайте самоподписанный сертификат в `infra/nginx/certs`:
+   ```bash
+   make build
+   make up           # COMPOSE_PROFILES=dev make up для режима разработки
+   ```
 
-```bash
-openssl req -x509 -newkey rsa:2048 -nodes -keyout infra/nginx/certs/server.key -out infra/nginx/certs/server.crt -days 365 -subj "/CN=localhost"
-```
+   Dockerfile собирает JAR внутри образа, поэтому Gradle на хосте не требуется.
+4. Для остановки используйте `make down`, логи можно смотреть через `make logs`.
 
-```bash
-./backend/gradlew build
-cp $(ls backend/build/libs/*.jar | grep -v plain | head -n 1) backend/app.jar
-make build
-make up
-```
-Секрет `JWT_SECRET` можно сгенерировать командой `openssl rand -hex 32` и
-записать его в `.env`. Не используйте значение `changeme` в production.
+Контейнер `app` предназначен для production-профиля, а `app-dev` активируется
+при запуске с профилем `dev`. Это упрощает локальную отладку.
 
-При запуске `nginx` отдельно используйте переменные окружения `APP_HOST` и
-`APP_PORT` для указания адреса backend-сервиса. Контейнер автоматически
-подставит их в `nginx.conf.template`.
+При запуске `nginx` отдельно задайте `APP_HOST` и `APP_PORT` для указания адреса
+бэкенда. Контейнер подставит их в `nginx.conf.template`.
 
-После старта контейнеров веб-интерфейс доступен по адресу
-`https://localhost` (порт `443`). Обращения к `http://localhost` будут
-автоматически перенаправлены на HTTPS.
+После старта веб-интерфейс доступен на `https://localhost` (порт `443`),
+обращения к `http://localhost` перенаправляются на HTTPS.
 
 ### Проверка сервиса
-После деплоя убедитесь, что контейнеры запущены:
+После деплоя убедитесь, что контейнеры запущены и перешли в состояние `healthy`:
 ```bash
 docker compose ps -a
 ```
-Если сервис `app` отсутствует или имеет статус `Exited`, убедитесь,
-что образ собран корректно (в режиме `dev` контейнер называется `app-dev`), и просмотрите лог:
+Если сервис `app` отсутствует или имеет статус `Exited`, проверьте лог
+следующей командой (в режиме разработки контейнер называется `app-dev`):
 ```bash
-make logs
+docker compose logs app
 ```
-Частая причина ошибки 502/503 — приложение не смогло подключиться к базе. Запустите контейнеры повторно:
+Частая причина ошибки 502/503 — приложение не смогло подключиться к базе.
+Запустите контейнеры повторно:
 ```bash
 make up
 ```
