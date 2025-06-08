@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-host=${DB_HOST:-localhost}
+host=${DB_HOST:-db}
 port=${DB_PORT:-5432}
 user=${DB_USER:-${POSTGRES_USER:-postgres}}
 database=${DB_NAME:-${POSTGRES_DB:-postgres}}

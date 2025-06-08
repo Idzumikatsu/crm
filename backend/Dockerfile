@@ -19,9 +19,8 @@ COPY --from=build /workspace/backend/app.jar app.jar
 # Скрипт ожидания доступности базы данных
 COPY scripts/wait-for-db.sh /wait-for-db.sh
 RUN chmod +x /wait-for-db.sh
-# По умолчанию приложение ожидает базу данных на `localhost`, что не
-# подходит для контейнера. Добавим переменную окружения с адресом
-# хоста БД. Значение можно переопределить при запуске.
-ENV DB_HOST=host.docker.internal
+# По умолчанию приложение ожидает базу данных на `db` 
+# (имя сервиса в Compose). Значение можно переопределить при запуске.
+ENV DB_HOST=db
 EXPOSE 8080
 ENTRYPOINT ["/wait-for-db.sh","java","-jar","/app/app.jar"]
