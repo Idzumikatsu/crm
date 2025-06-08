@@ -1,4 +1,4 @@
-COMPOSE_FILE ?= infra/docker-compose.dev.yml
+COMPOSE_FILE ?= infra/docker-compose.yml
 
 .PHONY: build up down logs
 
