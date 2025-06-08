@@ -70,9 +70,9 @@
 
 ## Запуск в Docker
 
-1. Скопируйте `infra/.env.example` в `infra/.env`. Обязательно задайте
-   переменную `JWT_SECRET` случайной строкой длиной не менее 32 байт,
-   например `openssl rand -hex 32`.
+1. Скопируйте `infra/.env.example` в `infra/.env` и замените
+   значение `JWT_SECRET` (по умолчанию `changeme`) случайной строкой
+   длиной не менее 32 байт, например `openssl rand -hex 32`.
    При необходимости измените `SPRING_PROFILES_ACTIVE`, `DB_HOST` и `DB_PORT`.
    Файл автоматически читается `docker compose` из `infra/.env`. Если переменная не задана,
    `docker compose` завершится ошибкой `JWT_SECRET: set JWT_SECRET in .env`.

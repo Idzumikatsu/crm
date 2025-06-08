@@ -37,7 +37,7 @@ The Dockerfile expects a pre-built `app.jar` copied into the repository root.
 ## Action plan
 
 1. Update `backend/Dockerfile` to use a multi-stage build (Gradle image -> JRE image).
-2. Create `.env.example` with sane defaults. Developers copy it to `.env` and adjust secrets.
+2. Create `infra/.env.example` with sane defaults. Developers copy it to `infra/.env` and adjust secrets.
 3. Extend `infra/docker-compose.dev.yml` with `healthcheck` entries and use variables from `.env`.
 4. Add a short Makefile in the repository root with `build`, `up` and `down` targets.
 5. Update `README.md` with the simplified setup instructions.
