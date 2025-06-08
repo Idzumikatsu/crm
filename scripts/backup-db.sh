@@ -2,7 +2,7 @@
 # Dump PostgreSQL database with timestamp and gzip
 set -e
 
-host=${DB_HOST:-localhost}
+host=${DB_HOST:-db}
 port=${DB_PORT:-5432}
 user=${DB_USER:-postgres}
 db=${DB_NAME:-schedule}
