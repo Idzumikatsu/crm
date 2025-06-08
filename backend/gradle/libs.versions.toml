@@ -27,6 +27,8 @@ mapstruct = "1.6.0"
 apache-poi = "5.2.5"
 otp-java = "2.1.0"
 aerogear-otp = "1.0.0"
+org-springframework-boot-spring-boot-starter-actuator = "3.5.0"
+io-micrometer-micrometer-registry-prometheus = "1.15.0"
 
 [libraries]
 com-h2database-h2 = { module = "com.h2database:h2", version.ref = "com-h2database-h2" }
@@ -55,3 +57,5 @@ org-springframework-boot-spring-boot-starter-mail = { module = "org.springframew
 org-apache-poi-poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "apache-poi" }
 otp-java = { module = "com.github.bastiaanjansen:otp-java", version.ref = "otp-java" }
 aerogear-otp = { module = "org.jboss.aerogear:aerogear-otp-java", version.ref = "aerogear-otp" }
+org-springframework-boot-spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "org-springframework-boot-spring-boot-starter-actuator" }
+io-micrometer-micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "io-micrometer-micrometer-registry-prometheus" }
