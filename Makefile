@@ -9,7 +9,7 @@ up:
 	docker compose -f $(COMPOSE_FILE) up -d
 
 down:
-	docker compose -f $(COMPOSE_FILE) down
+       docker compose -f infra/docker-compose.yml down --remove-orphans
 
 logs:
 	docker compose -f $(COMPOSE_FILE) logs -f
