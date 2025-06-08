@@ -30,6 +30,8 @@ dependencies {
     implementation(libs.org.springframework.boot.spring.boot.starter.validation)
     implementation(libs.org.springframework.boot.spring.boot.starter.quartz)
     implementation(libs.org.springframework.boot.spring.boot.starter.mail)
+    implementation(libs.org.springframework.boot.spring.boot.starter.actuator)
+    implementation(libs.io.micrometer.micrometer.registry.prometheus)
     implementation(libs.org.apache.poi.poi.ooxml)
     implementation(libs.org.mapstruct.mapstruct)
     implementation(libs.otp.java)
