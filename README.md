@@ -97,6 +97,17 @@
    make down
    ```
 
+Перед повторным запуском остановите предыдущие контейнеры:
+
+```bash
+make down
+# или
+docker compose down --remove-orphans
+```
+
+Статус контейнеров можно проверить командой `docker compose ps`.
+Убедитесь, что порт `8080` свободен: `lsof -i :8080` или `docker ps`.
+
    Dockerfile собирает JAR внутри образа, поэтому Gradle на хосте не требуется.
    Логи можно смотреть через `make logs`. При необходимости можно запустить
    `docker compose -f infra/docker-compose.yml up -d` напрямую без Makefile.
