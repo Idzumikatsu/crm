@@ -96,7 +96,11 @@ openssl req -x509 -newkey rsa:2048 -nodes -keyout infra/nginx/certs/server.key -
 ./gradlew build
 cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
 cd ..
-docker compose -f infra/docker-compose.dev.yml up --build
+# Запуск в режиме разработки с live reload
+APP_HOST=app-dev docker compose --profile dev -f infra/docker-compose.dev.yml up --build
+
+# Сборка production-образа без монтирования исходников
+docker compose --profile prod -f infra/docker-compose.dev.yml up --build
 ```
 Секрет `JWT_SECRET` можно сгенерировать командой `openssl rand -hex 32` и
 записать его в `.env`. Не используйте значение `changeme` в production.
@@ -115,13 +119,13 @@ docker compose -f infra/docker-compose.dev.yml up --build
 docker compose ps -a
 ```
 Если сервис `app` отсутствует или имеет статус `Exited`, убедитесь,
-что перед сборкой был создан `app.jar`, и просмотрите лог:
+что образ собран корректно (в режиме `dev` контейнер называется `app-dev`), и просмотрите лог:
 ```bash
 docker compose logs app
 ```
 Частая причина ошибки 502/503 — приложение не смогло подключиться к базе. Запустите контейнеры повторно:
 ```bash
-docker compose -f infra/docker-compose.dev.yml up -d
+ docker compose --profile prod -f infra/docker-compose.dev.yml up -d
 ```
 
 После запуска метрики Nginx доступны на `http://localhost:9114/metrics`.
