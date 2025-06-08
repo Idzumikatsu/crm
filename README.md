@@ -68,12 +68,13 @@
 
 ## Запуск в Docker
 
-Приложение использует профиль `postgres`, поэтому его нужно активировать
-через переменную `SPRING_PROFILES_ACTIVE`. Также контейнеру требуется адрес
-сервиса PostgreSQL в переменной `DB_HOST`. Если вы создавали контейнер БД по
-примеру выше, его имя `schedule-db`. Для связи контейнеров понадобится сеть
-`app-network`; создайте её при необходимости командой `docker network create
-app-network`. Запуск приложения выглядит так:
+Перед первым запуском скопируйте `.env.example` в `.env` и задайте значения
+`SPRING_PROFILES_ACTIVE`, `DB_HOST`, `DB_PORT` и `JWT_SECRET`. `docker compose`
+автоматически подхватит этот файл. Приложение использует профиль `postgres`,
+поэтому переменные по умолчанию подходят для локального запуска. Если вы
+создавали контейнер БД по примеру выше, его имя `schedule-db`. Для связи
+контейнеров понадобится сеть `app-network`; создайте её при необходимости
+командой `docker network create app-network`. Запуск приложения выглядит так:
 
 ```bash
 docker run --rm -it --network app-network \
@@ -94,12 +95,11 @@ openssl req -x509 -newkey rsa:2048 -nodes -keyout infra/nginx/certs/server.key -
 ```bash
 ./gradlew build
 cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
-export JWT_SECRET=$(openssl rand -hex 32)  # опционально, иначе используется changeme
 cd ..
 docker compose -f infra/docker-compose.dev.yml up --build
 ```
-Если переменная `JWT_SECRET` не задана, docker compose подставит `changeme`.
-Не используйте этот ключ в production.
+Секрет `JWT_SECRET` можно сгенерировать командой `openssl rand -hex 32` и
+записать его в `.env`. Не используйте значение `changeme` в production.
 
 При запуске `nginx` отдельно используйте переменные окружения `APP_HOST` и
 `APP_PORT` для указания адреса backend-сервиса. Контейнер автоматически
