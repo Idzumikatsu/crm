@@ -113,7 +113,7 @@ jobs:
 
     # 5. Копируем Dockerfile и docker-compose.yml на VPS (в каталог $HOME/myapp)
     - name: Copy infra files to VPS
-      if: ${{ hashFiles('backend/Dockerfile', 'infra/docker-compose.dev.yml', 'infra/nginx/nginx.conf', 'infra/nginx/nginx.conf.template') != '' }}
+      if: ${{ hashFiles('backend/Dockerfile', 'infra/docker-compose.dev.yml', 'infra/nginx/nginx.conf', 'infra/nginx/nginx.conf.template', 'infra/.env') != '' }}
       uses: appleboy/scp-action@v0.1.4
       with:
         host:       ${{ secrets.VPS_HOST }}
@@ -123,7 +123,7 @@ jobs:
         # port:     ${{ secrets.VPS_PORT }}
         # Передаём на сервер не только Dockerfile и compose, но и исходники
         # бэкенда, чтобы Docker смог собрать jar внутри контейнера
-        source: "backend,infra/docker-compose.dev.yml,scripts/wait-for-db.sh,infra/nginx/nginx.conf"
+        source: "backend,infra/docker-compose.dev.yml,infra/.env,scripts/wait-for-db.sh,infra/nginx/nginx.conf"
         target: ${{ env.DEPLOY_DIR }}
         rm:     true
 
