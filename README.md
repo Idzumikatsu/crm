@@ -240,6 +240,8 @@ npm run dev
 SPA. Готовый каталог можно раздавать через NGINX или другой web-сервер.
 Из корня репозитория то же самое выполняет команда `make frontend`.
 
+Перед сборкой можно создать файл `frontend/.env`, скопировав `frontend/.env.example`. В нём переменная `VITE_API_URL` задаёт базовый URL бэкенда. По умолчанию запросы отправляются относительным путём, но в production имеет смысл указать полный адрес, например `VITE_API_URL=https://schedule.example.com`.
+
 ### REST API
 Основные эндпоинты:
 - `POST /api/auth/login` и `POST /api/auth/register`
