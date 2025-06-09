@@ -78,9 +78,11 @@
    Файл автоматически читается `docker compose` из `infra/.env`. Если переменная
    не задана, `docker compose` завершится ошибкой `JWT_SECRET: set JWT_SECRET in .env`.
    Файл добавлен в `.gitignore` и хранится локально.
-2. Создайте сертификат для Nginx:
+2. Создайте сертификат для Nginx. Выполните команду из корня репозитория,
+   чтобы итоговые файлы оказались в каталоге `infra/nginx/certs`:
 
    ```bash
+   mkdir -p infra/nginx/certs && cd <repo-root>
    openssl req -x509 -newkey rsa:2048 -nodes \
      -keyout infra/nginx/certs/server.key \
      -out infra/nginx/certs/server.crt \
