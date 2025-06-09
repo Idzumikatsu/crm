@@ -20,7 +20,7 @@ COPY --from=build /workspace/backend/app.jar app.jar
 COPY scripts/wait-for-db.sh /wait-for-db.sh
 RUN chmod +x /wait-for-db.sh
 # Копируем скрипт для локального запуска приложения
-COPY scripts/start-dev.sh /start-dev.sh
+COPY ./scripts/start-dev.sh /start-dev.sh
 RUN chmod +x /start-dev.sh
 # По умолчанию приложение ожидает базу данных на `db` 
 # (имя сервиса в Compose). Значение можно переопределить при запуске.
