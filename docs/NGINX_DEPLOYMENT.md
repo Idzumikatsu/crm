@@ -13,8 +13,10 @@ Deployments start with one instance receiving a portion of traffic while the pre
 
 ## Delivery Steps
 1. Push to `main` triggers the `deploy.yml` workflow.
-2. The application JAR and rendered `nginx.conf` are copied to the VPS.
-3. `docker compose up -d` rebuilds containers.
-4. After success, traffic is gradually switched according to the strategy above.
+2. Frontend sources are linted with `eslint --fix` and checked for errors.
+3. The backend is built from the `backend/` directory using `./gradlew build`.
+4. The application JAR and rendered `nginx.conf` are copied to the VPS.
+5. `docker compose up -d` rebuilds containers.
+6. After success, traffic is gradually switched according to the strategy above.
 
-5. When all checks pass the pull request is auto-merged.
+7. When all checks pass the pull request is auto-merged.
