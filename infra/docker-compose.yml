@@ -29,7 +29,7 @@ services:
       DB_PORT: ${DB_PORT:-5432}
       JWT_SECRET: ${JWT_SECRET}
     entrypoint: ["/wait-for-db.sh"]
-    command: ["/workspace/scripts/start-dev.sh"]
+    command: ["/start-dev.sh"]
     working_dir: /workspace/backend
     volumes:
       - ../:/workspace
