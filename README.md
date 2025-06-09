@@ -71,7 +71,7 @@
 ## Запуск в Docker
 
 1. Создайте файл `infra/.env`, скопировав `infra/.env.example`, и замените
-   значение `JWT_SECRET` (по умолчанию `changeme`) случайной строкой
+   значение `JWT_SECRET` (по умолчанию `0123456789abcdef0123456789abcdef`) случайной строкой
    длиной не менее 32 байт, например `openssl rand -hex 32`.
    При необходимости измените `SPRING_PROFILES_ACTIVE`, `DB_HOST` и `DB_PORT`.
    Переменная `DB_HOST` по умолчанию равна `db`, но её можно переопределить.
@@ -267,7 +267,7 @@ cd frontend && npm run lint
 ## JWT
 
 Приложение подписывает JWT секретом из переменной окружения `JWT_SECRET`.
-В `application.yml` он задан как `${JWT_SECRET:changeme}`, поэтому
+В `application.yml` он задан как `${JWT_SECRET:0123456789abcdef0123456789abcdef}`, поэтому
 в production его нужно обязательно переопределить и использовать
 случайную строку не менее 32 байт,
 например `openssl rand -hex 32`. Файл
