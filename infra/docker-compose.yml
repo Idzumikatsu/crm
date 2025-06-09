@@ -28,11 +28,6 @@ services:
       DB_HOST: ${DB_HOST:-db}
       DB_PORT: ${DB_PORT:-5432}
       JWT_SECRET: ${JWT_SECRET}
-    entrypoint: ["/wait-for-db.sh"]
-    command: ["/start-dev.sh"]
-    working_dir: /workspace/backend
-    volumes:
-      - ../:/workspace
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
