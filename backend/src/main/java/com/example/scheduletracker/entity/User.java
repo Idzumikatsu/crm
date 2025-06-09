@@ -27,14 +27,24 @@ public class User {
   @Column(name = "two_fa_secret")
   private String twoFaSecret;
 
+  @Column(name = "two_fa_enabled")
+  private boolean twoFaEnabled;
+
   public User() {}
 
-  public User(UUID id, String username, String password, Role role, String twoFaSecret) {
+  public User(
+      UUID id,
+      String username,
+      String password,
+      Role role,
+      String twoFaSecret,
+      boolean twoFaEnabled) {
     this.id = id;
     this.username = username;
     this.password = password;
     this.role = role;
     this.twoFaSecret = twoFaSecret;
+    this.twoFaEnabled = twoFaEnabled;
   }
 
   public UUID getId() {
@@ -77,6 +87,14 @@ public class User {
     this.twoFaSecret = twoFaSecret;
   }
 
+  public boolean isTwoFaEnabled() {
+    return twoFaEnabled;
+  }
+
+  public void setTwoFaEnabled(boolean twoFaEnabled) {
+    this.twoFaEnabled = twoFaEnabled;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -87,6 +105,7 @@ public class User {
     private String password;
     private Role role;
     private String twoFaSecret;
+    private boolean twoFaEnabled;
 
     public Builder id(UUID id) {
       this.id = id;
@@ -113,8 +132,13 @@ public class User {
       return this;
     }
 
+    public Builder twoFaEnabled(boolean twoFaEnabled) {
+      this.twoFaEnabled = twoFaEnabled;
+      return this;
+    }
+
     public User build() {
-      return new User(id, username, password, role, twoFaSecret);
+      return new User(id, username, password, role, twoFaSecret, twoFaEnabled);
     }
   }
 
