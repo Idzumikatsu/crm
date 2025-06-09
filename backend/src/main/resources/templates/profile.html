@@ -1,9 +1,0 @@
-<!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout :: layout('Профиль', ~{::section})">
-<section class="max-w-xl mx-auto p-4 bg-white rounded shadow">
-    <h1 class="text-2xl font-bold mb-4">Профиль</h1>
-    <p><strong>Логин:</strong> <span th:text="${#authentication.name}"></span></p>
-    <p><strong>Роль:</strong> <span th:text="${#authentication.principal.authorities[0].authority}"></span></p>
-</section>
-</html>
