@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Sidebar } from '../components/Sidebar';
 import type { Student } from '../components/StudentCombobox';
 import { StudentDialog } from '../components/StudentDialog';
 import { useApiFetch } from '../api';
@@ -30,9 +29,7 @@ export const StudentsPage = () => {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex-1 p-4">
+    <div>
         <div className="flex justify-between mb-2">
           <input
             className="border p-1 flex-1 mr-2"
@@ -91,7 +88,6 @@ export const StudentsPage = () => {
             }}
           />
         )}
-      </div>
     </div>
   );
 };

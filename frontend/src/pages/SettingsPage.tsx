@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Sidebar } from '../components/Sidebar';
 import { TwoFaToggle } from '../components/TwoFaToggle';
 import { useApiFetch } from '../api';
 
@@ -27,31 +26,28 @@ export const SettingsPage = () => {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="p-4 flex-1 space-y-4">
-        <div>
-          <label className="block">Teacher buffer (min)</label>
-          <input
-            type="number"
-            className="border p-1"
-            value={buffer}
-            onChange={(e) => setBuffer(Number(e.target.value))}
-          />
-        </div>
-        <div>
-          <label className="block">Notification template</label>
-          <textarea
-            className="border p-1 w-full h-32"
-            value={template}
-            onChange={(e) => setTemplate(e.target.value)}
-          />
-        </div>
-        <TwoFaToggle />
-        <button className="border px-2" onClick={save}>
-          Save
-        </button>
+    <div className="space-y-4">
+      <div>
+        <label className="block">Teacher buffer (min)</label>
+        <input
+          type="number"
+          className="border p-1"
+          value={buffer}
+          onChange={(e) => setBuffer(Number(e.target.value))}
+        />
       </div>
+      <div>
+        <label className="block">Notification template</label>
+        <textarea
+          className="border p-1 w-full h-32"
+          value={template}
+          onChange={(e) => setTemplate(e.target.value)}
+        />
+      </div>
+      <TwoFaToggle />
+      <button className="border px-2" onClick={save}>
+        Save
+      </button>
     </div>
   );
 };

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Sidebar } from '../components/Sidebar';
 import { TemplateDialog } from '../components/TemplateDialog';
 import type { Template } from '../components/TemplateDialog';
 import { useApiFetch } from '../api';
@@ -23,9 +22,8 @@ export const TemplatesPage = () => {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex-1 p-4">
+    <div>
+      
         <div className="mb-2 text-right">
           <button className="border px-2" onClick={() => setCreating(true)}>
             New
@@ -77,7 +75,6 @@ export const TemplatesPage = () => {
             }}
           />
         )}
-      </div>
     </div>
   );
 };
