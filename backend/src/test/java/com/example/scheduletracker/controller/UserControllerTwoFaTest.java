@@ -27,7 +27,7 @@ class UserControllerTwoFaTest {
 
   @Test
   void enableTwoFaReturnsSecret() throws Exception {
-    User user = new User(null, "alice", "p", User.Role.STUDENT, null, false);
+    User user = new User(null, "alice", "p", User.Role.STUDENT, null, false, true);
     when(svc.findByUsername("alice")).thenReturn(Optional.of(user));
     when(totpService.generateSecret()).thenReturn("sec");
     when(svc.update(any())).thenReturn(user);
@@ -41,7 +41,7 @@ class UserControllerTwoFaTest {
 
   @Test
   void disableTwoFaUpdatesUser() throws Exception {
-    User user = new User(null, "bob", "p", User.Role.STUDENT, "s", true);
+    User user = new User(null, "bob", "p", User.Role.STUDENT, "s", true, true);
     when(svc.findByUsername("bob")).thenReturn(Optional.of(user));
     when(svc.update(any())).thenReturn(user);
 

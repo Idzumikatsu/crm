@@ -11,5 +11,7 @@ public interface UserMapper {
 
   @Mapping(target = "password", ignore = true)
   @Mapping(target = "twoFaSecret", ignore = true)
+  @Mapping(target = "twoFaEnabled", ignore = true)
+  @Mapping(target = "active", ignore = true)
   User toEntity(UserDto dto);
 }
