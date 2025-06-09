@@ -21,6 +21,8 @@
    - Use Node 20 or 22 as in the CI matrix.
    - Run `npm install` (or `npm ci`) before any npm script (`npm run build`, `npm run lint`, `npm run dev`).
    - Проверить стиль кода можно командой `cd frontend && npm run lint`.
+   - Большинство ошибок форматирования исправляется автоматически
+     через `cd frontend && npm run lint:fix`.
 4. **PostgreSQL**
    - Приложение ожидает базу `schedule` с пользователем `postgres` и паролем `postgres`.
    - Быстрый вариант через Docker:
@@ -271,7 +273,7 @@ Workflow собирает JAR, автоматически строит SPA и CS
 
 ```bash
 ./backend/gradlew test
-cd frontend && npm run lint
+cd frontend && npm run lint:fix && npm run lint
 ```
 
 
