@@ -33,7 +33,6 @@ public class SecurityConfig {
             auth ->
                 auth.requestMatchers(
                         "/login",
-                        "/login.html",
                         "/index.html",
                         "/",
                         "/api/auth/login",

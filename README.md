@@ -240,9 +240,6 @@ npm run dev
 SPA. Готовый каталог можно раздавать через NGINX или другой web-сервер.
 Из корня репозитория то же самое выполняет команда `make frontend`.
 
-Для совместимости в каталоге `backend/src/main/resources/static` остаются
-упрощённые HTML-страницы, доступные без авторизации.
-
 ### REST API
 Основные эндпоинты:
 - `POST /api/auth/login` и `POST /api/auth/register`
