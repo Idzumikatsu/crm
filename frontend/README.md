@@ -18,3 +18,9 @@ Create a `.env` file from `.env.example` to override `VITE_API_URL` when buildin
 ## Production build
 
 Run `npm run build` to generate static files in the `dist/` directory. These files can be served by NGINX or any static web server.
+
+## Error boundary
+
+Unexpected rendering errors are caught by a simple `<ErrorBoundary>` component.
+`App` wraps all routes in this boundary by default. You can also wrap
+individual parts of the UI with `<ErrorBoundary>` when needed.
