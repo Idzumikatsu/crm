@@ -43,7 +43,8 @@ public class AuthController {
             new UsernamePasswordAuthenticationToken(req.username(), req.password()));
     String username = auth.getName();
     User user = userService.findByUsername(username).orElseThrow();
-    if (!totpService.verifyCode(user.getTwoFaSecret(), req.code())) {
+    if (user.isTwoFaEnabled()
+        && !totpService.verifyCode(user.getTwoFaSecret(), req.code())) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
     String token = jwtUtils.generateToken(username, user.getRole().name());
@@ -60,7 +61,13 @@ public class AuthController {
     String roleName = Optional.ofNullable(req.role()).orElse("STUDENT");
     String secret = totpService.generateSecret();
     User user =
-        new User(null, username, req.password(), User.Role.valueOf(roleName.toUpperCase()), secret);
+        new User(
+            null,
+            username,
+            req.password(),
+            User.Role.valueOf(roleName.toUpperCase()),
+            secret,
+            false);
     userService.save(user);
     return ResponseEntity.status(HttpStatus.CREATED).body(new SignupResponse(secret));
   }

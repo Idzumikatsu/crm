@@ -31,7 +31,8 @@ public class DataInitializer implements ApplicationRunner {
               username,
               passwordEncoder.encode(rawPassword),
               role,
-              totpService.generateSecret());
+              totpService.generateSecret(),
+              false);
       userRepository.save(user);
     }
   }

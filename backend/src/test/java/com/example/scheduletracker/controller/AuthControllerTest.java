@@ -1,7 +1,7 @@
 package com.example.scheduletracker.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,7 +33,8 @@ class AuthControllerTest {
     Authentication auth = new UsernamePasswordAuthenticationToken("user", "pass");
     when(authManager.authenticate(any())).thenReturn(auth);
     when(userService.findByUsername("user"))
-        .thenReturn(java.util.Optional.of(new User(null, "user", null, User.Role.TEACHER, "s")));
+        .thenReturn(
+            java.util.Optional.of(new User(null, "user", null, User.Role.TEACHER, "s", true)));
     when(totpService.verifyCode("s", "123456")).thenReturn(true);
     when(utils.generateToken(any(), any())).thenReturn("token");
 
@@ -45,11 +46,36 @@ class AuthControllerTest {
   }
 
   @Test
+  void loginWithout2faSkipsVerification() throws Exception {
+    Authentication auth = new UsernamePasswordAuthenticationToken("user", "pass");
+    when(authManager.authenticate(any())).thenReturn(auth);
+    when(userService.findByUsername("user"))
+        .thenReturn(
+            java.util.Optional.of(new User(null, "user", null, User.Role.TEACHER, "s", false)));
+    when(utils.generateToken(any(), any())).thenReturn("t");
+
+    mvc.perform(
+            post("/api/auth/login")
+                .contentType("application/json")
+                .content("{\"username\":\"u\",\"password\":\"p\",\"code\":\"000000\"}"))
+        .andExpect(status().isOk());
+
+    verify(totpService, never()).verifyCode(any(), any());
+  }
+
+  @Test
   void registerCreatesUser() throws Exception {
     when(userService.findByUsername("new")).thenReturn(java.util.Optional.empty());
     when(totpService.generateSecret()).thenReturn("secret");
     when(userService.save(any()))
-        .thenReturn(new User(java.util.UUID.randomUUID(), "new", "p", User.Role.STUDENT, "secret"));
+        .thenReturn(
+            new User(
+                java.util.UUID.randomUUID(),
+                "new",
+                "p",
+                User.Role.STUDENT,
+                "secret",
+                false));
 
     mvc.perform(
             post("/api/auth/register")
