@@ -275,7 +275,12 @@ Workflow собирает JAR, автоматически строит SPA и CS
 Чтобы воспроизвести проверки CI локально, выполните:
 
 ```bash
-./backend/gradlew test
+# один раз настройте git hooks для автoформатирования
+git config core.hooksPath scripts/git-hooks
+
+# примените форматирование и запустите тесты
+./backend/gradlew spotlessApply test
+
 cd frontend && npm run lint:fix && npm run lint
 ```
 
