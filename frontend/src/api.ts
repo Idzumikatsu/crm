@@ -9,7 +9,9 @@ export function useApiFetch() {
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
-      return fetch(path, { ...options, headers });
+      const base = (import.meta.env.VITE_API_URL || '/').replace(/\/$/, '');
+      const url = `${base}${path}`;
+      return fetch(url, { ...options, headers });
     },
     [token]
   );
