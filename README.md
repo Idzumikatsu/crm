@@ -23,7 +23,7 @@
 4. **Node.js**
    - Use Node 20 or 22 as in the CI matrix.
    - Run `npm install` (or `npm ci`) before any npm script (`npm run build`, `npm run lint`, `npm run dev`).
-   - Проверить стиль кода можно командой `cd frontend && npm run lint`.
+   - После `npm install` запустите `cd frontend && npm run lint`, чтобы проверить стиль кода.
    - Большинство ошибок форматирования исправляется автоматически
      через `cd frontend && npm run lint:fix`.
 5. **PostgreSQL**
@@ -199,6 +199,7 @@ Prometheus доступен на `http://localhost:9090`.
 
 Новые пользователи могут зарегистрироваться через POST `/api/auth/register`,
 передав `username`, `password` и опциональное `role` в теле запроса.
+После регистрации на указанный email отправляется ссылка `/api/auth/verify?token=<uuid>`. Аккаунт активируется только после её перехода.
 
 ### Двухфакторная аутентификация
 
@@ -211,6 +212,8 @@ Prometheus доступен на `http://localhost:9090`.
 SECRET="JBSWY3DPEHPK3PXP"
 qrencode "otpauth://totp/ScheduleTracker:alice?secret=$SECRET&issuer=ScheduleTracker" -o totp.png
 ```
+
+Если двухфакторная аутентификация не нужна, секрет можно проигнорировать.
 
 Полученный файл `totp.png` можно отсканировать в приложении аутентификации,
 либо просто ввести значение `SECRET` вручную. Пример QR‑кода приведён ниже:
