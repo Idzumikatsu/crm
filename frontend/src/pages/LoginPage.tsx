@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../auth';
 
 export const LoginPage = () => {
@@ -50,6 +51,11 @@ export const LoginPage = () => {
         <button type="submit" className="bg-blue-500 text-white px-2 py-1">
           Login
         </button>
+        <div>
+          <Link to="/register" className="text-blue-600 underline">
+            Register
+          </Link>
+        </div>
       </form>
     </div>
   );
