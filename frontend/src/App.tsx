@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './auth';
 import { AuthGate } from './components/AuthGate';
+import { Layout } from './components/Layout';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { VerifyPage } from './pages/VerifyPage';
@@ -24,53 +25,20 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/verify" element={<VerifyPage />} />
           <Route
-            path="/settings"
-            element={
-              <AuthGate>
-                <SettingsPage />
-              </AuthGate>
-            }
-          />
-          <Route
-            path="/calendar"
-            element={
-              <AuthGate>
-                <TeacherCalendarPage />
-              </AuthGate>
-            }
-          />
-          <Route
-            path="/manager"
-            element={
-              <AuthGate>
-                <ManagerCalendarPage />
-              </AuthGate>
-            }
-          />
-          <Route
-            path="/students"
-            element={
-              <AuthGate>
-                <StudentsPage />
-              </AuthGate>
-            }
-          />
-          <Route
-            path="/templates"
-            element={
-              <AuthGate>
-                <TemplatesPage />
-              </AuthGate>
-            }
-          />
-          <Route
             path="/"
             element={
               <AuthGate>
-                <DashboardPage />
+                <Layout />
               </AuthGate>
             }
-          />
+          >
+            <Route index element={<DashboardPage />} />
+            <Route path="calendar" element={<TeacherCalendarPage />} />
+            <Route path="manager" element={<ManagerCalendarPage />} />
+            <Route path="students" element={<StudentsPage />} />
+            <Route path="templates" element={<TemplatesPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
         </Routes>
         </AuthProvider>
       </QueryClientProvider>
