@@ -183,9 +183,11 @@ jobs:
         # port:     ${{ secrets.VPS_PORT }}
         envs: DEPLOY_DIR
         script: |
-          cd "$HOME/$DEPLOY_DIR/infra"
-          if [ ! -f .env ]; then
-            cp .env.example .env
+          if [ -d "$HOME/$DEPLOY_DIR/infra" ]; then
+            cd "$HOME/$DEPLOY_DIR/infra"
+            if [ ! -f .env ] && [ -f .env.example ]; then
+              cp .env.example .env
+            fi
           fi
 
 
