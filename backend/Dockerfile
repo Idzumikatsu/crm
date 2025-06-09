@@ -10,7 +10,7 @@ RUN ./gradlew bootJar --no-daemon
 RUN cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
 
 # ---- Runtime stage ---------------------------------------------------------
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jdk
 RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client curl \
     && rm -rf /var/lib/apt/lists/*
