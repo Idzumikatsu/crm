@@ -17,7 +17,6 @@
 | POST | /api/groups | HTTP/1.1 |
 | PUT | /api/groups/{id} | HTTP/1.1 |
 | DELETE | /api/groups/{id} | HTTP/1.1 |
-| GET | /api/hello | HTTP/1.1 |
 | GET | /api/lessons | HTTP/1.1 |
 | GET | /api/lessons/{id} | HTTP/1.1 |
 | POST | /api/lessons | HTTP/1.1 |
