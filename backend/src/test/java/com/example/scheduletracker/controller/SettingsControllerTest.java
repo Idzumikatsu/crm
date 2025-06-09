@@ -32,7 +32,7 @@ class SettingsControllerTest {
   void getReturnsSettings() throws Exception {
     UUID id = UUID.randomUUID();
     when(userService.findByUsername("alice"))
-        .thenReturn(Optional.of(new User(id, "alice", "p", User.Role.TEACHER, null, false)));
+        .thenReturn(Optional.of(new User(id, "alice", "p", User.Role.TEACHER, null, false, true)));
     when(service.findByTeacherId(id)).thenReturn(Optional.of(new TeacherSettings(id, 5, "hi")));
 
     mvc.perform(get("/api/settings").principal(() -> "alice"))
@@ -45,7 +45,7 @@ class SettingsControllerTest {
   void putUpdatesSettings() throws Exception {
     UUID id = UUID.randomUUID();
     when(userService.findByUsername("bob"))
-        .thenReturn(Optional.of(new User(id, "bob", "p", User.Role.TEACHER, null, false)));
+        .thenReturn(Optional.of(new User(id, "bob", "p", User.Role.TEACHER, null, false, true)));
     TeacherSettings ts = new TeacherSettings(id, 10, "ok");
     when(service.save(ts)).thenReturn(ts);
 
