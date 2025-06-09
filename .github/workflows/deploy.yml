@@ -173,7 +173,6 @@ jobs:
           docker system prune -af
           docker compose -f infra/docker-compose.yml down --remove-orphans
           docker compose -f infra/docker-compose.yml build --no-cache
-          docker compose -f infra/docker-compose.yml up -d
-          docker compose -f infra/docker-compose.yml wait db app
+          docker compose -f infra/docker-compose.yml up -d --wait
           docker compose -f infra/docker-compose.yml ps
           docker compose -f infra/docker-compose.yml logs app --tail=20
