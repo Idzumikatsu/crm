@@ -126,10 +126,11 @@ jobs:
       working-directory: backend
 
 
-    - name: Generate test TLS certificate
+    - name: Write TLS certificate
       run: |
         mkdir -p infra/nginx/certs
-        openssl req -x509 -newkey rsa:2048 -nodes -keyout infra/nginx/certs/server.key -out infra/nginx/certs/server.crt -days 1 -subj "/CN=localhost"
+        echo "${{ secrets.TLS_CERT }}" > infra/nginx/certs/server.crt
+        echo "${{ secrets.TLS_KEY }}"  > infra/nginx/certs/server.key
 
     # Render environment-specific nginx.conf
     - name: Render NGINX config
