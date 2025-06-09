@@ -275,9 +275,22 @@ Workflow собирает JAR, автоматически строит SPA и CS
 Чтобы воспроизвести проверки CI локально, выполните:
 
 ```bash
-./backend/gradlew test
+# один раз настройте git hooks для автoформатирования
+git config core.hooksPath scripts/git-hooks
+
+# примените форматирование и запустите тесты
+./backend/gradlew spotlessApply test
+
 cd frontend && npm run lint:fix && npm run lint
 ```
+
+## SMTP
+
+Для отправки писем настройте переменные окружения `SMTP_HOST`, `SMTP_PORT`,
+`SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS` и `MAIL_FROM`.
+По умолчанию проверка почтового сервера отключена свойством
+`management.health.mail.enabled=false`, поэтому контейнер остаётся здоровым,
+даже если SMTP не настроен.
 
 
 

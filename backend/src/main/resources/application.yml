@@ -3,6 +3,18 @@ spring:
     default: h2
   jpa:
     open-in-view: false
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:25}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${SMTP_AUTH:false}
+      mail.smtp.starttls.enable: ${SMTP_STARTTLS:false}
+
+app:
+  mail:
+    from: ${MAIL_FROM:no-reply@example.com}
 
 telegram:
   bot-token: ${TELEGRAM_BOT_TOKEN:}
@@ -11,6 +23,9 @@ jwt:
   secret: ${JWT_SECRET:0123456789abcdef0123456789abcdef}
 
 management:
+  health:
+    mail:
+      enabled: false
   endpoints:
     web:
       exposure:
