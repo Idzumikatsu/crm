@@ -79,6 +79,32 @@ jobs:
         distribution: temurin
         java-version: 21
 
+    # Install Node for frontend build
+    - name: Setup Node 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    # Install root dependencies and build Tailwind CSS
+    - name: Install root dependencies
+      run: npm ci
+
+    - name: Build Tailwind CSS
+      run: npm run build
+
+    # Install frontend dependencies and build SPA
+    - name: Install frontend dependencies
+      run: npm ci
+      working-directory: frontend
+
+    - name: Run ESLint
+      run: npm run lint
+      working-directory: frontend
+
+    - name: Build frontend
+      run: npm run build
+      working-directory: frontend
+
     # 3. Настраиваем прокси для Maven и Git
     - name: Setup proxy
       run: scripts/setup-proxy.sh
