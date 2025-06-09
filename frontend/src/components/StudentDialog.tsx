@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Student } from './StudentCombobox';
+import { useApiFetch } from '../api';
 
 interface Props {
   student?: Student;
@@ -10,6 +11,7 @@ interface Props {
 export const StudentDialog = ({ student, onClose, onSaved }: Props) => {
   const [name, setName] = useState(student?.name ?? '');
   const [email, setEmail] = useState(student?.email ?? '');
+  const apiFetch = useApiFetch();
 
   useEffect(() => {
     setName(student?.name ?? '');
@@ -18,7 +20,7 @@ export const StudentDialog = ({ student, onClose, onSaved }: Props) => {
 
   const save = () => {
     const body = JSON.stringify({ id: student?.id, name, email });
-    fetch(`/api/students${student ? '/' + student.id : ''}`, {
+    apiFetch(`/api/students${student ? '/' + student.id : ''}`, {
       method: student ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body,

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useApiFetch } from '../api';
 
 export interface Template {
   id?: string;
@@ -19,6 +20,7 @@ export const TemplateDialog = ({ template, onClose, onSaved }: Props) => {
   const [lang, setLang] = useState(template?.lang ?? 'en');
   const [subject, setSubject] = useState(template?.subject ?? '');
   const [bodyHtml, setBodyHtml] = useState(template?.bodyHtml ?? '');
+  const apiFetch = useApiFetch();
 
   useEffect(() => {
     setCode(template?.code ?? '');
@@ -29,7 +31,7 @@ export const TemplateDialog = ({ template, onClose, onSaved }: Props) => {
 
   const save = () => {
     const body = JSON.stringify({ id: template?.id, code, lang, subject, bodyHtml });
-    fetch(`/api/templates${template ? '/' + template.id : ''}`, {
+    apiFetch(`/api/templates${template ? '/' + template.id : ''}`, {
       method: template ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body,

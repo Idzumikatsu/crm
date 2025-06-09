@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useApiFetch } from '../api';
 
 export const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -8,6 +9,7 @@ export const RegisterPage = () => {
   const [secret, setSecret] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const apiFetch = useApiFetch();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -21,7 +23,7 @@ export const RegisterPage = () => {
       setError('Passwords do not match');
       return;
     }
-    const res = await fetch('/api/auth/register', {
+    const res = await apiFetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: email, password, role: 'STUDENT' }),

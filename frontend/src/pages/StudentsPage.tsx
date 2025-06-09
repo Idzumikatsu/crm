@@ -2,20 +2,22 @@ import { useEffect, useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
 import type { Student } from '../components/StudentCombobox';
 import { StudentDialog } from '../components/StudentDialog';
+import { useApiFetch } from '../api';
 
 export const StudentsPage = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [search, setSearch] = useState('');
   const [editing, setEditing] = useState<Student | null>(null);
   const [creating, setCreating] = useState(false);
+  const apiFetch = useApiFetch();
 
   const load = () => {
-    fetch('/api/students')
+    apiFetch('/api/students')
       .then((r) => r.json())
       .then((data: Student[]) => setStudents(data));
   };
 
-  useEffect(load, []);
+  useEffect(load, [apiFetch]);
 
   const filtered = students.filter(
     (s) =>
@@ -24,7 +26,7 @@ export const StudentsPage = () => {
   );
 
   const remove = (id: string) => {
-    fetch(`/api/students/${id}`, { method: 'DELETE' }).then(load);
+    apiFetch(`/api/students/${id}`, { method: 'DELETE' }).then(load);
   };
 
   return (

@@ -3,6 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { type EventInput } from '@fullcalendar/core';
+import { useApiFetch } from '../api';
 
 interface Teacher {
   id: string;
@@ -21,19 +22,20 @@ export const ManagerCalendar = () => {
   const [teacherId, setTeacherId] = useState<string | null>(null);
   const [events, setEvents] = useState<EventInput[]>([]);
   const [modalLesson, setModalLesson] = useState<Lesson | null>(null);
+  const apiFetch = useApiFetch();
 
   useEffect(() => {
-    fetch('/api/teachers')
+    apiFetch('/api/teachers')
       .then((r) => r.json())
       .then((data: Teacher[]) => {
         setTeachers(data);
         if (data.length > 0) setTeacherId(String(data[0].id));
       });
-  }, []);
+  }, [apiFetch]);
 
   useEffect(() => {
     if (!teacherId) return;
-    fetch(`/api/lessons?teacherId=${teacherId}`)
+    apiFetch(`/api/lessons?teacherId=${teacherId}`)
       .then((r) => r.json())
       .then((data: Lesson[]) =>
         setEvents(
@@ -46,7 +48,7 @@ export const ManagerCalendar = () => {
           }))
         )
       );
-  }, [teacherId]);
+  }, [teacherId, apiFetch]);
 
   return (
     <div>
