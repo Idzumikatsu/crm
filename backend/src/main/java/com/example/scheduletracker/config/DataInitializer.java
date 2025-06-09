@@ -32,7 +32,8 @@ public class DataInitializer implements ApplicationRunner {
               passwordEncoder.encode(rawPassword),
               role,
               totpService.generateSecret(),
-              false);
+              false,
+              true);
       userRepository.save(user);
     }
   }

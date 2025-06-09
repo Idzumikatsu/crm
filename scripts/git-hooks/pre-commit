@@ -1,0 +1,4 @@
+#!/bin/sh
+# Format Java code before committing
+DIR="$(git rev-parse --show-toplevel)"
+cd "$DIR/backend" && ./gradlew spotlessApply >/dev/null

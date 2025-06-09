@@ -17,13 +17,16 @@
    - Установите JDK 21. На Linux можно установить пакет `openjdk-21-jdk`.
 2. **Gradle**
    - Используйте Gradle 8.14 или запускайте через прилагаемый скрипт `./backend/gradlew`.
-3. **Node.js**
+3. **Git hooks**
+   - Для автoформатирования Java-кода выполните `git config core.hooksPath scripts/git-hooks`.
+   - При коммите будет запускаться `./backend/gradlew spotlessApply`.
+4. **Node.js**
    - Use Node 20 or 22 as in the CI matrix.
    - Run `npm install` (or `npm ci`) before any npm script (`npm run build`, `npm run lint`, `npm run dev`).
    - Проверить стиль кода можно командой `cd frontend && npm run lint`.
    - Большинство ошибок форматирования исправляется автоматически
      через `cd frontend && npm run lint:fix`.
-4. **PostgreSQL**
+5. **PostgreSQL**
    - Приложение ожидает базу `schedule` с пользователем `postgres` и паролем `postgres`.
    - Быстрый вариант через Docker:
      ```bash
@@ -35,7 +38,7 @@
       `postgres` не активирован, используется встроенная база H2.
     - Для миграций используется Flyway **11.9.1**, что обеспечивает поддержку
       PostgreSQL 16.2.
-5. **Сборка и запуск backend**
+6. **Сборка и запуск backend**
    - Сборка: `./backend/gradlew build`
    - Запуск: `./backend/gradlew bootRun`
    - Приложение слушает порт `8080`. Убедитесь, что этот порт свободен
@@ -44,17 +47,17 @@
      Требуется подключение к интернету или локальный кеш артефактов.
    - В проект подключен модуль `spring-boot-starter-validation`,
      поэтому запросы валидируются через Bean Validation.
-6. **Запуск тестов**
+7. **Запуск тестов**
    - Выполните `./backend/gradlew test`.
 
-7. **Сборка CSS**
+8. **Сборка CSS**
    - Выполните `npm install` (или `npm ci`) из корня репозитория.
    - Для обновления стилей Tailwind запустите `npm run build` из корня
      репозитория. Результат появится в `backend/src/main/resources/static`.
    - При деплое workflow GitHub Actions автоматически выполняет эти
      команды, поэтому вручную собирать CSS не требуется.
 
-8. **Прокси**
+9. **Прокси**
    - Для получения зависимостей может потребоваться сетевой прокси.
      Укажите его хост и порт в переменных окружения
      `PROXY_HOST` и `PROXY_PORT` (а также `HTTP_PROXY` и `HTTPS_PROXY`
