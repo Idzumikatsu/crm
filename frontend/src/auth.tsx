@@ -5,6 +5,7 @@ export interface UserInfo {
   id: string;
   username: string;
   role: string;
+  twoFaEnabled?: boolean;
 }
 
 export interface AuthContextValue {
@@ -12,6 +13,7 @@ export interface AuthContextValue {
   user: UserInfo | null;
   login: (t: string) => void;
   logout: () => void;
+  setUser: (u: UserInfo) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -46,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .catch(() => setUser(null));
   }, [token, navigate]);
 
-  const value: AuthContextValue = { token, user, login, logout };
+  const value: AuthContextValue = { token, user, login, logout, setUser };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
