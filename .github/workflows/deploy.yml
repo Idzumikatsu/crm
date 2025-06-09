@@ -169,6 +169,8 @@ jobs:
           cd "$HOME/$DEPLOY_DIR"
           # remove old containers from the schedule-app Compose project
           docker ps -aq --filter "label=com.docker.compose.project=schedule-app" | xargs -r docker rm -f
+          # remove dangling images, unused volumes and other artifacts to free disk space
+          docker system prune -af
           docker compose -f infra/docker-compose.yml down --remove-orphans
           docker compose -f infra/docker-compose.yml build --no-cache
           docker compose -f infra/docker-compose.yml up -d
