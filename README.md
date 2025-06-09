@@ -159,9 +159,9 @@ curl http://localhost:8080/actuator/prometheus
 Экспортер считывает данные со страницы `/nginx_status` внутри контейнера.
 
 Инфраструктура включает сервис `prometheus`, который читает конфигурацию из
-каталога `infra/prometheus` и автоматически опрашивает приложение и
+файла `infra/prometheus/prometheus.yml` и автоматически опрашивает приложение и
 `nginx-exporter`. Запускайте `docker compose -f infra/docker-compose.yml`
-из корня проекта, чтобы Docker корректно смонтировал каталог. Веб‑интерфейс
+из корня проекта, чтобы Docker корректно смонтировал файл. Веб‑интерфейс
 Prometheus доступен на `http://localhost:9090`.
 
 
