@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useApiFetch } from '../api';
 
 export interface Student {
   id: string;
@@ -13,12 +14,13 @@ interface Props {
 
 export const StudentCombobox = ({ value, onChange }: Props) => {
   const [students, setStudents] = useState<Student[]>([]);
+  const apiFetch = useApiFetch();
 
   useEffect(() => {
-    fetch('/api/students')
+    apiFetch('/api/students')
       .then((r) => r.json())
       .then((data: Student[]) => setStudents(data));
-  }, []);
+  }, [apiFetch]);
 
   return (
     <select

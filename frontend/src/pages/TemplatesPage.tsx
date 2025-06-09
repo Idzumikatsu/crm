@@ -2,22 +2,24 @@ import { useEffect, useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
 import { TemplateDialog } from '../components/TemplateDialog';
 import type { Template } from '../components/TemplateDialog';
+import { useApiFetch } from '../api';
 
 export const TemplatesPage = () => {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [editing, setEditing] = useState<Template | null>(null);
   const [creating, setCreating] = useState(false);
+  const apiFetch = useApiFetch();
 
   const load = () => {
-    fetch('/api/templates')
+    apiFetch('/api/templates')
       .then((r) => r.json())
       .then((data: Template[]) => setTemplates(data));
   };
 
-  useEffect(load, []);
+  useEffect(load, [apiFetch]);
 
   const remove = (id: string) => {
-    fetch(`/api/templates/${id}`, { method: 'DELETE' }).then(load);
+    apiFetch(`/api/templates/${id}`, { method: 'DELETE' }).then(load);
   };
 
   return (

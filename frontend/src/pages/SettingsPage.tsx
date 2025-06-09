@@ -1,23 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
 import { TwoFaToggle } from '../components/TwoFaToggle';
+import { useApiFetch } from '../api';
 
 export const SettingsPage = () => {
   const [buffer, setBuffer] = useState(0);
   const [template, setTemplate] = useState('');
+  const apiFetch = useApiFetch();
 
   useEffect(() => {
-    fetch('/api/settings')
+    apiFetch('/api/settings')
       .then((r) => r.json())
       .then((d) => {
         setBuffer(d.bufferMin ?? 0);
         setTemplate(d.template ?? '');
       })
       .catch(() => {});
-  }, []);
+  }, [apiFetch]);
 
   const save = () => {
-    fetch('/api/settings', {
+    apiFetch('/api/settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ bufferMin: buffer, template }),

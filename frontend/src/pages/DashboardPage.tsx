@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { Sidebar } from '../components/Sidebar';
+import { useApiFetch } from '../api';
 
 interface Point {
   date: string;
@@ -8,10 +9,11 @@ interface Point {
 }
 
 export const DashboardPage = () => {
+  const apiFetch = useApiFetch();
   const { data } = useQuery<Point[]>({
     queryKey: ['analytics'],
     queryFn: () =>
-      fetch('/api/analytics')
+      apiFetch('/api/analytics')
         .then((r) => r.json())
         .then((d) => d as Point[]),
   });

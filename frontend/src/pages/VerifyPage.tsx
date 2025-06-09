@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useApiFetch } from '../api';
 
 export const VerifyPage = () => {
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<'pending' | 'success' | 'error'>('pending');
+  const apiFetch = useApiFetch();
 
   useEffect(() => {
     const token = searchParams.get('token');
@@ -11,10 +13,10 @@ export const VerifyPage = () => {
       setStatus('error');
       return;
     }
-    fetch(`/api/auth/verify?token=${token}`)
+    apiFetch(`/api/auth/verify?token=${token}`)
       .then((r) => (r.ok ? setStatus('success') : setStatus('error')))
       .catch(() => setStatus('error'));
-  }, [searchParams]);
+  }, [searchParams, apiFetch]);
 
   if (status === 'pending') return <div className="p-4">Verifying...</div>;
   if (status === 'success')

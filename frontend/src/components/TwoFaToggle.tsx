@@ -1,10 +1,12 @@
 import { useAuth } from '../auth';
 import { useEffect, useState } from 'react';
+import { useApiFetch } from '../api';
 
 export const TwoFaToggle = () => {
   const { token, user, setUser } = useAuth();
   const [enabled, setEnabled] = useState(false);
   const [secret, setSecret] = useState<string | null>(null);
+  const apiFetch = useApiFetch();
 
   useEffect(() => {
     setEnabled(user?.twoFaEnabled ?? false);
@@ -13,17 +15,15 @@ export const TwoFaToggle = () => {
   const toggle = async () => {
     if (!token) return;
     if (enabled) {
-      await fetch('/api/users/me/2fa/disable', {
+      await apiFetch('/api/users/me/2fa/disable', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
       });
       setEnabled(false);
       setSecret(null);
       if (user) setUser({ ...user, twoFaEnabled: false });
     } else {
-      const res = await fetch('/api/users/me/2fa/enable', {
+      const res = await apiFetch('/api/users/me/2fa/enable', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         const data: { secret: string } = await res.json();
