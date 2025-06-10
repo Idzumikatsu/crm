@@ -57,6 +57,7 @@ services:
     volumes:
       - ./nginx/nginx.conf.template:/etc/nginx/templates/nginx.conf.template:ro
       - ./nginx/certs:/etc/nginx/certs:ro
+      - ./nginx/www:/var/www/certbot:ro
     ports:
       - "80:80"
       - "443:443"
