@@ -129,17 +129,25 @@ jobs:
     - name: Write TLS certificates
       run: |
         mkdir -p infra/nginx/certs
-        set +e
-        printf '%s' "${{ secrets.SSL_CERT }}" | base64 --decode > infra/nginx/certs/crm-synergy.crt 2>/dev/null
-        if [ $? -ne 0 ]; then
-          printf '%s' "${{ secrets.SSL_CERT }}" > infra/nginx/certs/crm-synergy.crt
-        fi
-        printf '%s' "${{ secrets.SSL_KEY }}" | base64 --decode > infra/nginx/certs/crm-synergy.key 2>/dev/null
-        if [ $? -ne 0 ]; then
-          printf '%s' "${{ secrets.SSL_KEY }}" > infra/nginx/certs/crm-synergy.key
-        fi
+
+        write_file() {
+          local value="$1"
+          local dest="$2"
+          if [ -z "$value" ]; then
+            echo "::error::Missing secret for $dest" >&2
+            exit 1
+          fi
+
+          echo "$value" | base64 --decode > "$dest" 2>/dev/null || echo "$value" > "$dest"
+        }
+
+        write_file "${{ secrets.SSL_CERT }}" infra/nginx/certs/crm-synergy.crt
+        write_file "${{ secrets.SSL_KEY }}"  infra/nginx/certs/crm-synergy.key
+
         chmod 600 infra/nginx/certs/crm-synergy.key
-        set -e
+
+        # verify the key to catch invalid input early
+        openssl pkey -in infra/nginx/certs/crm-synergy.key -noout >/dev/null
       shell: bash
 
     # Render environment-specific nginx.conf
