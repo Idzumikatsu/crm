@@ -7,7 +7,7 @@ certdir="$repo_root/infra/nginx/certs"
 
 mkdir -p "$webroot" "$certdir"
 
-domain="${DOMAIN:-${SERVER_NAME:-english.webhop.me}}"
+domain="${DOMAIN:-${SERVER_NAME:-crm-synergy.ru}}"
 email="${CERTBOT_EMAIL:-izumi.katsu667@gmail.com}"
 
 if [ ! -f "$certdir/server.crt" ] || [ ! -f "$certdir/server.key" ]; then
