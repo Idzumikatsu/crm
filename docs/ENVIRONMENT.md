@@ -1,28 +1,41 @@
 # Environment Variables
 
-The backend relies on the following variables. They **must** be provided when running the application or Docker container.
+All configuration is provided via environment variables. Create `infra/.env` and `frontend/.env` manually—`.env.example` is no longer part of the workflow. The table below lists each variable, an example value, where it is used and the recommended storage location.
 
-| Variable | Description |
-| --- | --- |
-| `DB_HOST` | Database hostname |
-| `DB_PORT` | Database port |
-| `DB_USER` | Database username |
-| `DB_PASSWORD` | Database password |
-| `DB_NAME` | Database name |
-| `POSTGRES_DB` | PostgreSQL database name |
-| `POSTGRES_USER` | PostgreSQL user |
-| `POSTGRES_PASSWORD` | PostgreSQL password |
-| `SMTP_HOST` | SMTP server hostname |
-| `SMTP_PORT` | SMTP server port |
-| `SMTP_USERNAME` | SMTP account username |
-| `SMTP_PASSWORD` | SMTP account password |
-| `SMTP_AUTH` | Enable SMTP AUTH (`true` or `false`) |
-| `SMTP_STARTTLS` | Enable STARTTLS (`true` or `false`) |
-| `MAIL_FROM` | Sender address for outgoing mail |
-| `TELEGRAM_BOT_TOKEN` | Telegram bot token |
-| `JWT_SECRET` | Secret key used to sign JWT tokens |
-| `APP_HOST` | Hostname of the backend container for Nginx |
-| `APP_PORT` | Port of the backend container |
-| `SERVER_NAME` | Domain served by Nginx |
+| Variable | Example | Consumed In | Location |
+| --- | --- | --- | --- |
+| `DB_HOST` | `db` | `backend/src/main/resources/application-postgres.yml`, `infra/docker-compose.yml`, `scripts/wait-for-db.sh`, `scripts/backup-db.sh` | `infra/.env` |
+| `DB_PORT` | `5432` | `backend/src/main/resources/application-postgres.yml`, `infra/docker-compose.yml`, `scripts/wait-for-db.sh`, `scripts/backup-db.sh` | `infra/.env` |
+| `DB_USER` | `postgres` | `backend/src/main/resources/application-postgres.yml`, `infra/docker-compose.yml`, `scripts/wait-for-db.sh`, `scripts/backup-db.sh` | `infra/.env` |
+| `DB_PASSWORD` | `postgres` | `backend/src/main/resources/application-postgres.yml`, `infra/docker-compose.yml`, `scripts/wait-for-db.sh`, `scripts/backup-db.sh` | `infra/.env` |
+| `DB_NAME` | `schedule` | `backend/src/main/resources/application-postgres.yml`, `infra/docker-compose.yml`, `scripts/wait-for-db.sh`, `scripts/backup-db.sh` | `infra/.env` |
+| `POSTGRES_DB` | `schedule` | `infra/docker-compose.yml` | `infra/.env` |
+| `POSTGRES_USER` | `postgres` | `infra/docker-compose.yml` | `infra/.env` |
+| `POSTGRES_PASSWORD` | `postgres` | `infra/docker-compose.yml` | `infra/.env` |
+| `SMTP_HOST` | `smtp.example.com` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
+| `SMTP_PORT` | `587` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
+| `SMTP_USERNAME` | `user@example.com` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
+| `SMTP_PASSWORD` | `secret` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
+| `SMTP_AUTH` | `true` | `backend/src/main/resources/application.yml` | `infra/.env` |
+| `SMTP_STARTTLS` | `true` | `backend/src/main/resources/application.yml` | `infra/.env` |
+| `MAIL_FROM` | `no-reply@example.com` | `backend/src/main/resources/application.yml` | `infra/.env` |
+| `TELEGRAM_BOT_TOKEN` | `123456:ABC` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
+| `JWT_SECRET` | `0123456789abcdef0123456789abcdef` | `backend/src/main/resources/application.yml`, `infra/docker-compose.yml` | `infra/.env` or secrets |
+| `APP_HOST` | `app` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh` | `infra/.env` |
+| `APP_PORT` | `8080` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh` | `infra/.env` |
+| `SERVER_NAME` | `example.com` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/letsencrypt.sh` | `infra/.env` |
+| `SPRING_PROFILES_ACTIVE` | `postgres` | `infra/docker-compose.yml` | `infra/.env` |
+| `PROXY_HOST` | `proxy.example.com` | `scripts/setup-proxy.sh`, `.github/workflows/deploy.yml` | secrets or shell |
+| `PROXY_PORT` | `8080` | `scripts/setup-proxy.sh`, `.github/workflows/deploy.yml` | secrets or shell |
+| `HTTP_PROXY` | `http://proxy.example.com:8080` | `scripts/setup-proxy.sh` | shell |
+| `HTTPS_PROXY` | `http://proxy.example.com:8080` | `scripts/setup-proxy.sh` | shell |
+| `BACKUP_DIR` | `backups` | `scripts/backup-db.sh` | shell |
+| `VITE_API_URL` | `https://example.com` | `frontend/src/api.ts` | `frontend/.env` |
+| `DEPLOY_DIR` | `myapp` | `.github/workflows/deploy.yml` | workflow env |
+| `VPS_HOST` | `203.0.113.1` | `.github/workflows/deploy.yml` | secrets |
+| `VPS_USER` | `deploy` | `.github/workflows/deploy.yml` | secrets |
+| `VPS_PASSWORD` | `password` | `.github/workflows/deploy.yml` | secrets |
+| `VPS_PORT` | `22` | `.github/workflows/deploy.yml` | secrets |
+| `CERTBOT_EMAIL` | `admin@example.com` | `scripts/letsencrypt.sh` | shell |
+| `DOMAIN` | `example.com` | `scripts/letsencrypt.sh` | shell |
 
-Place these variables in `infra/.env` for Docker Compose or export them in the shell before running the application locally.
