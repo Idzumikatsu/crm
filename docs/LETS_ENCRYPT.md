@@ -46,7 +46,7 @@ cp infra/nginx/certs/live/crm-synergy.ru/fullchain.pem infra/nginx/certs/crm-syn
 cp infra/nginx/certs/live/crm-synergy.ru/privkey.pem infra/nginx/certs/crm-synergy.key
 ```
 
-Encode the files before storing them as secrets:
+Encode the files in a single line before storing them as secrets:
 
 ```bash
 base64 -w0 infra/nginx/certs/crm-synergy.crt > cert.b64
