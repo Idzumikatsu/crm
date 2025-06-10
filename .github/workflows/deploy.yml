@@ -125,6 +125,14 @@ jobs:
       run: ./gradlew build
       working-directory: backend
 
+    # Restore TLS certificate files from secrets
+    - name: Write TLS certificates
+      run: |
+        mkdir -p infra/nginx/certs
+        echo "${{ secrets.SSL_CERT }}" > infra/nginx/certs/crm-synergy.crt
+        echo "${{ secrets.SSL_KEY }}" > infra/nginx/certs/crm-synergy.key
+      shell: bash
+
     # Render environment-specific nginx.conf
     - name: Render NGINX config
       run: |
