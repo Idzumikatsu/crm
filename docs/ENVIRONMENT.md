@@ -41,3 +41,4 @@ All configuration is provided via environment variables. Create `infra/.env` and
 | `SSL_CERT` | contents of `crm-synergy.crt` (PEM or Base64) | `.github/workflows/deploy.yml` | secrets/vars |
 | `SSL_KEY`  | contents of `crm-synergy.key` (PEM or Base64) | `.github/workflows/deploy.yml` | secrets/vars |
 
+
