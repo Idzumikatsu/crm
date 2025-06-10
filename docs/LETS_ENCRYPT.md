@@ -42,8 +42,8 @@ docker run --rm \
 After success copy the resulting files:
 
 ```bash
-cp infra/nginx/certs/live/crm-synergy.ru/fullchain.pem infra/nginx/certs/server.crt
-cp infra/nginx/certs/live/crm-synergy.ru/privkey.pem infra/nginx/certs/server.key
+cp infra/nginx/certs/live/crm-synergy.ru/fullchain.pem infra/nginx/certs/crm-synergy.crt
+cp infra/nginx/certs/live/crm-synergy.ru/privkey.pem infra/nginx/certs/crm-synergy.key
 ```
 
 ## 4. Automatic renewal

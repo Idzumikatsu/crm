@@ -99,8 +99,8 @@
    ```bash
    mkdir -p infra/nginx/certs && cd <repo-root>
    openssl req -x509 -newkey rsa:2048 -nodes \
-     -keyout infra/nginx/certs/server.key \
-     -out infra/nginx/certs/server.crt \
+     -keyout infra/nginx/certs/crm-synergy.key \
+     -out infra/nginx/certs/crm-synergy.crt \
      -days 365 -subj "/CN=localhost"
    ```
 4. Соберите и запустите контейнеры через Makefile. Он использует
