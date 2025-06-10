@@ -46,7 +46,8 @@ cp infra/nginx/certs/live/crm-synergy.ru/fullchain.pem infra/nginx/certs/crm-syn
 cp infra/nginx/certs/live/crm-synergy.ru/privkey.pem infra/nginx/certs/crm-synergy.key
 ```
 
-Encode the files in a single line before storing them as secrets:
+You can store the certificate files in GitHub secrets either as-is or encoded in
+Base64. If choosing the latter, use:
 
 ```bash
 base64 -w0 infra/nginx/certs/crm-synergy.crt > cert.b64

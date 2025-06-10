@@ -1,8 +1,8 @@
 This directory should contain `crm-synergy.crt` and `crm-synergy.key` for HTTPS termination.
 Use the `fullchain.pem` and `privkey.pem` issued by Let's Encrypt for production deployments.
-On CI the files are created from the `SSL_CERT` and `SSL_KEY` secrets. Store the
-output of `base64 -w0` for `crm-synergy.crt` and `crm-synergy.key` in those
-variables.
+On CI the files are created from the `SSL_CERT` and `SSL_KEY` secrets. The
+variables may contain either the PEM text itself or a Base64 representation –
+the deploy script will handle both formats.
 To test locally you can generate a self-signed pair:
 
 ```bash
