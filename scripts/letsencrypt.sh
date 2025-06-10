@@ -10,10 +10,10 @@ mkdir -p "$webroot" "$certdir"
 domain="${DOMAIN:-${SERVER_NAME:-crm-synergy.ru}}"
 email="${CERTBOT_EMAIL:-izumi.katsu667@gmail.com}"
 
-if [ ! -f "$certdir/server.crt" ] || [ ! -f "$certdir/server.key" ]; then
+if [ ! -f "$certdir/crm-synergy.crt" ] || [ ! -f "$certdir/crm-synergy.key" ]; then
   openssl req -x509 -newkey rsa:2048 -nodes \
-    -keyout "$certdir/server.key" \
-    -out "$certdir/server.crt" \
+    -keyout "$certdir/crm-synergy.key" \
+    -out "$certdir/crm-synergy.crt" \
     -days 1 -subj "/CN=$domain"
 fi
 
@@ -32,7 +32,9 @@ docker run --rm \
     -m "$email" \
     -d "$domain"
 
-cp "$certdir/live/$domain/fullchain.pem" "$certdir/server.crt"
-cp "$certdir/live/$domain/privkey.pem" "$certdir/server.key"
+cp "$certdir/live/$domain/cert.pem" "$certdir/crm-synergy.crt"
+cp "$certdir/live/$domain/chain.pem" "$certdir/crm-synergy_ca.crt"
+cat "$certdir/crm-synergy.crt" "$certdir/crm-synergy_ca.crt" > "$certdir/fullchain.pem"
+cp "$certdir/live/$domain/privkey.pem" "$certdir/crm-synergy.key"
 
 docker compose -f "$repo_root/infra/docker-compose.yml" exec nginx nginx -s reload
