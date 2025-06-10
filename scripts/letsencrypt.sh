@@ -8,7 +8,7 @@ certdir="$repo_root/infra/nginx/certs"
 mkdir -p "$webroot" "$certdir"
 
 domain="${DOMAIN:-${SERVER_NAME:-english.webhop.me}}"
-email="${CERTBOT_EMAIL:-izumi.katsu667@gmail.com}"
+email="${CERTBOT_EMAIL:-admin@example.com}"
 
 if [ ! -f "$certdir/server.crt" ] || [ ! -f "$certdir/server.key" ]; then
   openssl req -x509 -newkey rsa:2048 -nodes \

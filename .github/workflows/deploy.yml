@@ -70,6 +70,7 @@ jobs:
     env:
       # Store files in the user's home directory
       DEPLOY_DIR: myapp
+      CERTBOT_EMAIL: ${{ secrets.CERTBOT_EMAIL }}
 
     steps:
     # 1. Клонируем репозиторий
@@ -157,7 +158,7 @@ jobs:
         # port:     ${{ secrets.VPS_PORT }}
         # Передаём на сервер не только Dockerfile и compose, но и исходники
         # бэкенда, чтобы Docker смог собрать jar внутри контейнера
-        source: "backend,infra/docker-compose.yml,infra/.env.example,scripts/wait-for-db.sh,infra/nginx/nginx.conf,infra/prometheus/prometheus.yml"
+        source: "backend,infra/docker-compose.yml,infra/.env.example,scripts/wait-for-db.sh,scripts/letsencrypt.sh,infra/nginx/nginx.conf,infra/prometheus/prometheus.yml"
         target: ${{ env.DEPLOY_DIR }}
         rm:     true
 
@@ -199,7 +200,7 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         password:   ${{ secrets.VPS_PASSWORD }}
         # port:     ${{ secrets.VPS_PORT }}
-        envs: DEPLOY_DIR
+        envs: DEPLOY_DIR,CERTBOT_EMAIL
         script: |
           set -e
           cd "$HOME/$DEPLOY_DIR"
@@ -212,3 +213,15 @@ jobs:
           docker compose -f infra/docker-compose.yml up -d --wait
           docker compose -f infra/docker-compose.yml ps
           docker compose -f infra/docker-compose.yml logs app --tail=20
+
+    - name: Obtain TLS certificate
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host:       ${{ secrets.VPS_HOST }}
+        username:   ${{ secrets.VPS_USER }}
+        password:   ${{ secrets.VPS_PASSWORD }}
+        # port:     ${{ secrets.VPS_PORT }}
+        envs: DEPLOY_DIR,CERTBOT_EMAIL
+        script: |
+          cd "$HOME/$DEPLOY_DIR"
+          bash scripts/letsencrypt.sh

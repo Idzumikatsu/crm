@@ -1,6 +1,10 @@
 # Let's Encrypt Setup
 
-This document explains how to obtain trusted TLS certificates using Certbot.
+This document explains how trusted TLS certificates are obtained using Certbot.
+The GitHub Actions deployment workflow automatically executes
+`scripts/letsencrypt.sh` on the server. The script requests a certificate via the
+webroot plugin and reloads NGINX when finished. Manual steps are kept below for
+reference.
 
 ## 1. Verify DNS
 
@@ -27,23 +31,11 @@ mkdir -p infra/nginx/www infra/nginx/certs
 
 ## 3. Obtain the certificate
 
-Run Certbot with the `webroot` plugin. The `nginx` service must be running so that
-`/.well-known/acme-challenge` is reachable on port 80.
+If needed you can invoke the helper script manually. It ensures NGINX is
+running, requests a certificate and copies it into `infra/nginx/certs`:
 
 ```bash
-docker run --rm \
-  -v "$PWD/infra/nginx/www:/var/www/certbot" \
-  -v "$PWD/infra/nginx/certs:/etc/letsencrypt" \
-  certbot/certbot certonly \
-    --webroot -w /var/www/certbot \
-    -d english.webhop.me
-```
-
-After success copy the resulting files:
-
-```bash
-cp infra/nginx/certs/live/english.webhop.me/fullchain.pem infra/nginx/certs/server.crt
-cp infra/nginx/certs/live/english.webhop.me/privkey.pem infra/nginx/certs/server.key
+scripts/letsencrypt.sh
 ```
 
 ## 4. Automatic renewal

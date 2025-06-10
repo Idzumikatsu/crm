@@ -83,6 +83,7 @@
    длиной не менее 32 байт, например `openssl rand -hex 32`.
    При необходимости измените `SPRING_PROFILES_ACTIVE`, `DB_HOST` и `DB_PORT`.
    Переменная `DB_HOST` по умолчанию равна `db`, но её можно переопределить.
+   Укажите `CERTBOT_EMAIL` для получения сертификата Let's Encrypt.
    Файл автоматически читается `docker compose` из `infra/.env`. Если переменная
    не задана, `docker compose` завершится ошибкой `JWT_SECRET: set JWT_SECRET in .env`.
    Файл добавлен в `.gitignore` и хранится локально.
@@ -93,8 +94,8 @@
    ./backend/gradlew clean bootJar
    ```
 
-3. Создайте сертификат для Nginx. Выполните команду из корня репозитория,
-   чтобы итоговые файлы оказались в каталоге `infra/nginx/certs`:
+3. Для локального запуска требуется самоподписанный сертификат. Его можно
+   сгенерировать командой:
 
    ```bash
    mkdir -p infra/nginx/certs && cd <repo-root>
@@ -103,6 +104,8 @@
      -out infra/nginx/certs/server.crt \
      -days 365 -subj "/CN=localhost"
    ```
+   В production настоящий сертификат выдаётся автоматически скриптом
+   `scripts/letsencrypt.sh`, который запускает deploy workflow.
 4. Соберите и запустите контейнеры через Makefile. Он использует
    `infra/docker-compose.yml`:
 
@@ -282,6 +285,7 @@ SPA. Готовый каталог можно раздавать через NGIN
 - `VPS_PASSWORD` – пароль пользователя;
 - `VPS_PORT` – SSH‑порт, если отличается от `22`;
 - `PROXY_HOST` и `PROXY_PORT` – при необходимости использовать сетевой прокси.
+- `CERTBOT_EMAIL` – адрес для регистрации сертификата Let's Encrypt.
 
 Workflow собирает JAR, автоматически строит SPA и CSS, копирует получившиеся файлы и инфраструктуру на сервер и запускает `docker compose -f infra/docker-compose.yml up -d`.
 Сервер должен иметь установленный Docker версии **27.5.1** или новее (API 1.47), так как деплой тестировался на этой версии.
