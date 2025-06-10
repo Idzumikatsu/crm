@@ -173,23 +173,58 @@ jobs:
         script: |
           mkdir -p "$HOME/$DEPLOY_DIR"
 
-    # Create .env from example if not present
-    - name: Prepare environment file
+    - name: Upload infra/.env
+      if: ${{ hashFiles('infra/.env') != '' }}
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host:       ${{ secrets.VPS_HOST }}
+        username:   ${{ secrets.VPS_USER }}
+        password:   ${{ secrets.VPS_PASSWORD }}
+        target: ${{ env.DEPLOY_DIR }}/infra
+        source: infra/.env
+
+    - name: Create environment file from secrets
+      if: ${{ hashFiles('infra/.env') == '' }}
       uses: appleboy/ssh-action@v1.0.0
+      env:
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        SMTP_HOST: ${{ secrets.SMTP_HOST }}
+        SMTP_PORT: ${{ secrets.SMTP_PORT }}
+        SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+        SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        SMTP_AUTH: ${{ secrets.SMTP_AUTH }}
+        SMTP_STARTTLS: ${{ secrets.SMTP_STARTTLS }}
+        MAIL_FROM: ${{ secrets.MAIL_FROM }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
       with:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
         password:   ${{ secrets.VPS_PASSWORD }}
         # port:     ${{ secrets.VPS_PORT }}
-        envs: DEPLOY_DIR
+        envs: DEPLOY_DIR,DB_HOST,DB_PORT,DB_USER,DB_PASSWORD,DB_NAME,SMTP_HOST,SMTP_PORT,SMTP_USERNAME,SMTP_PASSWORD,SMTP_AUTH,SMTP_STARTTLS,MAIL_FROM,TELEGRAM_BOT_TOKEN,JWT_SECRET
         script: |
-          if [ -d "$HOME/$DEPLOY_DIR/infra" ]; then
-            cd "$HOME/$DEPLOY_DIR/infra"
-            if [ ! -f .env ]; then
-              echo '.env is missing on the server; create it based on docs/ENVIRONMENT.md' >&2
-              exit 1
-            fi
-          fi
+          mkdir -p "$HOME/$DEPLOY_DIR/infra"
+          cat > "$HOME/$DEPLOY_DIR/infra/.env" <<EOF
+          DB_HOST=$DB_HOST
+          DB_PORT=$DB_PORT
+          DB_USER=$DB_USER
+          DB_PASSWORD=$DB_PASSWORD
+          DB_NAME=$DB_NAME
+          SMTP_HOST=$SMTP_HOST
+          SMTP_PORT=$SMTP_PORT
+          SMTP_USERNAME=$SMTP_USERNAME
+          SMTP_PASSWORD=$SMTP_PASSWORD
+          SMTP_AUTH=$SMTP_AUTH
+          SMTP_STARTTLS=$SMTP_STARTTLS
+          MAIL_FROM=$MAIL_FROM
+          TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
+          JWT_SECRET=$JWT_SECRET
+          EOF
 
 
     # 7. Собираем Docker-образ и перезапускаем контейнер через SSH
