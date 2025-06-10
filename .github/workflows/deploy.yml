@@ -1,5 +1,5 @@
 # Requires secrets:
-#   VPS_HOST, VPS_USER, VPS_PASSWORD
+#   VPS_HOST, VPS_USER, VPS_PASSWORD, TLS_DOMAIN, TLS_EMAIL
 #   (optional) VPS_PORT – если SSH-порт не 22
 
 name: Deploy to VPS
@@ -126,24 +126,10 @@ jobs:
       working-directory: backend
 
 
-    - name: Generate test TLS certificate
-      run: |
-        mkdir -p infra/nginx/certs
-        openssl req -x509 -newkey rsa:2048 -nodes -keyout infra/nginx/certs/server.key -out infra/nginx/certs/server.crt -days 1 -subj "/CN=localhost"
-
     # Render environment-specific nginx.conf
     - name: Render NGINX config
       run: |
         APP_HOST=app APP_PORT=8080 ./scripts/render-nginx.sh
-
-    # Validate NGINX configuration syntax
-    - name: Validate NGINX config
-      run: |
-        docker run --rm \
-          --add-host app:127.0.0.1 \
-          -v ${{ github.workspace }}/infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
-          -v ${{ github.workspace }}/infra/nginx/certs:/etc/nginx/certs:ro \
-          nginx:1.26 nginx -t -c /etc/nginx/nginx.conf
 
     # 5. Копируем Dockerfile и docker-compose.yml на VPS (в каталог $HOME/myapp)
     - name: Copy infra files to VPS
@@ -189,6 +175,28 @@ jobs:
               cp .env.example .env
             fi
           fi
+
+    # Obtain TLS certificate via Let's Encrypt
+    - name: Obtain Let's Encrypt certificate
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host:       ${{ secrets.VPS_HOST }}
+        username:   ${{ secrets.VPS_USER }}
+        password:   ${{ secrets.VPS_PASSWORD }}
+        # port:     ${{ secrets.VPS_PORT }}
+        envs: DEPLOY_DIR,TLS_DOMAIN,TLS_EMAIL
+        script: |
+          CERT_DIR="$HOME/letsencrypt"
+          mkdir -p "$CERT_DIR"
+          docker run --rm \
+            -v "$CERT_DIR:/etc/letsencrypt" \
+            -p 80:80 -p 443:443 \
+            certbot/certbot certonly --standalone \
+              --non-interactive --agree-tos \
+              -m "$TLS_EMAIL" -d "$TLS_DOMAIN"
+          mkdir -p "$HOME/$DEPLOY_DIR/infra/nginx/certs"
+          cp "$CERT_DIR/live/$TLS_DOMAIN/fullchain.pem" "$HOME/$DEPLOY_DIR/infra/nginx/certs/server.crt"
+          cp "$CERT_DIR/live/$TLS_DOMAIN/privkey.pem" "$HOME/$DEPLOY_DIR/infra/nginx/certs/server.key"
 
 
     # 7. Собираем Docker-образ и перезапускаем контейнер через SSH
