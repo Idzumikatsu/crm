@@ -7,7 +7,7 @@ export default defineConfig({
   envPrefix: 'VITE_',
   server: {
     proxy: {
-      '/api': 'http://localhost:8080',
+      '/api': 'https://crm-synergy.ru',
     },
   },
 })

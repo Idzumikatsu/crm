@@ -8,7 +8,7 @@ Ensure that the A record from [DNS_SETUP.md](DNS_SETUP.md) already points to you
 
 ```bash
 # should return the server IP
-nslookup english.webhop.me
+nslookup crm-synergy.ru
 ```
 
 ## 2. Install Certbot
@@ -36,14 +36,14 @@ docker run --rm \
   -v "$PWD/infra/nginx/certs:/etc/letsencrypt" \
   certbot/certbot certonly \
     --webroot -w /var/www/certbot \
-    -d english.webhop.me
+    -d crm-synergy.ru
 ```
 
 After success copy the resulting files:
 
 ```bash
-cp infra/nginx/certs/live/english.webhop.me/fullchain.pem infra/nginx/certs/server.crt
-cp infra/nginx/certs/live/english.webhop.me/privkey.pem infra/nginx/certs/server.key
+cp infra/nginx/certs/live/crm-synergy.ru/fullchain.pem infra/nginx/certs/server.crt
+cp infra/nginx/certs/live/crm-synergy.ru/privkey.pem infra/nginx/certs/server.key
 ```
 
 ## 4. Automatic renewal

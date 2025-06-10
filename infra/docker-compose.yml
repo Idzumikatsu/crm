@@ -47,7 +47,7 @@ services:
     environment:
       APP_HOST: ${APP_HOST:-app}
       APP_PORT: 8080
-      SERVER_NAME: ${SERVER_NAME:-english.webhop.me}
+      SERVER_NAME: ${SERVER_NAME:-crm-synergy.ru}
     entrypoint: >
       /bin/sh -c "
         envsubst '\$${APP_HOST} \$${APP_PORT} \$${SERVER_NAME}' \
