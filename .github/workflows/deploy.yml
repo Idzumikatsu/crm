@@ -158,7 +158,7 @@ jobs:
         # port:     ${{ secrets.VPS_PORT }}
         # Передаём на сервер не только Dockerfile и compose, но и исходники
         # бэкенда, чтобы Docker смог собрать jar внутри контейнера
-        source: "backend,infra/docker-compose.yml,infra/.env.example,scripts/wait-for-db.sh,scripts/start-dev.sh,infra/nginx/nginx.conf,infra/prometheus/prometheus.yml"
+        source: "backend,infra/docker-compose.yml,infra/.env.example,scripts/wait-for-db.sh,infra/nginx/nginx.conf,infra/prometheus/prometheus.yml"
         target: ${{ env.DEPLOY_DIR }}
         rm:     true
 
