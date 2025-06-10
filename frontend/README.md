@@ -16,7 +16,7 @@ The dev server listens on `http://localhost:5173` and proxies API requests to th
 
 The application now uses a shared `<Layout>` component for navigation. Old static HTML pages have been removed from the backend.
 
-Create a `.env` file from `.env.example` to override `VITE_API_URL` when building for production. This variable should contain the base URL of the backend. If not set, requests are sent relative to the current host.
+Before a production build, create `frontend/.env` and define `VITE_API_URL` as described in [docs/ENVIRONMENT.md](../docs/ENVIRONMENT.md). This variable sets the backend base URL. If not set, requests use a relative path.
 
 ## Production build
 

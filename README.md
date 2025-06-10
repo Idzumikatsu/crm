@@ -78,14 +78,10 @@
 
 ## Production Deployment
 
-1. Создайте файл `infra/.env`, скопировав `infra/.env.example`, и замените
-   значение `JWT_SECRET` (по умолчанию `0123456789abcdef0123456789abcdef`) случайной строкой
-   длиной не менее 32 байт, например `openssl rand -hex 32`.
-   При необходимости измените `SPRING_PROFILES_ACTIVE`, `DB_HOST` и `DB_PORT`.
-   Переменная `DB_HOST` по умолчанию равна `db`, но её можно переопределить.
-   Файл автоматически читается `docker compose` из `infra/.env`. Если переменная
-   не задана, `docker compose` завершится ошибкой `JWT_SECRET: set JWT_SECRET in .env`.
-   Файл добавлен в `.gitignore` и хранится локально.
+1. Создайте файл `infra/.env` на основе переменных из [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md).
+   Сгенерируйте надёжное значение `JWT_SECRET`, например `openssl rand -hex 32`.
+   При необходимости скорректируйте `SPRING_PROFILES_ACTIVE`, `DB_HOST` и `DB_PORT`.
+   `docker compose` автоматически считывает `infra/.env`, а сам файл исключён из индекса Git.
 2. Соберите production артефакты:
    ```bash
    npm --prefix frontend ci
@@ -253,7 +249,7 @@ npm run dev # development server
 SPA. Готовый каталог можно раздавать через NGINX или другой web-сервер.
 Из корня репозитория то же самое выполняет команда `make frontend`.
 
-Перед сборкой можно создать файл `frontend/.env`, скопировав `frontend/.env.example`. В нём переменная `VITE_API_URL` задаёт базовый URL бэкенда. По умолчанию запросы отправляются относительным путём, но в production имеет смысл указать полный адрес, например `VITE_API_URL=https://crm-synergy.ru`.
+Перед сборкой создайте файл `frontend/.env` и задайте переменную `VITE_API_URL` из [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md). По умолчанию запросы отправляются относительным путём, но в production имеет смысл указать полный адрес, например `VITE_API_URL=https://crm-synergy.ru`.
 
 ### REST API
 Основные эндпоинты:

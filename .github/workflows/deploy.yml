@@ -147,7 +147,7 @@ jobs:
 
     # 5. Копируем Dockerfile и docker-compose.yml на VPS (в каталог $HOME/myapp)
     - name: Copy infra files to VPS
-      if: ${{ hashFiles('backend/Dockerfile', 'infra/docker-compose.yml', 'infra/nginx/nginx.conf', 'infra/nginx/nginx.conf.template', 'infra/.env.example') != '' }}
+      if: ${{ hashFiles('backend/Dockerfile', 'infra/docker-compose.yml', 'infra/nginx/nginx.conf', 'infra/nginx/nginx.conf.template') != '' }}
       uses: appleboy/scp-action@v0.1.4
       with:
         host:       ${{ secrets.VPS_HOST }}
@@ -157,7 +157,7 @@ jobs:
         # port:     ${{ secrets.VPS_PORT }}
         # Передаём на сервер не только Dockerfile и compose, но и исходники
         # бэкенда, чтобы Docker смог собрать jar внутри контейнера
-        source: "backend,infra/docker-compose.yml,infra/.env.example,scripts/wait-for-db.sh,infra/nginx/nginx.conf,infra/prometheus/prometheus.yml"
+        source: "backend,infra/docker-compose.yml,scripts/wait-for-db.sh,infra/nginx/nginx.conf,infra/prometheus/prometheus.yml"
         target: ${{ env.DEPLOY_DIR }}
         rm:     true
 
@@ -185,8 +185,9 @@ jobs:
         script: |
           if [ -d "$HOME/$DEPLOY_DIR/infra" ]; then
             cd "$HOME/$DEPLOY_DIR/infra"
-            if [ ! -f .env ] && [ -f .env.example ]; then
-              cp .env.example .env
+            if [ ! -f .env ]; then
+              echo '.env is missing on the server; create it based on docs/ENVIRONMENT.md' >&2
+              exit 1
             fi
           fi
 
