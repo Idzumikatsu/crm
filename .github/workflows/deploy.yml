@@ -129,8 +129,8 @@ jobs:
     - name: Write TLS certificates
       run: |
         mkdir -p infra/nginx/certs
-        echo "${{ secrets.SSL_CERT }}" > infra/nginx/certs/crm-synergy.crt
-        echo "${{ secrets.SSL_KEY }}" > infra/nginx/certs/crm-synergy.key
+        echo "${{ secrets.SSL_CERT }}" | base64 -d > infra/nginx/certs/crm-synergy.crt
+        echo "${{ secrets.SSL_KEY }}" | base64 -d > infra/nginx/certs/crm-synergy.key
       shell: bash
 
     # Render environment-specific nginx.conf

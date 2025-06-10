@@ -46,6 +46,13 @@ cp infra/nginx/certs/live/crm-synergy.ru/fullchain.pem infra/nginx/certs/crm-syn
 cp infra/nginx/certs/live/crm-synergy.ru/privkey.pem infra/nginx/certs/crm-synergy.key
 ```
 
+Encode the files before storing them as secrets:
+
+```bash
+base64 -w0 infra/nginx/certs/crm-synergy.crt > cert.b64
+base64 -w0 infra/nginx/certs/crm-synergy.key > key.b64
+```
+
 ## 4. Automatic renewal
 
 Create a systemd timer or cron job that runs the same Docker command with the
