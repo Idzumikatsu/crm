@@ -145,7 +145,7 @@ jobs:
     # Render environment-specific nginx.conf
     - name: Render NGINX config
       run: |
-        APP_HOST=app APP_PORT=8080 ./scripts/render-nginx.sh
+        APP_HOST=app APP_PORT=8080 SERVER_NAME=crm-synergy.ru ./scripts/render-nginx.sh
 
     # Validate NGINX configuration syntax
     - name: Validate NGINX config
