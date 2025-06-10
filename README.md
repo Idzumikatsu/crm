@@ -99,10 +99,13 @@
    ```bash
    mkdir -p infra/nginx/certs && cd <repo-root>
    openssl req -x509 -newkey rsa:2048 -nodes \
-     -keyout infra/nginx/certs/server.key \
-     -out infra/nginx/certs/server.crt \
-     -days 365 -subj "/CN=localhost"
-   ```
+     -keyout infra/nginx/certs/crm-synergy.key \
+    -out infra/nginx/certs/crm-synergy.crt \
+    -days 365 -subj "/CN=localhost"
+  ```
+  Чтобы использовать сертификат в CI, закодируйте оба файла в Base64 одной
+  строкой (`base64 -w0`) и сохраните полученный текст в секреты `SSL_CERT` и
+  `SSL_KEY`.
 4. Соберите и запустите контейнеры через Makefile. Он использует
    `infra/docker-compose.yml`:
 
@@ -264,6 +267,7 @@ npm run build
 - `VPS_PASSWORD` – пароль пользователя;
 - `VPS_PORT` – SSH‑порт, если отличается от `22`;
 - `PROXY_HOST` и `PROXY_PORT` – при необходимости использовать сетевой прокси.
+- `SSL_CERT` и `SSL_KEY` – текст, полученный через `base64 -w0` из файлов сертификата и закрытого ключа для NGINX.
 
 Workflow собирает JAR, автоматически строит SPA и CSS, копирует получившиеся файлы и инфраструктуру на сервер и запускает `docker compose -f infra/docker-compose.yml up -d`.
 Сервер должен иметь установленный Docker версии **27.5.1** или новее (API 1.47), так как деплой тестировался на этой версии.
