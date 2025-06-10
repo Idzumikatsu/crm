@@ -38,4 +38,6 @@ All configuration is provided via environment variables. Create `infra/.env` and
 | `VPS_PORT` | `22` | `.github/workflows/deploy.yml` | secrets |
 | `CERTBOT_EMAIL` | `admin@example.com` | `scripts/letsencrypt.sh` | shell |
 | `DOMAIN` | `example.com` | `scripts/letsencrypt.sh` | shell |
+| `SSL_CERT` | contents of `crm-synergy.crt` (PEM or Base64) | `.github/workflows/deploy.yml` | secrets/vars |
+| `SSL_KEY`  | contents of `crm-synergy.key` (PEM or Base64) | `.github/workflows/deploy.yml` | secrets/vars |
 
