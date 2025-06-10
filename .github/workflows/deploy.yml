@@ -138,7 +138,11 @@ jobs:
             exit 1
           fi
 
-          echo "$value" | base64 --decode > "$dest" 2>/dev/null || echo "$value" > "$dest"
+          if printf '%s' "$value" | base64 --decode --ignore-garbage > "$dest" 2>/dev/null; then
+            echo "decoded $dest"
+          else
+            printf '%s' "$value" > "$dest"
+          fi
         }
 
         write_file "${{ secrets.SSL_CERT }}" infra/nginx/certs/crm-synergy.crt
