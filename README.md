@@ -80,7 +80,8 @@
 
 1. Создайте файл `infra/.env` на основе переменных из [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md).
    Сгенерируйте надёжное значение `JWT_SECRET`, например `openssl rand -hex 32`.
-   При необходимости скорректируйте `SPRING_PROFILES_ACTIVE`, `DB_HOST` и `DB_PORT`.
+   Все сервисы Docker Compose читают переменные из этого файла. При необходимости
+   скорректируйте `SPRING_PROFILES_ACTIVE`, `DB_HOST` и `DB_PORT`.
    `docker compose` автоматически считывает `infra/.env`, а сам файл исключён из индекса Git.
 2. Соберите production артефакты:
    ```bash
