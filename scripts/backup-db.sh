@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
 # Dump PostgreSQL database with timestamp and gzip
-set -e
+set -euo pipefail
 
-host=${DB_HOST:-db}
-port=${DB_PORT:-5432}
-user=${DB_USER:-postgres}
-db=${DB_NAME:-schedule}
-export PGPASSWORD=${DB_PASSWORD:-postgres}
+: "${DB_HOST:?DB_HOST is required}"
+: "${DB_PORT:?DB_PORT is required}"
+: "${DB_USER:?DB_USER is required}"
+: "${DB_PASSWORD:?DB_PASSWORD is required}"
+: "${DB_NAME:?DB_NAME is required}"
+
+host=${DB_HOST}
+port=${DB_PORT}
+user=${DB_USER}
+db=${DB_NAME}
+export PGPASSWORD=${DB_PASSWORD}
 
 backup_dir=${BACKUP_DIR:-backups}
 mkdir -p "$backup_dir"

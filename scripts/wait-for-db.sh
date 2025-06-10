@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
-set -e
-host=${DB_HOST:-db}
-port=${DB_PORT:-5432}
-user=${DB_USER:-${POSTGRES_USER:-postgres}}
-database=${DB_NAME:-${POSTGRES_DB:-postgres}}
-export PGPASSWORD=${DB_PASSWORD:-${POSTGRES_PASSWORD:-postgres}}
+set -euo pipefail
+
+: "${DB_HOST:?DB_HOST is required}"
+: "${DB_PORT:?DB_PORT is required}"
+: "${DB_USER:?DB_USER is required}"
+: "${DB_PASSWORD:?DB_PASSWORD is required}"
+: "${DB_NAME:?DB_NAME is required}"
+
+host=${DB_HOST}
+port=${DB_PORT}
+user=${DB_USER}
+database=${DB_NAME}
+export PGPASSWORD=${DB_PASSWORD}
 
 for i in {1..60}; do
   if pg_isready -h "$host" -p "$port" -U "$user" >/dev/null 2>&1; then
