@@ -30,6 +30,7 @@ Thumbs.db
 # Environment
 .env
 infra/.env
+frontend/.env
 
 # Generated NGINX config
 infra/nginx/nginx.conf
