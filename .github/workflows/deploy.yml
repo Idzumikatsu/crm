@@ -130,28 +130,43 @@ jobs:
       run: |
         mkdir -p infra/nginx/certs
 
-        write_file() {
-          local value="$1"
-          local dest="$2"
-          if [ -z "$value" ]; then
-            echo "::error::Missing secret for $dest" >&2
-            exit 1
-          fi
-
-          if printf '%s' "$value" | base64 --decode --ignore-garbage > "$dest" 2>/dev/null; then
-            echo "decoded $dest"
+        write_secret_file() {
+          local name=$1 content=$2
+          mkdir -p infra/nginx/certs
+          if [[ $content == -----BEGIN* ]]; then
+            printf '%s\n' "$content" > "infra/nginx/certs/$name"
           else
-            printf '%s' "$value" > "$dest"
+            printf '%s' "$content" | base64 -d > "infra/nginx/certs/$name"
+            ( tail -c1 "infra/nginx/certs/$name" | read -r _ ) || echo >> "infra/nginx/certs/$name"
           fi
         }
 
-        write_file "${{ secrets.SSL_CERT }}" infra/nginx/certs/crm-synergy.crt
-        write_file "${{ secrets.SSL_KEY }}"  infra/nginx/certs/crm-synergy.key
+        write_secret_file crm-synergy.crt "${{ secrets.SSL_CERT }}"
+        write_secret_file crm-synergy.key "${{ secrets.SSL_KEY }}"
+        if [ -n "${{ secrets.SSL_CA_CERT }}" ]; then
+          write_secret_file crm-synergy_ca.crt "${{ secrets.SSL_CA_CERT }}"
+        fi
 
         chmod 600 infra/nginx/certs/crm-synergy.key
 
         # verify the key to catch invalid input early
         openssl pkey -in infra/nginx/certs/crm-synergy.key -noout >/dev/null
+
+        if [ -f infra/nginx/certs/crm-synergy_ca.crt ]; then
+          {
+            cat infra/nginx/certs/crm-synergy.crt
+            printf '\n'
+            cat infra/nginx/certs/crm-synergy_ca.crt
+          } > infra/nginx/certs/fullchain.pem
+        else
+          cp infra/nginx/certs/crm-synergy.crt infra/nginx/certs/fullchain.pem
+        fi
+
+        openssl x509 -noout -in infra/nginx/certs/fullchain.pem
+        if [ -f infra/nginx/certs/crm-synergy_ca.crt ]; then
+          openssl verify -CAfile infra/nginx/certs/crm-synergy_ca.crt \
+                         infra/nginx/certs/crm-synergy.crt
+        fi
       shell: bash
 
     # Render environment-specific nginx.conf

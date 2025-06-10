@@ -40,4 +40,5 @@ All configuration is provided via environment variables. Create `infra/.env` and
 | `DOMAIN` | `example.com` | `scripts/letsencrypt.sh` | shell |
 | `SSL_CERT` | _(output of `base64 -w0` on crm-synergy.crt)_ | `.github/workflows/deploy.yml` | secrets/vars |
 | `SSL_KEY`  | _(output of `base64 -w0` on crm-synergy.key)_ | `.github/workflows/deploy.yml` | secrets/vars |
+| `SSL_CA_CERT` | _(optional CA certificate)_ | `.github/workflows/deploy.yml` | secrets/vars |
 
