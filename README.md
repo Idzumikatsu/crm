@@ -22,26 +22,26 @@
    - При коммите будет запускаться `./backend/gradlew spotlessApply`.
 4. **Node.js**
    - Use Node 20 or 22 as in the CI matrix.
-   - Run `npm install` (or `npm ci`) before any npm script (`npm run build`, `npm run lint`, `npm run dev (development)`).
+  - Run `npm install` (or `npm ci`) before any npm script such as `npm run build` or `npm run lint`.
    - После `npm install` запустите `cd frontend && npm run lint`, чтобы проверить стиль кода.
    - Большинство ошибок форматирования исправляется автоматически
      через `cd frontend && npm run lint:fix`.
 5. **PostgreSQL**
    - Приложение ожидает базу `schedule` с пользователем `postgres` и паролем `postgres`.
-   - Быстрый вариант для разработки через Docker:
+   - Чтобы быстро запустить базу через Docker, выполните:
      ```bash
      docker run --name schedule-db -p 5432:5432 -e POSTGRES_DB=schedule \
       -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:16.2
      ```
     - В `application.yml` адрес БД задаётся через переменную окружения `DB_HOST`.
-      По умолчанию используется `db` (можно переопределить). Если профиль
-      `postgres` не активирован, используется встроенная база H2. Для удобства
-      локальной разработки предусмотрен профиль `dev`, который включает конфигурацию `h2`.
+      По умолчанию используется `db` (можно переопределить). Основной профиль
+      `postgres` рассчитан на PostgreSQL. Для тестов можно включить профиль
+      `dev`, который использует встроенную базу H2.
     - Для миграций используется Flyway **11.9.1**, что обеспечивает поддержку
       PostgreSQL 16.2.
 6. **Сборка и запуск backend**
    - Сборка: `./backend/gradlew build`
-   - Запуск (для разработки): `./backend/gradlew bootRun`
+   - Запуск приложения: `./backend/gradlew bootRun`
    - Приложение слушает порт `8080`. Убедитесь, что этот порт свободен
      перед запуском, иначе старт завершится ошибкой.
    - При первом запуске Gradle скачает зависимости из Maven Central.
@@ -213,11 +213,25 @@ qrencode "otpauth://totp/ScheduleTracker:alice?secret=$SECRET&issuer=ScheduleTra
 
 ![TOTP QR](docs/img/totp-sample.png)
 
-Производственная сборка выполняется командой `npm run build`, после чего файлы
-появятся в `frontend/dist`. Скрипт `postbuild` автоматически копирует их в
-`backend/src/main/resources/static`, поэтому бэкенд сразу использует свежие файлы
-SPA. Готовый каталог можно раздавать через NGINX или другой web-сервер.
+## Веб-интерфейс
+
+SPA реализована на React и располагается в каталоге `frontend/`.
+Для локальной разработки выполните в нём:
+
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+Скрипт `postbuild` копирует содержимое каталога `dist` в
+`backend/src/main/resources/static`, поэтому бэкенд сразу использует
+актуальные файлы SPA. Готовый каталог можно раздавать через NGINX или другой web‑сервер.
 Из корня репозитория то же самое выполняет команда `make frontend`.
+
+Для локального тестирования предусмотрена команда `npm run dev`, которая
+запускает Vite и Tailwind в watch‑режиме и проксирует запросы к бэкенду.
+
 
 Перед сборкой создайте файл `frontend/.env` и задайте переменную `VITE_API_URL` из [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md).
 Файл `.env.example` больше не используется, поэтому `.env` необходимо добавить вручную.

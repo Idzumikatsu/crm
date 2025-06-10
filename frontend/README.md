@@ -1,26 +1,23 @@
 # Frontend
 
 Single Page Application built with **React 19** and **Vite**.
-Requires Node 20 or 22. Run `npm install` (or `npm ci`) before any npm script (`npm run build`, `npm run lint`, `npm run dev`).
+Requires Node 20 or 22. Run `npm install` (or `npm ci`) before any npm script such as `npm run build` or `npm run lint`.
 
-## Development
+## Build
 
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run build
 ```
 
-The dev server listens on `http://localhost:5173` and proxies API requests to the backend on port 8080.
-`npm run dev` also starts Tailwind in watch mode so styles update instantly during development.
+This command generates static files in the `dist/` directory. They can be served by NGINX or any other web server.
+
+For local testing use `npm run dev`, which starts Vite in watch mode and proxies requests to the backend on port 8080.
 
 The application now uses a shared `<Layout>` component for navigation. Old static HTML pages have been removed from the backend.
 
-Before a production build, create `frontend/.env` and define `VITE_API_URL` as described in [docs/ENVIRONMENT.md](../docs/ENVIRONMENT.md). This variable sets the backend base URL. If not set, requests use a relative path.
-
-## Production build
-
-Run `npm run build` to generate static files in the `dist/` directory. These files can be served by NGINX or any static web server.
+Before building, create `frontend/.env` and define `VITE_API_URL` as described in [docs/ENVIRONMENT.md](../docs/ENVIRONMENT.md). This variable sets the backend base URL. If not set, requests use a relative path.
 
 ## Error boundary
 
