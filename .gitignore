@@ -37,4 +37,3 @@ infra/nginx/nginx.conf
 
 # Ignore patch files
 *.diff
-frontend/.env
