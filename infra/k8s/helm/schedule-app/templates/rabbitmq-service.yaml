@@ -1,10 +1,12 @@
+{{- if .Values.rabbitmq.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "schedule-app.fullname" . }}-rabbitmq
 spec:
   ports:
-    - port: 5672
-      targetPort: 5672
+    - port: {{ .Values.rabbitmq.port }}
+      targetPort: {{ .Values.rabbitmq.port }}
   selector:
     app: {{ include "schedule-app.fullname" . }}-rabbitmq
+{{- end }}

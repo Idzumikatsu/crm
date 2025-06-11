@@ -12,10 +12,16 @@ The chart defines:
 - `Ingress` resource configured for the NGINX Ingress Controller
   - `HorizontalPodAutoscaler` for scaling the backend
 
-Values controlling credentials:
+Values controlling credentials and connectivity:
 
+- `postgresql.enabled` – set to `false` to use an external database
+- `postgresql.host` / `postgresql.port`
 - `postgresql.username` / `postgresql.password`
+- `rabbitmq.enabled` – set to `false` to use an external broker
+- `rabbitmq.host` / `rabbitmq.port`
 - `rabbitmq.username` / `rabbitmq.password`
+- `replicaCount` to set the default number of backend pods
+- `autoscaling.*` to tune or disable the Horizontal Pod Autoscaler
 - `jwtSecret` used by the backend
 - `resources` for the backend container requests and limits
 

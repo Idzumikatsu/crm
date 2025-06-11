@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "schedule-app.fullname" . }}-backend
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ include "schedule-app.fullname" . }}-backend
@@ -36,13 +36,13 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: postgres
             - name: DB_HOST
-              value: {{ include "schedule-app.fullname" . }}-postgresql
+              value: {{- if .Values.postgresql.enabled }}{{ include "schedule-app.fullname" . }}-postgresql{{- else }}{{ .Values.postgresql.host | quote }}{{- end }}
             - name: DB_PORT
-              value: "5432"
+              value: {{ .Values.postgresql.port | quote }}
             - name: DB_NAME
-              value: {{ .Values.postgresql.database }}
+              value: {{ .Values.postgresql.database | quote }}
             - name: DB_USER
-              value: {{ .Values.postgresql.username }}
+              value: {{ .Values.postgresql.username | quote }}
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -54,9 +54,9 @@ spec:
                   name: {{ include "schedule-app.fullname" . }}
                   key: jwt-secret
             - name: RABBITMQ_HOST
-              value: {{ include "schedule-app.fullname" . }}-rabbitmq
+              value: {{- if .Values.rabbitmq.enabled }}{{ include "schedule-app.fullname" . }}-rabbitmq{{- else }}{{ .Values.rabbitmq.host | quote }}{{- end }}
             - name: RABBITMQ_PORT
-              value: "5672"
+              value: {{ .Values.rabbitmq.port | quote }}
             - name: RABBITMQ_USER
               valueFrom:
                 secretKeyRef:
