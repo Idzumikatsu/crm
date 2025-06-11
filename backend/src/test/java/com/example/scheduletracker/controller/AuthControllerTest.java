@@ -16,22 +16,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(AuthController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class AuthControllerTest {
   @Autowired MockMvc mvc;
-  @MockBean AuthenticationManager authManager;
-  @MockBean JwtUtils utils;
-  @MockBean UserService userService;
-  @MockBean TotpService totpService;
-  @MockBean NotificationService notificationService;
-  @MockBean VerificationTokenRepository tokenRepository;
+  @MockitoBean AuthenticationManager authManager;
+  @MockitoBean JwtUtils utils;
+  @MockitoBean UserService userService;
+  @MockitoBean TotpService totpService;
+  @MockitoBean NotificationService notificationService;
+  @MockitoBean VerificationTokenRepository tokenRepository;
 
   @Test
   void loginReturnsOk() throws Exception {

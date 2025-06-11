@@ -19,7 +19,7 @@ export interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-const AuthLoader = () => {
+export const AuthLoader = () => {
   const { token, setUser } = useAuth();
   const navigate = useNavigate();
   const apiFetch = useApiFetch();
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('AuthProvider missing');
