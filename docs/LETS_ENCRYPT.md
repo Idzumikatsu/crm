@@ -42,15 +42,18 @@ docker run --rm \
 After success copy the resulting files:
 
 ```bash
-cp infra/nginx/certs/live/crm-synergy.ru/fullchain.pem infra/nginx/certs/crm-synergy.crt
+cp infra/nginx/certs/live/crm-synergy.ru/cert.pem  infra/nginx/certs/crm-synergy.crt
+cp infra/nginx/certs/live/crm-synergy.ru/chain.pem infra/nginx/certs/crm-synergy_ca.crt
+cat infra/nginx/certs/crm-synergy.crt infra/nginx/certs/crm-synergy_ca.crt > infra/nginx/certs/fullchain.pem
 cp infra/nginx/certs/live/crm-synergy.ru/privkey.pem infra/nginx/certs/crm-synergy.key
 ```
 
-You can store the certificate files in GitHub secrets either as-is or encoded in
-Base64. If choosing the latter, use:
+You can store the certificate files in GitHub secrets `SSL_CERT`, `SSL_CA_CERT`
+and `SSL_KEY` either as-is or encoded in Base64. If choosing the latter, use:
 
 ```bash
 base64 -w0 infra/nginx/certs/crm-synergy.crt > cert.b64
+base64 -w0 infra/nginx/certs/crm-synergy_ca.crt > ca_cert.b64
 base64 -w0 infra/nginx/certs/crm-synergy.key > key.b64
 ```
 

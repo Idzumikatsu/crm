@@ -32,7 +32,9 @@ docker run --rm \
     -m "$email" \
     -d "$domain"
 
-cp "$certdir/live/$domain/fullchain.pem" "$certdir/crm-synergy.crt"
+cp "$certdir/live/$domain/cert.pem" "$certdir/crm-synergy.crt"
+cp "$certdir/live/$domain/chain.pem" "$certdir/crm-synergy_ca.crt"
+cat "$certdir/crm-synergy.crt" "$certdir/crm-synergy_ca.crt" > "$certdir/fullchain.pem"
 cp "$certdir/live/$domain/privkey.pem" "$certdir/crm-synergy.key"
 
 docker compose -f "$repo_root/infra/docker-compose.yml" exec nginx nginx -s reload

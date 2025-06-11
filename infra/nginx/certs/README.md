@@ -1,9 +1,16 @@
-This directory should contain `crm-synergy.crt` and `crm-synergy.key` for HTTPS termination.
-Use the `fullchain.pem` and `privkey.pem` issued by Let's Encrypt for production deployments.
-On CI the files are created from the `SSL_CERT` and `SSL_KEY` secrets. The
-variables may contain either the PEM text itself or a Base64 representation –
-the deploy script will handle both formats.
-To test locally you can generate a self-signed pair:
+This directory should contain TLS materials for NGINX:
+
+* `crm-synergy.key` – the private key
+* `crm-synergy.crt` – the leaf certificate
+* `crm-synergy_ca.crt` – the intermediate certificate
+* `fullchain.pem` – concatenation of `crm-synergy.crt` and `crm-synergy_ca.crt`
+
+The CI workflow restores these files from the `SSL_CERT`, `SSL_CA_CERT` and
+`SSL_KEY` secrets. The values may be stored either as PEM text or Base64
+encoded – the workflow detects the format automatically.
+
+Use the certificates issued by Let's Encrypt in production. For local tests you
+can generate a self-signed pair:
 
 ```bash
 openssl req -x509 -newkey rsa:2048 -nodes -keyout crm-synergy.key -out crm-synergy.crt -days 365 -subj "/CN=localhost"
