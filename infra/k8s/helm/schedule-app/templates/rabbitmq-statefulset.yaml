@@ -1,3 +1,4 @@
+{{- if .Values.rabbitmq.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -17,7 +18,7 @@ spec:
         - name: rabbitmq
           image: {{ .Values.rabbitmq.image }}
           ports:
-            - containerPort: 5672
+            - containerPort: {{ .Values.rabbitmq.port }}
           env:
             - name: RABBITMQ_DEFAULT_USER
               valueFrom:
@@ -40,4 +41,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.rabbitmq.persistence.size }}
+{{- end }}
 
