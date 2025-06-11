@@ -168,6 +168,17 @@ docker ps -aq --filter "label=com.docker.compose.project=infra" | xargs -r docke
 После старта веб-интерфейс доступен на `https://localhost` (порт `443`),
 обращения к `http://localhost` перенаправляются на HTTPS.
 
+### Kubernetes Deployment
+Helm charts for the application reside in `infra/k8s/helm`. Use the
+`deploy-k8s.yml` workflow or run `helm upgrade --install` manually:
+
+```bash
+helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
+  --values infra/k8s/helm/schedule-app/values.yaml
+```
+The cluster credentials must be provided in `KUBE_CONFIG_B64` and Docker images
+are pulled from the registry defined by `DOCKER_REPOSITORY`.
+
 ### Проверка сервиса
 После деплоя убедитесь, что контейнеры запущены и перешли в состояние `healthy`:
 ```bash
