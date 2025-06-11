@@ -6,7 +6,7 @@
 
 - `backend/` — серверная часть и REST API
 - `frontend/` — клиентское приложение Vite/React
-- `infra/` — Docker Compose и конфигурация NGINX
+- `infra/` — Docker Compose, Helm charts и конфигурация NGINX
 - `docs/` — документация и ADR. Также в каталоге находится файл
   `ARCHITECTURE_IMPROVEMENTS.md` с планом дальнейшего развития
   инфраструктуры и рекомендациями по запуску

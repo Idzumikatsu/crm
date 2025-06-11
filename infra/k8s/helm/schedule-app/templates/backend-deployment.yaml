@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "schedule-app.fullname" . }}-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "schedule-app.fullname" . }}-backend
+  template:
+    metadata:
+      labels:
+        app: {{ include "schedule-app.fullname" . }}-backend
+    spec:
+      containers:
+        - name: backend
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: postgres
+            - name: DB_HOST
+              value: {{ include "schedule-app.fullname" . }}-postgresql
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: {{ .Values.postgresql.database }}
+            - name: DB_USER
+              value: {{ .Values.postgresql.username }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "schedule-app.fullname" . }}
+                  key: postgres-password
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "schedule-app.fullname" . }}
+                  key: jwt-secret
+            - name: RABBITMQ_HOST
+              value: {{ include "schedule-app.fullname" . }}-rabbitmq
+            - name: RABBITMQ_PORT
+              value: "5672"
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "schedule-app.fullname" . }}
+                  key: rabbitmq-user
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "schedule-app.fullname" . }}
+                  key: rabbitmq-password
+
