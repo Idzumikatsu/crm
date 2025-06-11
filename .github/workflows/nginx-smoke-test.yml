@@ -28,6 +28,7 @@ jobs:
       - name: Build Nginx image
         run: |
           docker buildx build \
+            --load \
             --cache-from=type=gha \
             --cache-to=type=gha,mode=max \
             -t schedule-app-nginx-test \

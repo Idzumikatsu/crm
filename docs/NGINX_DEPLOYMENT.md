@@ -7,7 +7,7 @@ Configuration lives in the `nginx/` directory of the main repository. All change
 
 ## CI Validation
 GitHub Actions renders `nginx.conf` from `nginx.conf.template` using environment variables and runs `nginx -t` inside the official container. The workflow fails if the syntax is invalid.
-The `nginx-smoke-test.yml` workflow additionally builds the image and starts it on a temporary port, performing a simple `curl` request to catch runtime issues. It caches build layers using the GitHub Actions cache for faster rebuilds.
+The `nginx-smoke-test.yml` workflow additionally builds the image with `docker buildx build --load`, starts it on a temporary port, and performs a simple `curl` request to catch runtime issues. Build layers are cached using the GitHub Actions cache for faster rebuilds.
 
 At runtime the container executes `/docker-entrypoint.sh`. This script substitutes `$APP_HOST`, `$APP_PORT` and `$SERVER_NAME` into `nginx.conf.template` using `envsubst` and then launches NGINX in the foreground. This allows the same image to be reused across environments.
 
