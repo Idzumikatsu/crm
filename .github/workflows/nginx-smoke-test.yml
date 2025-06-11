@@ -35,11 +35,21 @@ jobs:
             infra/nginx
 
       - name: Test generated Nginx config
-        run: docker run --rm schedule-app-nginx-test nginx -t
+        run: |
+          docker run --rm \
+            -e APP_HOST=app \
+            -e APP_PORT=80 \
+            -e SERVER_NAME=localhost \
+            schedule-app-nginx-test nginx -t
 
       - name: Smoke-start container & curl
         run: |
-          docker run -d --name smoke-nginx -p 8081:80 schedule-app-nginx-test
+          docker run -d --name smoke-nginx \
+            -e APP_HOST=app \
+            -e APP_PORT=80 \
+            -e SERVER_NAME=localhost \
+            -p 8081:80 \
+            schedule-app-nginx-test
           sleep 3
           curl -f http://localhost:8081 || (docker logs smoke-nginx && exit 1)
       - run: docker rm -f smoke-nginx
