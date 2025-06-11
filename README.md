@@ -131,12 +131,13 @@ docker compose down --remove-orphans
 |-----------------|-----------------|------------|
 | `db`            | `5432`          | `5432`     |
 | `app`           | `8080`          | `8080`     |
-| `nginx`         | `80`, `443`     | `80`, `443`|
+| `nginx`         | `80`, `443`     | `${NGINX_HTTP_PORT:-80}`, `${NGINX_HTTPS_PORT:-443}`|
 | `nginx-exporter`| `9113`          | `9114`     |
 | `prometheus`    | `9090`          | `9090`     |
 
 Порты можно изменить, отредактировав `infra/docker-compose.yml` или передав
 флаг `-p` при запуске `docker run`.
+Для Nginx доступна также настройка переменных `NGINX_HTTP_PORT` и `NGINX_HTTPS_PORT` в `infra/.env`.
 Убедитесь, что порт `8080` свободен: `lsof -i :8080` или `docker ps`.
 
 Если ранее использовалась версия `docker-compose` без явного указания имени проекта,
