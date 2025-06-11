@@ -281,6 +281,9 @@ jobs:
     # 7. Собираем Docker-образ и перезапускаем контейнер через SSH
     - name: Docker Compose up
       uses: appleboy/ssh-action@v1.0.0
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_TOKEN:   ${{ secrets.DOCKERHUB_TOKEN }}
       # передаём Hub-секреты внутрь SSH-сессии
       with:
         host:       ${{ secrets.VPS_HOST }}
