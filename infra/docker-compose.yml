@@ -38,9 +38,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-    ports:
-      - "8080:8080"
-
+    # ports:  # наружу не публикуем — к app ходит только nginx
 
   nginx:
     image: nginx:1.27-alpine
