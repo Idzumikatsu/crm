@@ -1,5 +1,5 @@
 # Requires secrets:
-#   VPS_HOST, VPS_USER, VPS_SSH_KEY
+#   VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_PASSPHRASE
 #   (optional) VPS_SSH_PORT – если SSH-порт не 22
 
 name: Deploy to VPS
@@ -200,6 +200,7 @@ jobs:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
+        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         port:       ${{ secrets.VPS_SSH_PORT }}
         # Передаём на сервер не только Dockerfile и compose, но и исходники
         # бэкенда, чтобы Docker смог собрать jar внутри контейнера
@@ -214,6 +215,7 @@ jobs:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
+        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         port:       ${{ secrets.VPS_SSH_PORT }}
         envs: DEPLOY_DIR
         script: |
@@ -226,6 +228,7 @@ jobs:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
+        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         port:       ${{ secrets.VPS_SSH_PORT }}
         target: ${{ env.DEPLOY_DIR }}/infra
         source: infra/.env
@@ -255,6 +258,7 @@ jobs:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
+        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         port:       ${{ secrets.VPS_SSH_PORT }}
         envs: DEPLOY_DIR,DB_HOST,DB_PORT,DB_USER,DB_PASSWORD,DB_NAME,SMTP_HOST,SMTP_PORT,SMTP_USERNAME,SMTP_PASSWORD,SMTP_AUTH,SMTP_STARTTLS,MAIL_FROM,TELEGRAM_BOT_TOKEN,JWT_SECRET,NGINX_HTTP_PORT,NGINX_HTTPS_PORT
         script: |
@@ -284,6 +288,7 @@ jobs:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
+        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         port:       ${{ secrets.VPS_SSH_PORT }}
         script: |
           sudo systemctl stop nginx || true
@@ -300,6 +305,7 @@ jobs:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
+        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         port:       ${{ secrets.VPS_SSH_PORT }}
         envs: DEPLOY_DIR,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN
         script: |
