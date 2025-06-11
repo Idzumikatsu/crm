@@ -4,10 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: '/',
   envPrefix: 'VITE_',
-  server: {
-    proxy: {
-      '/api': 'https://crm-synergy.ru',
-    },
-  },
+  server: { proxy: { '/api': 'http://localhost:8080' } },
 })
