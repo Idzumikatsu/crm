@@ -8,6 +8,8 @@ Configuration lives in the `nginx/` directory of the main repository. All change
 ## CI Validation
 GitHub Actions renders `nginx.conf` from `nginx.conf.template` using environment variables and runs `nginx -t` inside the official container. The workflow fails if the syntax is invalid.
 
+At runtime the container executes `/docker-entrypoint.sh`. This script substitutes `$APP_HOST`, `$APP_PORT` and `$SERVER_NAME` into `nginx.conf.template` using `envsubst` and then launches NGINX in the foreground. This allows the same image to be reused across environments.
+
 ## Rollout Strategy
 Deployments start with one instance receiving a portion of traffic while the previous version stays active. Metrics and error rates are monitored for 5 minutes. If no alerts trigger, all instances are updated. On failures the workflow automatically rolls back by redeploying the previous Docker image.
 

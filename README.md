@@ -163,6 +163,7 @@ docker ps -aq --filter "label=com.docker.compose.project=infra" | xargs -r docke
 При запуске `nginx` отдельно задайте `APP_HOST`, `APP_PORT` и `SERVER_NAME` для
 указания адреса бэкенда и домена, который будет использован в конфигурации
 `nginx.conf.template`.
+Логи прокси монтируются во внешний каталог `infra/nginx/logs`, чтобы сохраняться между перезапусками контейнера.
 
 После старта веб-интерфейс доступен на `https://localhost` (порт `443`),
 обращения к `http://localhost` перенаправляются на HTTPS.
