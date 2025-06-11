@@ -248,8 +248,9 @@ jobs:
         MAIL_FROM: ${{ secrets.MAIL_FROM }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        NGINX_HTTP_PORT: 80
-        NGINX_HTTPS_PORT: 443
+        # Избегаем конфликта с хостовым Nginx
+        NGINX_HTTP_PORT: 8080
+        NGINX_HTTPS_PORT: 8443
       with:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
@@ -276,6 +277,16 @@ jobs:
           NGINX_HTTP_PORT=$NGINX_HTTP_PORT
           NGINX_HTTPS_PORT=$NGINX_HTTPS_PORT
           EOF
+
+    - name: Stop host nginx (safety)
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host:       ${{ secrets.VPS_HOST }}
+        username:   ${{ secrets.VPS_USER }}
+        password:   ${{ secrets.VPS_PASSWORD }}
+        # port:   ${{ secrets.VPS_PORT }}
+        script: |
+          sudo systemctl stop nginx || true
 
 
     # 7. Собираем Docker-образ и перезапускаем контейнер через SSH
