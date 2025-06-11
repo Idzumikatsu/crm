@@ -129,19 +129,45 @@ jobs:
     - name: Write TLS certificates
       run: |
         mkdir -p infra/nginx/certs
+
         write_secret_file() {
-          name=$1
-          content=$2
-          if printf '%s' "$content" | grep -q '^-----BEGIN'; then
-            printf '%s' "$content" > "infra/nginx/certs/$name"
+          local name=$1 content=$2
+          mkdir -p infra/nginx/certs
+          if [[ $content == -----BEGIN* ]]; then
+            printf '%s\n' "$content" > "infra/nginx/certs/$name"
           else
             printf '%s' "$content" | base64 -d > "infra/nginx/certs/$name"
+            ( tail -c1 "infra/nginx/certs/$name" | read -r _ ) || echo >> "infra/nginx/certs/$name"
           fi
         }
+
         write_secret_file crm-synergy.crt "${{ secrets.SSL_CERT }}"
         write_secret_file crm-synergy_ca.crt "${{ secrets.SSL_CA_CERT }}"
         write_secret_file crm-synergy.key "${{ secrets.SSL_KEY }}"
-        cat infra/nginx/certs/crm-synergy.crt infra/nginx/certs/crm-synergy_ca.crt > infra/nginx/certs/fullchain.pem
+        if [ -n "${{ secrets.SSL_CA_CERT }}" ]; then
+          write_secret_file crm-synergy_ca.crt "${{ secrets.SSL_CA_CERT }}"
+        fi
+
+        chmod 600 infra/nginx/certs/crm-synergy.key
+
+        # verify the key to catch invalid input early
+        openssl pkey -in infra/nginx/certs/crm-synergy.key -noout >/dev/null
+
+        if [ -f infra/nginx/certs/crm-synergy_ca.crt ]; then
+          {
+            cat infra/nginx/certs/crm-synergy.crt
+            printf '\n'
+            cat infra/nginx/certs/crm-synergy_ca.crt
+          } > infra/nginx/certs/fullchain.pem
+        else
+          cp infra/nginx/certs/crm-synergy.crt infra/nginx/certs/fullchain.pem
+        fi
+
+        openssl x509 -noout -in infra/nginx/certs/fullchain.pem
+        if [ -f infra/nginx/certs/crm-synergy_ca.crt ]; then
+          openssl verify -CAfile infra/nginx/certs/crm-synergy_ca.crt \
+                         infra/nginx/certs/crm-synergy.crt
+        fi
       shell: bash
 
     # Render environment-specific nginx.conf
