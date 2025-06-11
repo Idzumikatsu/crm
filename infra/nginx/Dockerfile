@@ -1,3 +1,6 @@
 FROM nginx:1.27-alpine
+RUN apk add --no-cache gettext
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
-CMD sh -c "envsubst '${APP_HOST} ${APP_PORT} ${SERVER_NAME}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
