@@ -23,7 +23,7 @@ All configuration is provided via environment variables. Create `infra/.env` and
 | `JWT_SECRET` | `0123456789abcdef0123456789abcdef` | `backend/src/main/resources/application.yml`, `infra/docker-compose.yml` | `infra/.env` or secrets |
 | `APP_HOST` | `app` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh` | `infra/.env` |
 | `APP_PORT` | `8080` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh` | `infra/.env` |
-| `SERVER_NAME` | `example.com` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/letsencrypt.sh` | `infra/.env` |
+| `SERVER_NAME` | `example.com` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh`, `scripts/letsencrypt.sh` | `infra/.env` |
 | `SPRING_PROFILES_ACTIVE` | `postgres` | `infra/docker-compose.yml` | `infra/.env` |
 | `PROXY_HOST` | `proxy.example.com` | `scripts/setup-proxy.sh`, `.github/workflows/deploy.yml` | secrets or shell |
 | `PROXY_PORT` | `8080` | `scripts/setup-proxy.sh`, `.github/workflows/deploy.yml` | secrets or shell |
@@ -38,6 +38,7 @@ All configuration is provided via environment variables. Create `infra/.env` and
 | `VPS_PORT` | `22` | `.github/workflows/deploy.yml` | secrets |
 | `CERTBOT_EMAIL` | `admin@example.com` | `scripts/letsencrypt.sh` | shell |
 | `DOMAIN` | `example.com` | `scripts/letsencrypt.sh` | shell |
-| `SSL_CERT` | _(output of `base64 -w0` on crm-synergy.crt)_ | `.github/workflows/deploy.yml` | secrets/vars |
+| `SSL_CERT` | _(output of `base64 -w0` on fullchain.pem)_ | `.github/workflows/deploy.yml` | secrets/vars |
 | `SSL_KEY`  | _(output of `base64 -w0` on crm-synergy.key)_ | `.github/workflows/deploy.yml` | secrets/vars |
+| `SSL_CA_CERT` | _(optional CA certificate)_ | `.github/workflows/deploy.yml` | secrets/vars |
 

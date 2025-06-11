@@ -100,12 +100,12 @@
    mkdir -p infra/nginx/certs && cd <repo-root>
    openssl req -x509 -newkey rsa:2048 -nodes \
      -keyout infra/nginx/certs/crm-synergy.key \
-    -out infra/nginx/certs/crm-synergy.crt \
+    -out infra/nginx/certs/fullchain.pem \
     -days 365 -subj "/CN=localhost"
   ```
-  Чтобы использовать сертификат в CI, закодируйте оба файла в Base64 одной
-  строкой (`base64 -w0`) и сохраните полученный текст в секреты `SSL_CERT` и
-  `SSL_KEY`.
+  Чтобы использовать сертификат в CI, закодируйте файлы в Base64 одной
+  строкой (`base64 -w0`) и сохраните полученный текст в секреты `SSL_CERT`,
+  `SSL_KEY` и, при наличии цепочки, `SSL_CA_CERT`.
 4. Соберите и запустите контейнеры через Makefile. Он использует
    `infra/docker-compose.yml`:
 
@@ -154,8 +154,9 @@ docker ps -aq --filter "label=com.docker.compose.project=infra" | xargs -r docke
 Контейнер `app` используется как в production, так и при локальной разработке.
 `nginx` запускается вместе с приложением и автоматически ждёт готовности бэкенда.
 
-При запуске `nginx` отдельно задайте `APP_HOST` и `APP_PORT` для указания адреса
-бэкенда. Контейнер подставит их в `nginx.conf.template`.
+При запуске `nginx` отдельно задайте `APP_HOST`, `APP_PORT` и `SERVER_NAME` для
+указания адреса бэкенда и домена, который будет использован в конфигурации
+`nginx.conf.template`.
 
 После старта веб-интерфейс доступен на `https://localhost` (порт `443`),
 обращения к `http://localhost` перенаправляются на HTTPS.
@@ -267,7 +268,8 @@ npm run build
 - `VPS_PASSWORD` – пароль пользователя;
 - `VPS_PORT` – SSH‑порт, если отличается от `22`;
 - `PROXY_HOST` и `PROXY_PORT` – при необходимости использовать сетевой прокси.
-- `SSL_CERT` и `SSL_KEY` – текст, полученный через `base64 -w0` из файлов сертификата и закрытого ключа для NGINX.
+- `SSL_CERT` и `SSL_KEY` – текст, полученный через `base64 -w0` из файлов сертификата и закрытого ключа для NGINX;
+- `SSL_CA_CERT` – содержимое промежуточного сертификата (если используется).
 
 Workflow собирает JAR, автоматически строит SPA и CSS, копирует получившиеся файлы и инфраструктуру на сервер и запускает `docker compose -f infra/docker-compose.yml up -d`.
 Сервер должен иметь установленный Docker версии **27.5.1** или новее (API 1.47), так как деплой тестировался на этой версии.

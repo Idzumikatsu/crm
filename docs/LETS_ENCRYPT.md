@@ -42,14 +42,14 @@ docker run --rm \
 After success copy the resulting files:
 
 ```bash
-cp infra/nginx/certs/live/crm-synergy.ru/fullchain.pem infra/nginx/certs/crm-synergy.crt
+cp infra/nginx/certs/live/crm-synergy.ru/fullchain.pem infra/nginx/certs/fullchain.pem
 cp infra/nginx/certs/live/crm-synergy.ru/privkey.pem infra/nginx/certs/crm-synergy.key
 ```
 
 Encode the files in a single line before storing them as secrets:
 
 ```bash
-base64 -w0 infra/nginx/certs/crm-synergy.crt > cert.b64
+base64 -w0 infra/nginx/certs/fullchain.pem > cert.b64
 base64 -w0 infra/nginx/certs/crm-synergy.key > key.b64
 ```
 
