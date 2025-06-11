@@ -40,7 +40,9 @@ services:
       retries: 10
 
   nginx:
-    image: nginx:1.27-alpine
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     depends_on:
       app:
         condition: service_healthy
@@ -50,17 +52,7 @@ services:
       APP_HOST: ${APP_HOST:-app}
       APP_PORT: ${APP_PORT:-8080}
       SERVER_NAME: ${SERVER_NAME:-localhost}
-    # Генерируем конфиг, проверяем его и запускаем nginx
-    entrypoint: >
-      sh -c "
-        envsubst '$APP_HOST $APP_PORT $SERVER_NAME' \
-          < /etc/nginx/templates/nginx.conf.template \
-          > /etc/nginx/nginx.conf &&
-        nginx -t &&
-        exec nginx -g 'daemon off;'
-      "
     volumes:
-      - ./nginx/nginx.conf.template:/etc/nginx/templates/nginx.conf.template:ro
       - ./nginx/certs:/etc/nginx/certs:ro
       - ./nginx/www:/var/www/certbot:ro
       - ./frontend/dist:/usr/share/nginx/html:ro
