@@ -1,6 +1,11 @@
 # Environment Variables
 
-All configuration is provided via environment variables. Create `infra/.env` and `frontend/.env` manually—`.env.example` is no longer part of the workflow. The table below lists each variable, an example value, where it is used and the recommended storage location.
+All configuration is provided via environment variables. Create `infra/.env` and
+`frontend/.env` manually if you need to override the defaults—`.env.example` is
+no longer part of the workflow. The table below lists each variable, an example
+value, where it is used and the recommended storage location. When a variable is
+not defined, Docker Compose falls back to sensible defaults suitable for local
+development.
 
 | Variable | Example | Consumed In | Location |
 | --- | --- | --- | --- |

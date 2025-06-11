@@ -5,9 +5,9 @@ services:
     image: postgres:16.2
     env_file: ./.env
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-schedule}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
       - "5432:5432"
     healthcheck:
@@ -25,10 +25,13 @@ services:
         condition: service_healthy
     env_file: ./.env
     environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      JWT_SECRET: ${JWT_SECRET}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-postgres}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME:-schedule}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET:-secret}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
@@ -47,9 +50,9 @@ services:
     restart: unless-stopped
     env_file: ./.env
     environment:
-      APP_HOST: ${APP_HOST}
-      APP_PORT: ${APP_PORT}
-      SERVER_NAME: ${SERVER_NAME}
+      APP_HOST: ${APP_HOST:-app}
+      APP_PORT: ${APP_PORT:-8080}
+      SERVER_NAME: ${SERVER_NAME:-localhost}
     entrypoint: >
       /bin/sh -c "
         envsubst '\$${APP_HOST} \$${APP_PORT} \$${SERVER_NAME}' \
