@@ -34,7 +34,7 @@ http {
 
     server {
         listen 80;
-        server_name ${SERVER_NAME};
+        server_name ${SERVER_NAME} www.${SERVER_NAME};
         root /usr/share/nginx/html;
         index index.html;
 
@@ -42,26 +42,15 @@ http {
             root /var/www/certbot;
         }
 
-        location /assets/      { try_files $uri =404; }
-        location /favicon.ico  { try_files $uri =404; }
-        location /             { try_files $uri $uri/ /index.html; }
-
-        location /api/ {
-            limit_req zone=app burst=20;
-            proxy_pass http://app_backend;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_cache dynamic;
-            proxy_cache_valid 200 5m;
+        location / {
+            return 301 https://$host$request_uri;
         }
     }
 
     server {
         listen 443 ssl;
         http2 on;
-        server_name ${SERVER_NAME};
+        server_name ${SERVER_NAME} www.${SERVER_NAME};
         root /usr/share/nginx/html;
         index index.html;
         ssl_certificate /etc/nginx/certs/fullchain.pem;
