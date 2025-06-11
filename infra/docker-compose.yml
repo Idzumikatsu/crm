@@ -2,7 +2,7 @@ name: schedule-app
 services:
   db:
     # Fresh PostgreSQL instance
-    image: postgres:16.2
+    image: postgres:16.2-alpine
     env_file: ./.env
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-schedule}
@@ -43,7 +43,7 @@ services:
 
 
   nginx:
-    image: nginx:alpine
+    image: nginx:1.27-alpine
     depends_on:
       app:
         condition: service_healthy
@@ -81,7 +81,7 @@ services:
       - "9114:9113"
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.52.0
     restart: unless-stopped
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
