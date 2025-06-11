@@ -1,0 +1,7 @@
+apiVersion: v2
+name: schedule-app
+description: Helm chart for Schedule Tracker
+version: 0.1.0
+appVersion: "1.0"
+type: application
+

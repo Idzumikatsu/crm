@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "schedule-app.fullname" . }}-rabbitmq
+spec:
+  serviceName: {{ include "schedule-app.fullname" . }}-rabbitmq
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "schedule-app.fullname" . }}-rabbitmq
+  template:
+    metadata:
+      labels:
+        app: {{ include "schedule-app.fullname" . }}-rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: {{ .Values.rabbitmq.image }}
+          ports:
+            - containerPort: 5672
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "schedule-app.fullname" . }}
+                  key: rabbitmq-user
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "schedule-app.fullname" . }}
+                  key: rabbitmq-password
+          volumeMounts:
+            - mountPath: /var/lib/rabbitmq
+              name: data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: {{ .Values.rabbitmq.persistence.size }}
+

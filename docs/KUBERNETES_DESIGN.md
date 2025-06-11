@@ -40,6 +40,10 @@ Configuration is passed through environment variables in `values.yaml` and
 mounted Secrets. Persistent data for Postgres and RabbitMQ resides on
 ProvisionedVolumes.
 
+An initial Helm chart named `schedule-app` lives in
+`infra/k8s/helm/schedule-app` and deploys the monolith together with a
+PostgreSQL database and RabbitMQ broker.
+
 ## Observability
 
 Prometheus scrapes metrics from the application and infrastructure. Grafana
