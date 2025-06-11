@@ -1,0 +1,70 @@
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Build Tailwind CSS
+        run: npm run build
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Lint and build frontend
+        run: |
+          npm run lint:fix
+          npm run lint
+          npm run build
+        working-directory: frontend
+
+      - name: Build backend JAR
+        run: ./gradlew bootJar
+        working-directory: backend
+
+      - name: Build Docker image
+        run: |
+          docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+          docker build -t "$DOCKER_REPOSITORY/schedule-backend:${GITHUB_SHA}" -f backend/Dockerfile .
+          docker push "$DOCKER_REPOSITORY/schedule-backend:${GITHUB_SHA}"
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Configure kubeconfig
+        run: echo "$KUBE_CONFIG_B64" | base64 -d > kubeconfig
+        env:
+          KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG_B64 }}
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
+            --set image.repository=${{ secrets.DOCKER_REPOSITORY }}/schedule-backend \
+            --set image.tag=${GITHUB_SHA} \
+            --kubeconfig kubeconfig

@@ -17,6 +17,7 @@ Values controlling credentials:
 - `postgresql.username` / `postgresql.password`
 - `rabbitmq.username` / `rabbitmq.password`
 - `jwtSecret` used by the backend
+- `resources` for the backend container requests and limits
 
 Default values assume a demo environment. Sensitive strings like database and
 RabbitMQ passwords are stored in a `Secret` generated from `values.yaml`.

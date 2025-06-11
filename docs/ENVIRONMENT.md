@@ -52,6 +52,10 @@ defaults (`8080` and `8443`) conflict with other services on the host. `NGINX_LO
 | `VPS_SSH_KEY` | contents of `id_rsa` | `.github/workflows/deploy.yml` | secrets |
 | `VPS_PASSPHRASE` | `secret` | `.github/workflows/deploy.yml` | secrets |
 | `VPS_SSH_PORT` | `22` | `.github/workflows/deploy.yml` | secrets |
+| `DOCKER_REPOSITORY` | `example/schedule` | `.github/workflows/deploy-k8s.yml` | secrets |
+| `DOCKER_USERNAME` | `dockeruser` | `.github/workflows/deploy-k8s.yml` | secrets |
+| `DOCKER_PASSWORD` | `secret` | `.github/workflows/deploy-k8s.yml` | secrets |
+| `KUBE_CONFIG_B64` | output of `base64 -w0 ~/.kube/config` | `.github/workflows/deploy-k8s.yml` | secrets |
 | `CERTBOT_EMAIL` | `admin@example.com` | `scripts/letsencrypt.sh` | shell |
 | `DOMAIN` | `example.com` | `scripts/letsencrypt.sh` | shell |
 | `SSL_CERT` | contents of `crm-synergy.crt` (PEM or Base64) | `.github/workflows/deploy.yml` | secrets/vars |

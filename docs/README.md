@@ -13,6 +13,7 @@ This directory contains all NGINX related documents. Each file focuses on a spec
 - `SMTP_CONFIGURATION.md` – environment variables for outgoing email
 - `LETS_ENCRYPT.md` – obtaining trusted TLS certificates
 - `KUBERNETES_DESIGN.md` – migration plan and target stack
+- `KUBERNETES_DEPLOYMENT.md` – CI workflow for Helm-based releases
 - `../infra/dns` – BIND zone files reflecting the recommended records.
 
 Documentation is reviewed **quarterly**. The SRE Lead tracks outdated sections and opens issues for updates.
