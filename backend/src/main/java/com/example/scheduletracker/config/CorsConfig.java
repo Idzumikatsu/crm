@@ -10,6 +10,7 @@ public class CorsConfig implements WebMvcConfigurer {
   public void addCorsMappings(CorsRegistry registry) {
     registry
         .addMapping("/api/**")
-        .allowedOrigins("http://crm-synergy.ru", "https://crm-synergy.ru");
+        .allowedOrigins("http://crm-synergy.ru", "https://crm-synergy.ru")
+        .allowedMethods("*");
   }
 }

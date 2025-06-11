@@ -63,11 +63,6 @@ jobs:
       - name: Build frontend
         run: cd frontend && npm ci && npm run build
 
-      - name: Copy dist to nginx
-        run: |
-          rm -rf infra/nginx/www
-          mkdir -p infra/nginx/www
-          cp -r frontend/dist/* infra/nginx/www/
 
       - name: Build backend with tests
         run: ./gradlew build
@@ -132,11 +127,6 @@ jobs:
     - name: Build frontend
       run: cd frontend && npm ci && npm run build
 
-    - name: Copy dist to nginx
-      run: |
-        rm -rf infra/nginx/www
-        mkdir -p infra/nginx/www
-        cp -r frontend/dist/* infra/nginx/www/
 
     # 4. Запускаем тесты и собираем JAR
     - name: Build backend with tests
