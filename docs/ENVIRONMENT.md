@@ -44,8 +44,9 @@ defaults (`80` and `443`) conflict with other services on the host.
 | `DEPLOY_DIR` | `myapp` | `.github/workflows/deploy.yml` | workflow env |
 | `VPS_HOST` | `203.0.113.1` | `.github/workflows/deploy.yml` | secrets |
 | `VPS_USER` | `deploy` | `.github/workflows/deploy.yml` | secrets |
-| `VPS_PASSWORD` | `password` | `.github/workflows/deploy.yml` | secrets |
-| `VPS_PORT` | `22` | `.github/workflows/deploy.yml` | secrets |
+| `VPS_SSH_KEY` | contents of `id_rsa` | `.github/workflows/deploy.yml` | secrets |
+| `VPS_PASSPHRASE` | `secret` | `.github/workflows/deploy.yml` | secrets |
+| `VPS_SSH_PORT` | `22` | `.github/workflows/deploy.yml` | secrets |
 | `CERTBOT_EMAIL` | `admin@example.com` | `scripts/letsencrypt.sh` | shell |
 | `DOMAIN` | `example.com` | `scripts/letsencrypt.sh` | shell |
 | `SSL_CERT` | contents of `crm-synergy.crt` (PEM or Base64) | `.github/workflows/deploy.yml` | secrets/vars |
