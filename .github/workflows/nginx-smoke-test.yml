@@ -17,7 +17,7 @@ jobs:
         with:
           driver: docker-container
 
-      - name: Cache Docker layers
+      - name: Cache Docker layers (GHA)
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
@@ -28,20 +28,17 @@ jobs:
       - name: Build Nginx image
         run: |
           docker buildx build \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache-new \
+            --cache-from=type=gha \
+            --cache-to=type=gha,mode=max \
             -t schedule-app-nginx-test \
             infra/nginx
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Test generated Nginx config
-        run: |
-          docker run --rm schedule-app-nginx-test nginx -t
+        run: docker run --rm schedule-app-nginx-test nginx -t
 
       - name: Smoke-start container & curl
         run: |
           docker run -d --name smoke-nginx -p 8081:80 schedule-app-nginx-test
           sleep 3
           curl -f http://localhost:8081 || (docker logs smoke-nginx && exit 1)
-        
       - run: docker rm -f smoke-nginx
