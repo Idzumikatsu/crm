@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(SettingsController.class)
@@ -24,9 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 class SettingsControllerTest {
   @Autowired private MockMvc mvc;
 
-  @MockBean private TeacherSettingsService service;
-  @MockBean private UserService userService;
-  @MockBean private com.example.scheduletracker.config.jwt.JwtUtils utils;
+  @MockitoBean private TeacherSettingsService service;
+  @MockitoBean private UserService userService;
+  @MockitoBean private com.example.scheduletracker.config.jwt.JwtUtils utils;
 
   @Test
   void getReturnsSettings() throws Exception {
