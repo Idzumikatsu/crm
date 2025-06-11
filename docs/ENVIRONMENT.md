@@ -40,7 +40,7 @@ defaults (`80` and `443`) conflict with other services on the host.
 | `HTTP_PROXY` | `http://proxy.example.com:8080` | `scripts/setup-proxy.sh` | shell |
 | `HTTPS_PROXY` | `http://proxy.example.com:8080` | `scripts/setup-proxy.sh` | shell |
 | `BACKUP_DIR` | `backups` | `scripts/backup-db.sh` | shell |
-| `VITE_API_URL` | `https://example.com` | `frontend/src/api.ts` | `frontend/.env` |
+| `VITE_API_URL` | `/api` | `frontend/src/api.ts` | `frontend/.env` |
 | `DEPLOY_DIR` | `myapp` | `.github/workflows/deploy.yml` | workflow env |
 | `VPS_HOST` | `203.0.113.1` | `.github/workflows/deploy.yml` | secrets |
 | `VPS_USER` | `deploy` | `.github/workflows/deploy.yml` | secrets |
@@ -51,4 +51,6 @@ defaults (`80` and `443`) conflict with other services on the host.
 | `SSL_CERT` | contents of `crm-synergy.crt` (PEM or Base64) | `.github/workflows/deploy.yml` | secrets/vars |
 | `SSL_CA_CERT` | contents of `crm-synergy_ca.crt` (PEM or Base64) | `.github/workflows/deploy.yml` | secrets/vars |
 | `SSL_KEY`  | contents of `crm-synergy.key` (PEM or Base64) | `.github/workflows/deploy.yml` | secrets/vars |
+
+In production the frontend should use `VITE_API_URL=/api` so that Nginx can proxy API requests.
 
