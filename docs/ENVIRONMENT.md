@@ -29,6 +29,8 @@ development.
 | `APP_HOST` | `app` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh` | `infra/.env` |
 | `APP_PORT` | `8080` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh` | `infra/.env` |
 | `SERVER_NAME` | `example.com` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh`, `scripts/letsencrypt.sh` | `infra/.env` |
+| `NGINX_HTTP_PORT` | `80` | `infra/docker-compose.yml` | `infra/.env` |
+| `NGINX_HTTPS_PORT` | `443` | `infra/docker-compose.yml` | `infra/.env` |
 | `SPRING_PROFILES_ACTIVE` | `postgres` | `infra/docker-compose.yml` | `infra/.env` |
 | `PROXY_HOST` | `proxy.example.com` | `scripts/setup-proxy.sh`, `.github/workflows/deploy.yml` | secrets or shell |
 | `PROXY_PORT` | `8080` | `scripts/setup-proxy.sh`, `.github/workflows/deploy.yml` | secrets or shell |
