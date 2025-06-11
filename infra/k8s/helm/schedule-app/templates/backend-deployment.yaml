@@ -36,7 +36,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: postgres
             - name: DB_HOST
-              value: {{- if .Values.postgresql.enabled }}{{ include "schedule-app.fullname" . }}-postgresql{{- else }}{{ .Values.postgresql.host | quote }}{{- end }}
+              value: {{ if .Values.postgresql.enabled }}{{ include "schedule-app.fullname" . }}-postgresql{{ else }}{{ .Values.postgresql.host | quote }}{{- end }}
             - name: DB_PORT
               value: {{ .Values.postgresql.port | quote }}
             - name: DB_NAME
@@ -54,7 +54,7 @@ spec:
                   name: {{ include "schedule-app.fullname" . }}
                   key: jwt-secret
             - name: RABBITMQ_HOST
-              value: {{- if .Values.rabbitmq.enabled }}{{ include "schedule-app.fullname" . }}-rabbitmq{{- else }}{{ .Values.rabbitmq.host | quote }}{{- end }}
+              value: {{ if .Values.rabbitmq.enabled }}{{ include "schedule-app.fullname" . }}-rabbitmq{{ else }}{{ .Values.rabbitmq.host | quote }}{{- end }}
             - name: RABBITMQ_PORT
               value: {{ .Values.rabbitmq.port | quote }}
             - name: RABBITMQ_USER
