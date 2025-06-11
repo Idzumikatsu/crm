@@ -281,13 +281,16 @@ jobs:
     # 7. Собираем Docker-образ и перезапускаем контейнер через SSH
     - name: Docker Compose up
       uses: appleboy/ssh-action@v1.0.0
+      # передаём Hub-секреты внутрь SSH-сессии
       with:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
         password:   ${{ secrets.VPS_PASSWORD }}
         # port:     ${{ secrets.VPS_PORT }}
-        envs: DEPLOY_DIR
+        envs: DEPLOY_DIR,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN
         script: |
+          #---- Docker Hub login, чтобы не ловить 429
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
           set -e
           cd "$HOME/$DEPLOY_DIR"
           # remove old containers from the schedule-app Compose project
