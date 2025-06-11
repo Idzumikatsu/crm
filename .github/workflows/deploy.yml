@@ -201,7 +201,6 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
         port:       ${{ secrets.VPS_SSH_PORT }}
-        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         # Передаём на сервер не только Dockerfile и compose, но и исходники
         # бэкенда, чтобы Docker смог собрать jar внутри контейнера
         source: "backend,infra/docker-compose.yml,scripts/wait-for-db.sh,infra/nginx/nginx.conf,infra/prometheus/prometheus.yml"
@@ -216,7 +215,6 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
         port:       ${{ secrets.VPS_SSH_PORT }}
-        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         envs: DEPLOY_DIR
         script: |
           mkdir -p "$HOME/$DEPLOY_DIR"
@@ -229,7 +227,6 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
         port:       ${{ secrets.VPS_SSH_PORT }}
-        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         target: ${{ env.DEPLOY_DIR }}/infra
         source: infra/.env
 
@@ -259,7 +256,6 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
         port:       ${{ secrets.VPS_SSH_PORT }}
-        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         envs: DEPLOY_DIR,DB_HOST,DB_PORT,DB_USER,DB_PASSWORD,DB_NAME,SMTP_HOST,SMTP_PORT,SMTP_USERNAME,SMTP_PASSWORD,SMTP_AUTH,SMTP_STARTTLS,MAIL_FROM,TELEGRAM_BOT_TOKEN,JWT_SECRET,NGINX_HTTP_PORT,NGINX_HTTPS_PORT
         script: |
           mkdir -p "$HOME/$DEPLOY_DIR/infra"
@@ -289,7 +285,6 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
         port:       ${{ secrets.VPS_SSH_PORT }}
-        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         script: |
           sudo systemctl stop nginx || true
 
@@ -306,7 +301,6 @@ jobs:
         username:   ${{ secrets.VPS_USER }}
         key:        ${{ secrets.VPS_SSH_KEY }}
         port:       ${{ secrets.VPS_SSH_PORT }}
-        passphrase: ${{ secrets.VPS_PASSPHRASE }}
         envs: DEPLOY_DIR,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN
         script: |
           #---- Docker Hub login, чтобы не ловить 429
