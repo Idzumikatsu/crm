@@ -29,12 +29,12 @@ development.
 | `APP_HOST` | `app` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh`, `infra/nginx/docker-entrypoint.sh` | `infra/.env` |
 | `APP_PORT` | `8080` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh`, `infra/nginx/docker-entrypoint.sh` | `infra/.env` |
 | `SERVER_NAME` | `example.com` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh`, `scripts/letsencrypt.sh` | `infra/.env` |
-| `NGINX_HTTP_PORT` | `80` | `infra/docker-compose.yml` | `infra/.env` |
-| `NGINX_HTTPS_PORT` | `443` | `infra/docker-compose.yml` | `infra/.env` |
+| `NGINX_HTTP_PORT` | `8080` | `infra/docker-compose.yml` | `infra/.env` |
+| `NGINX_HTTPS_PORT` | `8443` | `infra/docker-compose.yml` | `infra/.env` |
 | `NGINX_LOG_PATH` | `infra/nginx/logs` | docker-compose volume | n/a |
 
 `NGINX_HTTP_PORT` and `NGINX_HTTPS_PORT` configure host ports for the reverse proxy. Change them if the
-defaults (`80` and `443`) conflict with other services on the host. `NGINX_LOG_PATH` defines a directory on the host where access and error logs will be written so they persist across restarts.
+defaults (`8080` and `8443`) conflict with other services on the host. `NGINX_LOG_PATH` defines a directory on the host where access and error logs will be written so they persist across restarts.
 | `SPRING_PROFILES_ACTIVE` | `postgres` | `infra/docker-compose.yml` | `infra/.env` |
 | `PROXY_HOST` | `proxy.example.com` | `scripts/setup-proxy.sh`, `.github/workflows/deploy.yml` | secrets or shell |
 | `PROXY_PORT` | `8080` | `scripts/setup-proxy.sh`, `.github/workflows/deploy.yml` | secrets or shell |
