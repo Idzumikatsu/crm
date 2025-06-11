@@ -65,9 +65,10 @@ services:
       - ./nginx/nginx.conf.template:/etc/nginx/templates/nginx.conf.template:ro
       - ./nginx/certs:/etc/nginx/certs:ro
       - ./nginx/www:/var/www/certbot:ro
+      - ./frontend/dist:/usr/share/nginx/html:ro
     ports:
-      - "${NGINX_HTTP_PORT:-8081}:80"
-      - "${NGINX_HTTPS_PORT:-8443}:443"
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
 
   nginx-exporter:
     image: nginx/nginx-prometheus-exporter:1.1.0

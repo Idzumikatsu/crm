@@ -240,12 +240,14 @@ jobs:
         MAIL_FROM: ${{ secrets.MAIL_FROM }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        NGINX_HTTP_PORT: 80
+        NGINX_HTTPS_PORT: 443
       with:
         host:       ${{ secrets.VPS_HOST }}
         username:   ${{ secrets.VPS_USER }}
         password:   ${{ secrets.VPS_PASSWORD }}
         # port:     ${{ secrets.VPS_PORT }}
-        envs: DEPLOY_DIR,DB_HOST,DB_PORT,DB_USER,DB_PASSWORD,DB_NAME,SMTP_HOST,SMTP_PORT,SMTP_USERNAME,SMTP_PASSWORD,SMTP_AUTH,SMTP_STARTTLS,MAIL_FROM,TELEGRAM_BOT_TOKEN,JWT_SECRET
+        envs: DEPLOY_DIR,DB_HOST,DB_PORT,DB_USER,DB_PASSWORD,DB_NAME,SMTP_HOST,SMTP_PORT,SMTP_USERNAME,SMTP_PASSWORD,SMTP_AUTH,SMTP_STARTTLS,MAIL_FROM,TELEGRAM_BOT_TOKEN,JWT_SECRET,NGINX_HTTP_PORT,NGINX_HTTPS_PORT
         script: |
           mkdir -p "$HOME/$DEPLOY_DIR/infra"
           cat > "$HOME/$DEPLOY_DIR/infra/.env" <<EOF
@@ -263,6 +265,8 @@ jobs:
           MAIL_FROM=$MAIL_FROM
           TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
           JWT_SECRET=$JWT_SECRET
+          NGINX_HTTP_PORT=$NGINX_HTTP_PORT
+          NGINX_HTTPS_PORT=$NGINX_HTTPS_PORT
           EOF
 
 
