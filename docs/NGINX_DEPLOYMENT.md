@@ -19,7 +19,7 @@ Deployments start with one instance receiving a portion of traffic while the pre
 2. Frontend sources are linted with `eslint --fix` and checked for errors.
 3. The backend is built from the `backend/` directory using `./gradlew build`.
 4. The application JAR and rendered `nginx.conf` are copied to the VPS.
-5. `docker compose up -d` rebuilds containers.
+5. `helm upgrade --install schedule-app infra/k8s/helm/schedule-app --atomic --wait` deploys the new configuration.
 6. After success, traffic is gradually switched according to the strategy above.
 
 7. When all checks pass the pull request is auto-merged.

@@ -192,19 +192,18 @@ Each pod runs under its own ServiceAccount with tokens disabled by default
 to follow the least-privilege principle.
 
 ### Проверка сервиса
-После деплоя убедитесь, что контейнеры запущены и перешли в состояние `healthy`:
+После деплоя убедитесь, что все поды находятся в состоянии `Running` и
+готовы принимать трафик:
 ```bash
-docker compose ps -a
+kubectl get pods -n schedule
 ```
-Если сервис `app` отсутствует или имеет статус `Exited`, проверьте лог
-следующей командой:
+Если приложение не стартует, изучите журналы выбранного пода:
 ```bash
-docker compose logs app
+kubectl logs -n schedule deployment/schedule-app-backend
 ```
 Частая причина ошибки 502/503 — приложение не смогло подключиться к базе.
-Логи можно просмотреть командой `docker compose logs app` и при необходимости
-перезапустить инфраструктуру через `make up`. После проверки завершите работу
-командой `make down`.
+При необходимости выполните `helm rollback schedule-app <revision>` или
+переустановите релиз командой `helm upgrade --install`.
 
 Проверить здоровье приложения можно запросом к эндпоинту `/actuator/health`:
 ```bash
