@@ -19,6 +19,17 @@ resources:
     memory: "512Mi"
     cpu: "1"
 
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+containerSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+
 service:
   type: ClusterIP
   port: 8080

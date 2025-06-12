@@ -13,13 +13,16 @@ RUN cp $(ls build/libs/*.jar | grep -v plain | head -n 1) app.jar
 FROM eclipse-temurin:21-jdk
 RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client curl \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -r app && useradd -r -g app -d /app app
 WORKDIR /app
 COPY --from=build /workspace/backend/app.jar app.jar
-# Скрипт ожидания доступности базы данных
+# Скрипты ожидания базы данных и резервного копирования
 COPY scripts/wait-for-db.sh /wait-for-db.sh
 COPY scripts/backup-db.sh /backup-db.sh
-RUN chmod +x /wait-for-db.sh /backup-db.sh
+RUN chmod +x /wait-for-db.sh /backup-db.sh \
+    && chown -R app:app /app /wait-for-db.sh /backup-db.sh
+USER app
 # Приложение использует переменные `DB_HOST` и `DB_PORT` для подключения к БД.
 # Задайте их при запуске контейнера.
 EXPOSE 8080
