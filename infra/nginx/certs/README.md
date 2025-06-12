@@ -15,3 +15,8 @@ can generate a self-signed pair:
 ```bash
 openssl req -x509 -newkey rsa:2048 -nodes -keyout crm-synergy.key -out crm-synergy.crt -days 365 -subj "/CN=localhost"
 ```
+
+If no certificate files are present when the Nginx container starts, it will
+automatically generate a self-signed certificate for the configured
+`SERVER_NAME`. This is convenient for smoke tests but should not be relied on
+in production.

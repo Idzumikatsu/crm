@@ -61,7 +61,8 @@ services:
       - "${NGINX_HTTP_PORT:-8080}:80"
       - "${NGINX_HTTPS_PORT:-8443}:443"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/healthz"]
+      # use the built-in status page as the health endpoint
+      test: ["CMD", "curl", "-f", "http://localhost/nginx_status"]
       interval: 30s
       timeout: 5s
       retries: 3
