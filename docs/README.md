@@ -8,6 +8,11 @@ This directory contains all NGINX related documents. Each file focuses on a spec
 - `NGINX_DEPLOYMENT.md` – CI/CD pipeline and delivery process.
 - `RUNBOOK_NGINX.md` – operational runbook for common incidents.
 - `SECURITY_CHECKLIST.md` – release checklist covering security controls.
+
+Additional files describe the Kubernetes migration:
+- `KUBERNETES_DESIGN.md` – target cluster architecture and stack.
+- `KUBERNETES_DEPLOYMENT.md` – CI workflow and Helm usage.
+- `RUNBOOK_K8S.md` – troubleshooting steps for the cluster.
 - `NGINX_TRAINING.md` – training materials for developers and SREs.
 - `DNS_SETUP.md` – required DNS records for production deployment.
 - `SMTP_CONFIGURATION.md` – environment variables for outgoing email

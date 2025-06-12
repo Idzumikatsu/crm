@@ -176,8 +176,12 @@ database migrations so the backend starts with the correct schema. The Job
 waits for the database via `wait-for-db.sh` and is removed once completed:
 
 ```bash
+make k8s-deploy
+```
+The command uses `values.yaml` by default. For a production setup run:
+```bash
 helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
-  --values infra/k8s/helm/schedule-app/values.yaml \
+  --values infra/k8s/helm/schedule-app/values-production.yaml \
   --atomic --wait --timeout 5m
 ```
 The cluster credentials must be provided in `KUBE_CONFIG_B64` and Docker images

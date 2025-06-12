@@ -36,10 +36,11 @@ When `migrations.enabled` is `true`, a short-lived Job waits for the database us
 
 Default values assume a demo environment. Sensitive strings like database and
 RabbitMQ passwords are stored in a `Secret` generated from `values.yaml`.
-Adjust the container images and credentials before deploying to production:
+Adjust the container images and credentials before deploying to production. A
+sample configuration is provided in `values-production.yaml`:
 
 ```bash
 helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
-  --values infra/k8s/helm/schedule-app/values.yaml
+  --values infra/k8s/helm/schedule-app/values-production.yaml
 ```
 
