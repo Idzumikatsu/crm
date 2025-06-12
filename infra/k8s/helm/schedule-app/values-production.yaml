@@ -1,0 +1,79 @@
+image:
+  repository: schedule-backend
+  tag: latest
+  pullPolicy: IfNotPresent
+
+replicaCount: 3
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "1"
+  limits:
+    memory: "1Gi"
+    cpu: "2"
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: schedule.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: schedule-tls
+      hosts:
+        - schedule.example.com
+
+postgresql:
+  enabled: true
+  host: postgresql
+  port: 5432
+  image: postgres:16.2-alpine
+  persistence:
+    enabled: true
+    size: 10Gi
+  database: schedule
+  username: postgres
+  password: postgres
+
+jwtSecret: CHANGEME
+
+rabbitmq:
+  enabled: true
+  host: rabbitmq
+  port: 5672
+  image: rabbitmq:3.13-management
+  username: user
+  password: password
+  persistence:
+    enabled: true
+    size: 10Gi
+
+serviceMonitor:
+  enabled: true
+
+pdb:
+  enabled: true
+  minAvailable: 1
+
+migrations:
+  enabled: true
+
+backup:
+  enabled: true
+  schedule: "0 3 * * *"
+  persistence:
+    enabled: true
+    size: 10Gi
