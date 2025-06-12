@@ -5,6 +5,19 @@ image:
 
 replicaCount: 3
 
+frontend:
+  image: schedule-frontend
+  tag: latest
+  pullPolicy: IfNotPresent
+  enabled: true
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "250m"
+
 autoscaling:
   enabled: true
   minReplicas: 3
@@ -42,11 +55,7 @@ service:
 ingress:
   enabled: true
   className: nginx
-  hosts:
-    - host: schedule.example.com
-      paths:
-        - path: /
-          pathType: Prefix
+  host: schedule.example.com
   tls:
     - secretName: schedule-tls
       hosts:

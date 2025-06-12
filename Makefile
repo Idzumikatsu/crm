@@ -18,9 +18,11 @@ frontend:
 	npm --prefix frontend run build
 
 k8s-deploy:
-	helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
-		-f infra/k8s/helm/schedule-app/values.yaml \
-		--atomic --wait
+        helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
+                -f infra/k8s/helm/schedule-app/values.yaml \
+                --set image.repository=${DOCKER_REPOSITORY}/schedule-backend \
+                --set frontend.image=${DOCKER_REPOSITORY}/schedule-frontend \
+                --atomic --wait
 
 k8s-delete:
 	helm uninstall schedule-app || true

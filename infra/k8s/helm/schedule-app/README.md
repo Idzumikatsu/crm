@@ -7,6 +7,7 @@ It targets Kubernetes clusters running version 1.30 or newer and follows the des
 The chart defines:
 
 - `Deployment` and `Service` for the Spring Boot backend
+- `Deployment` and `Service` for the React frontend
 - `StatefulSet` and `Service` for PostgreSQL
 - `StatefulSet` and `Service` for RabbitMQ
 - `Ingress` resource configured for the NGINX Ingress Controller
@@ -22,6 +23,7 @@ Values controlling credentials and connectivity:
 - `rabbitmq.host` / `rabbitmq.port`
 - `rabbitmq.username` / `rabbitmq.password`
 - `replicaCount` to set the default number of backend pods
+- `frontend.*` to configure the container image and resources for the React SPA
 - `autoscaling.*` to tune or disable the Horizontal Pod Autoscaler
 - `serviceMonitor.enabled` to expose Prometheus metrics
 - `pdb.*` for the PodDisruptionBudget
@@ -42,6 +44,8 @@ sample configuration is provided in `values-production.yaml`:
 
 ```bash
 helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
-  --values infra/k8s/helm/schedule-app/values-production.yaml
+  --values infra/k8s/helm/schedule-app/values-production.yaml \
+  --set image.repository=<registry>/schedule-backend \
+  --set frontend.image=<registry>/schedule-frontend
 ```
 
