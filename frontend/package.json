@@ -10,7 +10,7 @@
     "lint:fix": "eslint . --fix",
     "test": "echo \"No frontend tests defined\"",
     "preview": "vite preview",
-    "postbuild": "cp -r dist/* ../backend/src/main/resources/static/"
+    "postbuild": "sh -c 'if [ -d ../backend/src/main/resources/static ]; then cp -r dist/* ../backend/src/main/resources/static/; fi'"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.8",

@@ -5,6 +5,19 @@ image:
 
 replicaCount: 1
 
+frontend:
+  image: schedule-frontend
+  tag: latest
+  pullPolicy: IfNotPresent
+  enabled: true
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
 autoscaling:
   enabled: true
   minReplicas: 1
@@ -42,11 +55,7 @@ service:
 ingress:
   enabled: true
   className: nginx
-  hosts:
-    - host: schedule.local
-      paths:
-        - path: /
-          pathType: Prefix
+  host: schedule.local
   tls: []
 
 postgresql:

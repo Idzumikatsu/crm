@@ -19,19 +19,24 @@ spec:
   {{- end }}
   {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ .host }}
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
-        {{- range .paths }}
-          - path: {{ .path }}
-            pathType: {{ .pathType }}
+        {{- if .Values.frontend.enabled }}
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "schedule-app.fullname" $ }}-frontend
+                port:
+                  number: 80
+        {{- end }}
+          - path: /api
+            pathType: Prefix
             backend:
               service:
                 name: {{ include "schedule-app.fullname" $ }}-backend
                 port:
                   number: {{ $.Values.service.port }}
-        {{- end }}
-  {{- end }}
 {{- end }}
 
