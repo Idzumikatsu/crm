@@ -1,0 +1,8 @@
+2025/06/12 12:28:54 [emerg] 9#9: invalid number of arguments in "proxy_cache_key" directive in /tmp/nginx.conf:28
+2025/06/12 12:33:18 [emerg] 1#1: invalid number of arguments in "limit_req_zone" directive in /tmp/nginx.conf:33
+2025/06/12 12:39:45 [emerg] 1#1: invalid number of arguments in "limit_req_zone" directive in /tmp/nginx.conf:33
+2025/06/12 12:41:51 [emerg] 1#1: invalid number of arguments in "limit_req_zone" directive in /tmp/nginx.conf:33
+2025/06/12 12:47:03 [emerg] 1#1: invalid variable name in /tmp/nginx.conf:33
+2025/06/12 12:51:17 [emerg] 1#1: invalid number of arguments in "limit_req_zone" directive in /tmp/nginx.conf:33
+2025/06/12 12:54:06 [emerg] 1#1: invalid number of arguments in "try_files" directive in /tmp/nginx.conf:69
+2025/06/12 13:07:50 [emerg] 1#1: cannot load certificate "/etc/nginx/certs/fullchain.pem": BIO_new_file() failed (SSL: error:80000002:system library::No such file or directory:calling fopen(/etc/nginx/certs/fullchain.pem, r) error:10000080:BIO routines::no such file)

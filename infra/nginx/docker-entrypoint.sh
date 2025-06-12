@@ -8,9 +8,8 @@ set -e
 : "${SERVER_NAME:=localhost}"
 
 # Render the final configuration file.
-envsubst '$APP_HOST $APP_PORT $SERVER_NAME' \
-  < /etc/nginx/nginx.conf.template \
-  > /etc/nginx/nginx.conf
+envsubst '${SERVER_NAME} ${APP_HOST} ${APP_PORT} ${NGINX_HTTP_PORT} ${NGINX_HTTPS_PORT}' \
+  < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 # Run the provided command (defaults to "nginx -g 'daemon off;'").
 exec "$@"
