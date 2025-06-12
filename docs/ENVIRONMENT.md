@@ -17,10 +17,10 @@ development.
 | `POSTGRES_DB` | `schedule` | `infra/docker-compose.yml` | `infra/.env` |
 | `POSTGRES_USER` | `postgres` | `infra/docker-compose.yml` | `infra/.env` |
 | `POSTGRES_PASSWORD` | `postgres` | `infra/docker-compose.yml` | `infra/.env` |
-| `RABBITMQ_HOST` | `rabbitmq` | `infra/k8s/helm/schedule-app/templates/backend-deployment.yaml` | chart values |
-| `RABBITMQ_PORT` | `5672` | `infra/k8s/helm/schedule-app/templates/backend-deployment.yaml` | chart values |
-| `RABBITMQ_USER` | `user` | `infra/k8s/helm/schedule-app/templates/rabbitmq-statefulset.yaml` | chart values |
-| `RABBITMQ_PASSWORD` | `secret` | `infra/k8s/helm/schedule-app/templates/rabbitmq-statefulset.yaml` | chart values |
+| `RABBITMQ_HOST` | `rabbitmq` | `infra/k8s/helm/schedule-app/templates/backend-deployment.yaml`, `infra/docker-compose.yml` | chart values, `infra/.env` |
+| `RABBITMQ_PORT` | `5672` | `infra/k8s/helm/schedule-app/templates/backend-deployment.yaml`, `infra/docker-compose.yml` | chart values, `infra/.env` |
+| `RABBITMQ_USER` | `user` | `infra/k8s/helm/schedule-app/templates/rabbitmq-statefulset.yaml`, `infra/docker-compose.yml` | chart values, `infra/.env` |
+| `RABBITMQ_PASSWORD` | `secret` | `infra/k8s/helm/schedule-app/templates/rabbitmq-statefulset.yaml`, `infra/docker-compose.yml` | chart values, `infra/.env` |
 | `SMTP_HOST` | `smtp.example.com` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
 | `SMTP_PORT` | `587` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
 | `SMTP_USERNAME` | `user@example.com` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
