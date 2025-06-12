@@ -1,6 +1,21 @@
 version: "3.9"
 name: schedule-app
 services:
+  db:
+    extends:
+      file: compose.yml
+      service: db
+
+  app:
+    extends:
+      file: compose.yml
+      service: app
+
+  nginx:
+    extends:
+      file: compose.yml
+      service: nginx
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.101.0
     command: ["--config=/etc/otel-collector-config.yml"]
