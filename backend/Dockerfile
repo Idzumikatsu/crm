@@ -18,7 +18,8 @@ WORKDIR /app
 COPY --from=build /workspace/backend/app.jar app.jar
 # Скрипт ожидания доступности базы данных
 COPY scripts/wait-for-db.sh /wait-for-db.sh
-RUN chmod +x /wait-for-db.sh
+COPY scripts/backup-db.sh /backup-db.sh
+RUN chmod +x /wait-for-db.sh /backup-db.sh
 # Приложение использует переменные `DB_HOST` и `DB_PORT` для подключения к БД.
 # Задайте их при запуске контейнера.
 EXPOSE 8080

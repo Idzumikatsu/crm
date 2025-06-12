@@ -11,6 +11,7 @@ The chart defines:
 - `StatefulSet` and `Service` for RabbitMQ
 - `Ingress` resource configured for the NGINX Ingress Controller
   - `HorizontalPodAutoscaler` for scaling the backend
+- `CronJob` for periodic database backups
 
 Values controlling credentials and connectivity:
 
@@ -27,6 +28,9 @@ Values controlling credentials and connectivity:
 - `jwtSecret` used by the backend
 - `resources` for the backend container requests and limits
 - `migrations.enabled` to run Flyway migrations via a pre-install and pre-upgrade Job
+- `backup.enabled` to schedule periodic `pg_dump` backups via a CronJob
+- `backup.schedule` CRON expression defining when the backup runs
+- `backup.persistence.size` size of the PVC storing dumps
 
 When `migrations.enabled` is `true`, a short-lived Job waits for the database using `wait-for-db.sh`, applies migrations and is removed automatically after completion.
 

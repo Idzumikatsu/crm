@@ -67,3 +67,10 @@ pdb:
 
 migrations:
   enabled: true
+
+backup:
+  enabled: false
+  schedule: "0 3 * * *"
+  persistence:
+    enabled: true
+    size: 1Gi
