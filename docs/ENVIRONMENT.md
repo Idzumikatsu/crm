@@ -37,6 +37,8 @@ development.
 | `NGINX_HTTP_PORT` | `8080` | `infra/docker-compose.yml` | `infra/.env` |
 | `NGINX_HTTPS_PORT` | `8443` | `infra/docker-compose.yml` | `infra/.env` |
 | `NGINX_LOG_PATH` | `infra/nginx/logs` | docker-compose volume | n/a |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://otel-collector:4318` | `infra/app.yml` | `infra/.env` |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` | `infra/app.yml` | `infra/.env` |
 
 `NGINX_HTTP_PORT` and `NGINX_HTTPS_PORT` configure host ports for the reverse proxy. Change them if the
 defaults (`8080` and `8443`) conflict with other services on the host. `NGINX_LOG_PATH` defines a directory on the host where access and error logs will be written so they persist across restarts.

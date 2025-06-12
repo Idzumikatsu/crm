@@ -1,3 +1,10 @@
 version: "3.9"
 name: schedule-app
-services: {}
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.101.0
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml:ro
+    ports:
+      - "4318:4318"
