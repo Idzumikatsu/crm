@@ -34,6 +34,8 @@ while keeping the deployment maintainable for the next 12–18 months.
 - Each manifest applies the [Kubernetes recommended labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/)
   via the `schedule-app.labels` helper template so resources can be queried
   consistently.
+- Pods can be pinned to specific nodes via `nodeSelector`, `tolerations` and
+  `affinity` values exposed by the Helm chart.
 
 ## Services
 

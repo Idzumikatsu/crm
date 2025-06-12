@@ -39,6 +39,9 @@ Values controlling credentials and connectivity:
 - `migrations.resources` resource requests/limits for the Flyway Job
 - `backup.resources` resource requests/limits for the backup CronJob
 - `networkPolicy.enabled` to restrict database and RabbitMQ access to backend pods
+- `nodeSelector` to pin pods to specific nodes
+- `tolerations` to schedule pods on tainted nodes
+- `affinity` rules for advanced scheduling
 
 Environment variables consumed by the backend are stored in a ConfigMap
 generated from these values. Credentials remain in a Secret.

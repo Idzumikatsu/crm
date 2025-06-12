@@ -55,6 +55,10 @@ serviceAccount:
   name: ""
   automount: false
 
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
 service:
   type: ClusterIP
   port: 8080
