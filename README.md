@@ -86,8 +86,10 @@
    [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md). Значения для `POSTGRES_*` и других
    переменных имеют безопасные defaults, поэтому файл можно опустить для локального
    запуска. Чтобы использовать собственный секрет, сгенерируйте `JWT_SECRET`,
-   например `openssl rand -hex 32`. `docker compose` автоматически считывает
-   `infra/.env`, а сам файл исключён из индекса Git.
+   например `openssl rand -hex 32`. По умолчанию RabbitMQ запускается c
+   `RABBITMQ_USER=user` и `RABBITMQ_PASSWORD=secret`, значения можно переопределить
+   в `infra/.env`. `docker compose` автоматически считывает этот файл, сам файл
+   исключён из индекса Git.
 2. Соберите production артефакты:
    ```bash
    npm --prefix frontend ci
@@ -120,6 +122,9 @@
    make down
    ```
 
+После запуска стек включает RabbitMQ. Панель управления доступна на
+`http://localhost:15672` под учётными данными из `infra/.env`.
+
 Перед повторным запуском остановите предыдущие контейнеры:
 
 ```bash
@@ -137,6 +142,9 @@ docker compose down --remove-orphans
 | `nginx`         | `80`, `443`     | `8080`, `8443` |
 | `nginx-exporter`| `9113`          | `9114`     |
 | `prometheus`    | `9090`          | `9090`     |
+| `rabbitmq`      | `5672`, `15672` | `5672`, `15672` |
+
+Веб-интерфейс RabbitMQ доступен на `http://localhost:15672`.
 
 Порты можно изменить, отредактировав Compose файлы в каталоге `infra/` или передав
 флаг `-p` при запуске `docker run`.
