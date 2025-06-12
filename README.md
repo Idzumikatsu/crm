@@ -86,9 +86,9 @@
    [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md). Значения для `POSTGRES_*` и других
    переменных имеют безопасные defaults, поэтому файл можно опустить для локального
    запуска. Чтобы использовать собственный секрет, сгенерируйте `JWT_SECRET`,
-   например `openssl rand -hex 32`. По умолчанию RabbitMQ запускается c
-   `RABBITMQ_USER=user` и `RABBITMQ_PASSWORD=secret`, значения можно переопределить
-   в `infra/.env`. `docker compose` автоматически считывает этот файл, сам файл
+   например `openssl rand -hex 32`. При необходимости можно запустить
+   RabbitMQ, указав `RABBITMQ_USER` и `RABBITMQ_PASSWORD` в `infra/.env`.
+   `docker compose` автоматически считывает этот файл, сам файл
    исключён из индекса Git.
 2. Соберите production артефакты:
    ```bash
@@ -110,9 +110,10 @@
   Чтобы использовать сертификат в CI, закодируйте оба файла в Base64 одной
   строкой (`base64 -w0`) и сохраните полученный текст в секреты `SSL_CERT`,
   `SSL_KEY` и, при наличии цепочки, `SSL_CA_CERT`.
-4. Соберите и запустите контейнеры через Makefile. Он использует
-   несколько Compose файлов из каталога `infra/` (`docker-compose.yml`,
-   `db.yml`, `app.yml`, `monitoring.yml`):
+4. Соберите и запустите контейнеры через Makefile. Теперь достаточно
+   одного файла `infra/compose.yml`, который включает базовые сервисы
+   (`db`, `app`, `nginx`). Дополнительные контейнеры из старых
+   Compose файлов можно запускать при необходимости:
 
    ```bash
    make build
@@ -122,8 +123,10 @@
    make down
    ```
 
-После запуска стек включает RabbitMQ. Панель управления доступна на
-`http://localhost:15672` под учётными данными из `infra/.env`.
+
+По умолчанию стартует только минимальный набор контейнеров. RabbitMQ и
+мониторинг доступны отдельно и не запускаются вместе с основной
+командой.
 
 Перед повторным запуском остановите предыдущие контейнеры:
 
@@ -140,11 +143,11 @@ docker compose down --remove-orphans
 | `db`            | `5432`          | `5432`     |
 | `app`           | `8080`          | _не публикуется_ |
 | `nginx`         | `80`, `443`     | `8080`, `8443` |
-| `nginx-exporter`| `9113`          | `9114`     |
-| `prometheus`    | `9090`          | `9090`     |
-| `rabbitmq`      | `5672`, `15672` | `5672`, `15672` |
+| `nginx-exporter`| `9113`          | `9114`     | *(опционально)* |
+| `prometheus`    | `9090`          | `9090`     | *(опционально)* |
+| `rabbitmq`      | `5672`, `15672` | `5672`, `15672` | *(опционально)* |
 
-Веб-интерфейс RabbitMQ доступен на `http://localhost:15672`.
+Веб-интерфейс RabbitMQ при запуске доступен на `http://localhost:15672`.
 
 Порты можно изменить, отредактировав Compose файлы в каталоге `infra/` или передав
 флаг `-p` при запуске `docker run`.
@@ -166,7 +169,7 @@ docker ps -aq --filter "label=com.docker.compose.project=infra" | xargs -r docke
 
    Dockerfile собирает JAR внутри образа, поэтому Gradle на хосте не требуется.
    Логи можно смотреть через `make logs`. При необходимости можно запустить
-   `docker compose -f infra/docker-compose.yml -f infra/db.yml -f infra/app.yml -f infra/monitoring.yml up -d` напрямую без Makefile.
+   `docker compose -f infra/compose.yml up -d` напрямую без Makefile.
 
 Контейнер `app` используется как в production, так и при локальной разработке.
 `nginx` запускается вместе с приложением и автоматически ждёт готовности бэкенда.
@@ -232,7 +235,7 @@ curl http://localhost:8080/actuator/prometheus
 
 Инфраструктура включает сервис `prometheus`, который читает конфигурацию из
 файла `infra/prometheus/prometheus.yml` и автоматически опрашивает приложение и
-`nginx-exporter`. Запускайте `docker compose -f infra/docker-compose.yml -f infra/db.yml -f infra/app.yml -f infra/monitoring.yml`
+`nginx-exporter`. Запускайте `docker compose -f infra/compose.yml`
 из корня проекта, чтобы Docker корректно смонтировал файлы. Веб‑интерфейс
 Prometheus доступен на `http://localhost:9090`.
 
@@ -312,7 +315,7 @@ npm run build
 - `SSL_CERT` и `SSL_KEY` – текст, полученный через `base64 -w0` из файлов сертификата и закрытого ключа для NGINX;
 - `SSL_CA_CERT` – содержимое промежуточного сертификата (если используется).
 
-Workflow собирает JAR, автоматически строит SPA и CSS, копирует получившиеся файлы и инфраструктуру на сервер и запускает `docker compose -f infra/docker-compose.yml -f infra/db.yml -f infra/app.yml -f infra/monitoring.yml up -d`.
+Workflow собирает JAR, автоматически строит SPA и CSS, копирует получившиеся файлы и инфраструктуру на сервер и запускает `docker compose -f infra/compose.yml up -d`.
 Сервер должен иметь установленный Docker версии **27.5.1** или новее (API 1.47), так как деплой тестировался на этой версии.
 После успешного завершения всех проверок Pull Request в `main` автоматически сливается через auto-merge.
 
