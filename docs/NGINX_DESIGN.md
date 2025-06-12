@@ -2,10 +2,11 @@
 
 ## Target Architecture
 
-The solution runs inside Docker Compose. Traffic from clients first hits
-NGINX which proxies requests to the Spring Boot application. The
-application communicates with PostgreSQL. NGINX exposes its metrics via a
-Prometheus exporter container.
+Initially the solution ran inside Docker Compose. As part of the
+Kubernetes migration traffic now enters the cluster through the NGINX
+Ingress Controller which proxies requests to the Spring Boot backend. The
+application communicates with PostgreSQL while NGINX exposes metrics via a
+Prometheus exporter sidecar.
 
 ```
 Client ---> NGINX ---> App ---> PostgreSQL

@@ -1,8 +1,9 @@
 # NGINX High Availability
 
 ## 8.1 Number of instances
-To meet the 99.9% availability target we run at least **two** NGINX containers.
-Traffic is distributed with an external load balancer or Docker Compose scaling.
+To meet the 99.9% availability target we run at least **two** NGINX
+instances. Traffic is distributed with an external load balancer or by
+scaling the Kubernetes Deployment.
 
 ## 8.2 Backend health checks
 Backends are configured in the `upstream` block with `max_fails=3` and
