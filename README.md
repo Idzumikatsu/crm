@@ -79,6 +79,8 @@
 ## Production Deployment
 
 Полный перечень переменных приведён в [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md).
+Документация по развёртыванию PostgreSQL через Terraform
+находится в [docs/TERRAFORM_DB.md](docs/TERRAFORM_DB.md).
 
 1. При необходимости создайте файл `infra/.env` на основе переменных из
    [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md). Значения для `POSTGRES_*` и других
