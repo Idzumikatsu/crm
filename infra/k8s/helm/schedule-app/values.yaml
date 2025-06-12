@@ -106,6 +106,13 @@ pdb:
 
 migrations:
   enabled: true
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
 
 backup:
   enabled: false
@@ -113,3 +120,10 @@ backup:
   persistence:
     enabled: true
     size: 1Gi
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"

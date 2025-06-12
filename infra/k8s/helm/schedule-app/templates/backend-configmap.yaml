@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "schedule-app.fullname" . }}-backend
+  labels:
+    app: {{ include "schedule-app.fullname" . }}-backend
+    {{- include "schedule-app.labels" . | nindent 4 }}
+data:
+  SPRING_PROFILES_ACTIVE: postgres
+  DB_HOST: {{ if .Values.postgresql.enabled }}{{ include "schedule-app.fullname" . }}-postgresql{{ else }}{{ .Values.postgresql.host | quote }}{{- end }}
+  DB_PORT: "{{ .Values.postgresql.port }}"
+  DB_NAME: {{ .Values.postgresql.database | quote }}
+  DB_USER: {{ .Values.postgresql.username | quote }}
+  RABBITMQ_HOST: {{ if .Values.rabbitmq.enabled }}{{ include "schedule-app.fullname" . }}-rabbitmq{{ else }}{{ .Values.rabbitmq.host | quote }}{{- end }}
+  RABBITMQ_PORT: "{{ .Values.rabbitmq.port }}"
