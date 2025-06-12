@@ -40,9 +40,9 @@ while keeping the deployment maintainable for the next 12–18 months.
 3. `helm upgrade --install` deploys to the cluster.
 4. Horizontal Pod Autoscaler scales the backend based on CPU usage.
 
-Configuration is passed through environment variables in `values.yaml` and
-mounted Secrets. Persistent data for Postgres and RabbitMQ resides on
-ProvisionedVolumes.
+Configuration is passed through a dedicated ConfigMap generated from
+`values.yaml`, while sensitive credentials live in a Secret. Persistent data
+for Postgres and RabbitMQ resides on ProvisionedVolumes.
 
 An initial Helm chart named `schedule-app` lives in
 `infra/k8s/helm/schedule-app` and deploys the monolith together with a

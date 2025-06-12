@@ -34,6 +34,11 @@ Values controlling credentials and connectivity:
 - `backup.enabled` to schedule periodic `pg_dump` backups via a CronJob
 - `backup.schedule` CRON expression defining when the backup runs
 - `backup.persistence.size` size of the PVC storing dumps
+- `migrations.resources` resource requests/limits for the Flyway Job
+- `backup.resources` resource requests/limits for the backup CronJob
+
+Environment variables consumed by the backend are stored in a ConfigMap
+generated from these values. Credentials remain in a Secret.
 
 When `migrations.enabled` is `true`, a short-lived Job waits for the database using `wait-for-db.sh`, applies migrations and is removed automatically after completion.
 
