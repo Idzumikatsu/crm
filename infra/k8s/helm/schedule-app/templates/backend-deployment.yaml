@@ -12,6 +12,8 @@ spec:
       labels:
         app: {{ include "schedule-app.fullname" . }}-backend
     spec:
+      serviceAccountName: {{ include "schedule-app.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

@@ -9,6 +9,8 @@ metadata:
 spec:
   template:
     spec:
+      serviceAccountName: {{ include "schedule-app.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
       restartPolicy: OnFailure
       ttlSecondsAfterFinished: 120
       containers:

@@ -10,6 +10,8 @@ spec:
     spec:
       template:
         spec:
+          serviceAccountName: {{ include "schedule-app.serviceAccountName" . }}
+          automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
           restartPolicy: OnFailure
           containers:
             - name: backup
