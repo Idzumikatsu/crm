@@ -22,6 +22,8 @@ while keeping the deployment maintainable for the next 12–18 months.
 - **Jaeger** and **OpenTelemetry** for tracing.
 - **GitHub Actions** to build OCI images and run `helm upgrade --install`.
 - Containers run as non-root wherever possible to satisfy Pod Security policies.
+- Stateful services such as PostgreSQL and RabbitMQ request dedicated CPU and
+  memory resources to ensure reliable performance.
 
 ## Services
 
