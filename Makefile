@@ -1,18 +1,4 @@
-DOCKER_COMPOSE ?= docker compose -f infra/compose.yml
-
-.PHONY: build up down logs frontend k8s-deploy k8s-delete k8s-render
-
-build:
-        $(DOCKER_COMPOSE) build
-
-up:
-        $(DOCKER_COMPOSE) up -d
-
-down:
-        $(DOCKER_COMPOSE) down --remove-orphans
-
-logs:
-        $(DOCKER_COMPOSE) logs -f
+.PHONY: frontend k8s-deploy k8s-delete k8s-render
 
 frontend:
 	npm --prefix frontend run build

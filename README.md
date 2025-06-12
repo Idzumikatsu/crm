@@ -6,7 +6,7 @@
 
 - `backend/` — серверная часть и REST API
 - `frontend/` — клиентское приложение Vite/React
-- `infra/` — Docker Compose, Helm charts и конфигурация NGINX
+- `infra/` — Helm charts и конфигурация NGINX
 - `docs/` — документация и ADR. Также в каталоге находится файл
   `ARCHITECTURE_IMPROVEMENTS.md` с планом дальнейшего развития
   инфраструктуры и рекомендациями по запуску
@@ -88,99 +88,12 @@
    запуска. Чтобы использовать собственный секрет, сгенерируйте `JWT_SECRET`,
    например `openssl rand -hex 32`. При необходимости можно запустить
    RabbitMQ, указав `RABBITMQ_USER` и `RABBITMQ_PASSWORD` в `infra/.env`.
-   `docker compose` автоматически считывает этот файл, сам файл
-   исключён из индекса Git.
 2. Соберите production артефакты:
    ```bash
    npm --prefix frontend ci
    npm --prefix frontend run build
    ./backend/gradlew clean bootJar
    ```
-
-3. Создайте сертификат для Nginx. Выполните команду из корня репозитория,
-   чтобы итоговые файлы оказались в каталоге `infra/nginx/certs`:
-
-   ```bash
-   mkdir -p infra/nginx/certs && cd <repo-root>
-   openssl req -x509 -newkey rsa:2048 -nodes \
-     -keyout infra/nginx/certs/crm-synergy.key \
-    -out infra/nginx/certs/crm-synergy.crt \
-    -days 365 -subj "/CN=localhost"
-  ```
-  Чтобы использовать сертификат в CI, закодируйте оба файла в Base64 одной
-  строкой (`base64 -w0`) и сохраните полученный текст в секреты `SSL_CERT`,
-  `SSL_KEY` и, при наличии цепочки, `SSL_CA_CERT`.
-4. Соберите и запустите контейнеры через Makefile. Теперь достаточно
-   одного файла `infra/compose.yml`, который включает базовые сервисы
-   (`db`, `app`, `nginx`). Дополнительные контейнеры из старых
-   Compose файлов можно запускать при необходимости:
-
-   ```bash
-   make build
-   make up
-   docker compose ps
-   curl -f http://localhost:8080/actuator/health
-   make down
-   ```
-
-
-По умолчанию стартует только минимальный набор контейнеров. RabbitMQ и
-мониторинг доступны отдельно и не запускаются вместе с основной
-командой.
-
-Перед повторным запуском остановите предыдущие контейнеры:
-
-```bash
-make down
-# или
-docker compose down --remove-orphans
-```
-
-Статус контейнеров можно проверить командой `docker compose ps`.
-
-| Сервис          | Порт контейнера | Порт хоста |
-|-----------------|-----------------|------------|
-| `db`            | `5432`          | `5432`     |
-| `app`           | `8080`          | _не публикуется_ |
-| `nginx`         | `80`, `443`     | `8080`, `8443` |
-| `nginx-exporter`| `9113`          | `9114`     | *(опционально)* |
-| `prometheus`    | `9090`          | `9090`     | *(опционально)* |
-| `rabbitmq`      | `5672`, `15672` | `5672`, `15672` | *(опционально)* |
-
-Веб-интерфейс RabbitMQ при запуске доступен на `http://localhost:15672`.
-
-Порты можно изменить, отредактировав Compose файлы в каталоге `infra/` или передав
-флаг `-p` при запуске `docker run`.
-Для Nginx предусмотрены переменные `NGINX_HTTP_PORT` и `NGINX_HTTPS_PORT` (по
-умолчанию `8080` и `8443`). При необходимости задайте другие значения в файле
-`infra/.env` или через переменные окружения перед запуском `docker compose up`.
-**Важно:** если на хосте уже работает Nginx или любой процесс, занимающий
-:80/:443, отредактируйте файл `.env` и поменяйте `NGINX_HTTP_PORT`,
-`NGINX_HTTPS_PORT` (по‑умолчанию 8080 и 8443).
-Убедитесь, что порт `8080` свободен: `lsof -i :8080` или `docker ps`.
-
-Если ранее использовалась версия `docker-compose` без явного указания имени проекта,
-могли сохраниться контейнеры с префиксом `infra`, занимающие те же порты.
-Удалите их вручную:
-
-```bash
-docker ps -aq --filter "label=com.docker.compose.project=infra" | xargs -r docker rm -f
-```
-
-   Dockerfile собирает JAR внутри образа, поэтому Gradle на хосте не требуется.
-   Логи можно смотреть через `make logs`. При необходимости можно запустить
-   `docker compose -f infra/compose.yml up -d` напрямую без Makefile.
-
-Контейнер `app` используется как в production, так и при локальной разработке.
-`nginx` запускается вместе с приложением и автоматически ждёт готовности бэкенда.
-
-При запуске `nginx` отдельно задайте `APP_HOST`, `APP_PORT` и `SERVER_NAME` для
-указания адреса бэкенда и домена, который будет использован в конфигурации
-`nginx.conf.template`.
-Логи прокси монтируются во внешний каталог `infra/nginx/logs`, чтобы сохраняться между перезапусками контейнера.
-
-После старта веб-интерфейс доступен на `https://localhost` (порт `443`),
-обращения к `http://localhost` перенаправляются на HTTPS.
 
 ### Kubernetes Deployment
 Helm charts for the application reside in `infra/k8s/helm`. Use the
@@ -235,7 +148,6 @@ curl http://localhost:8080/actuator/prometheus
 
 Инфраструктура включает сервис `prometheus`, который читает конфигурацию из
 файла `infra/prometheus/prometheus.yml` и автоматически опрашивает приложение и
-`nginx-exporter`. Запускайте `docker compose -f infra/compose.yml`
 из корня проекта, чтобы Docker корректно смонтировал файлы. Веб‑интерфейс
 Prometheus доступен на `http://localhost:9090`.
 
@@ -315,7 +227,6 @@ npm run build
 - `SSL_CERT` и `SSL_KEY` – текст, полученный через `base64 -w0` из файлов сертификата и закрытого ключа для NGINX;
 - `SSL_CA_CERT` – содержимое промежуточного сертификата (если используется).
 
-Workflow собирает JAR, автоматически строит SPA и CSS, копирует получившиеся файлы и инфраструктуру на сервер и запускает `docker compose -f infra/compose.yml up -d`.
 Сервер должен иметь установленный Docker версии **27.5.1** или новее (API 1.47), так как деплой тестировался на этой версии.
 После успешного завершения всех проверок Pull Request в `main` автоматически сливается через auto-merge.
 
@@ -353,9 +264,8 @@ cd frontend && npm run lint:fix && npm run lint
 В `application.yml` он задан как `${JWT_SECRET:0123456789abcdef0123456789abcdef}`, поэтому
 в production его нужно обязательно переопределить и использовать
 случайную строку не менее 32 байт,
-например `openssl rand -hex 32`. Compose файлы в каталоге `infra/` требуют эту
-переменную, поэтому запуск контейнеров завершится ошибкой, если `JWT_SECRET`
-не задан.
+например `openssl rand -hex 32`. Значение должно храниться в секрете и
+передаваться как переменная окружения `JWT_SECRET` при запуске приложения.
 
 ## Backup
 
