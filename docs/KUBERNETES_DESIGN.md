@@ -47,6 +47,10 @@ PostgreSQL database and RabbitMQ broker. Database migrations are executed by a
 `wait-for-db.sh` script. Completed migration Jobs are deleted automatically so
 they do not clutter the namespace.
 
+To protect data, a CronJob periodically executes `/backup-db.sh`. It dumps the
+database to a PersistentVolume mounted at `/backups`. The job is disabled by
+default and can be enabled via chart values.
+
 ## Observability
 
 Prometheus scrapes metrics from the application and infrastructure. Grafana

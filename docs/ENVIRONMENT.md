@@ -44,7 +44,7 @@ defaults (`8080` and `8443`) conflict with other services on the host. `NGINX_LO
 | `PROXY_PORT` | `8080` | `scripts/setup-proxy.sh`, `.github/workflows/deploy.yml` | secrets or shell |
 | `HTTP_PROXY` | `http://proxy.example.com:8080` | `scripts/setup-proxy.sh` | shell |
 | `HTTPS_PROXY` | `http://proxy.example.com:8080` | `scripts/setup-proxy.sh` | shell |
-| `BACKUP_DIR` | `backups` | `scripts/backup-db.sh` | shell |
+| `BACKUP_DIR` | `backups` | `scripts/backup-db.sh`, `infra/k8s/helm/schedule-app/templates/backup-cronjob.yaml` | shell |
 | `VITE_API_URL` |  | `frontend/src/api.ts` | `frontend/.env` |
 | `DEPLOY_DIR` | `myapp` | `.github/workflows/deploy.yml` | workflow env |
 | `VPS_HOST` | `203.0.113.1` | `.github/workflows/deploy.yml` | secrets |

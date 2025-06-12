@@ -1,0 +1,11 @@
+{{- if and .Values.backup.enabled .Values.backup.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "schedule-app.fullname" . }}-backup
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: {{ .Values.backup.persistence.size }}
+{{- end }}

@@ -1,0 +1,42 @@
+{{- if .Values.backup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "schedule-app.fullname" . }}-backup
+spec:
+  schedule: {{ .Values.backup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command: ["/backup-db.sh"]
+              env:
+                - name: DB_HOST
+                  value: {{ if .Values.postgresql.enabled }}{{ include "schedule-app.fullname" . }}-postgresql{{ else }}{{ .Values.postgresql.host | quote }}{{- end }}
+                - name: DB_PORT
+                  value: {{ .Values.postgresql.port | quote }}
+                - name: DB_NAME
+                  value: {{ .Values.postgresql.database | quote }}
+                - name: DB_USER
+                  value: {{ .Values.postgresql.username | quote }}
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "schedule-app.fullname" . }}
+                      key: postgres-password
+                - name: BACKUP_DIR
+                  value: /backups
+              volumeMounts:
+                - name: backup
+                  mountPath: /backups
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: {{ include "schedule-app.fullname" . }}-backup
+{{- end }}
