@@ -30,6 +30,11 @@ containerSecurityContext:
   runAsNonRoot: true
   allowPrivilegeEscalation: false
 
+serviceAccount:
+  create: true
+  name: ""
+  automount: false
+
 service:
   type: ClusterIP
   port: 8080

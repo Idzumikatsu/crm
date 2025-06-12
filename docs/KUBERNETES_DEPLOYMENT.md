@@ -20,4 +20,6 @@ The pipeline builds Docker images, pushes them to a registry and runs `helm upgr
 Adjust values in `infra/k8s/helm/schedule-app/values.yaml` for production before running the workflow.
 Set appropriate CPU and memory limits under the `resources` key so pods are scheduled with reserved capacity.
 A `Job` named `schedule-app-migrate` runs as a Helm hook before each installation or upgrade to apply database migrations. The job waits for the database and is cleaned up automatically after success.
+All pods use a dedicated service account created by the chart, unless a custom
+name is provided via `serviceAccount.name`.
 When `backup.enabled` is true the chart also provisions a `CronJob` that dumps the database every night using `pg_dump`.

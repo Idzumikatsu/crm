@@ -25,6 +25,7 @@ Values controlling credentials and connectivity:
 - `autoscaling.*` to tune or disable the Horizontal Pod Autoscaler
 - `serviceMonitor.enabled` to expose Prometheus metrics
 - `pdb.*` for the PodDisruptionBudget
+- `serviceAccount.*` to create or reuse a Kubernetes ServiceAccount
 - `jwtSecret` used by the backend
 - `resources` for the backend container requests and limits
 - `migrations.enabled` to run Flyway migrations via a pre-install and pre-upgrade Job

@@ -188,6 +188,8 @@ The cluster credentials must be provided in `KUBE_CONFIG_B64` and Docker images
 are pulled from the registry defined by `DOCKER_REPOSITORY`.
 Stateful components request CPU and memory limits via chart values so the
 cluster can schedule them with guaranteed resources.
+Each pod runs under its own ServiceAccount with tokens disabled by default
+to follow the least-privilege principle.
 
 ### Проверка сервиса
 После деплоя убедитесь, что контейнеры запущены и перешли в состояние `healthy`:
