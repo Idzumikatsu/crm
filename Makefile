@@ -1,8 +1,4 @@
-DOCKER_COMPOSE ?= docker compose \
-    -f infra/docker-compose.yml \
-    -f infra/db.yml \
-    -f infra/app.yml \
-    -f infra/monitoring.yml
+DOCKER_COMPOSE ?= docker compose -f infra/compose.yml
 
 .PHONY: build up down logs frontend k8s-deploy k8s-delete k8s-render
 
