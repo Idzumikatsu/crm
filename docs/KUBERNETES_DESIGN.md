@@ -25,8 +25,10 @@ while keeping the deployment maintainable for the next 12–18 months.
 - Each pod uses its own ServiceAccount with tokens disabled by default.
 - Stateful services such as PostgreSQL and RabbitMQ request dedicated CPU and
   memory resources to ensure reliable performance.
-- Application pods define liveness and readiness probes so Kubernetes can
-  quickly detect and replace unhealthy instances.
+- Application pods define startup, liveness and readiness probes so
+  Kubernetes can detect slow or unhealthy instances.
+- Images are pulled using optional `imagePullSecrets` when the registry
+  requires authentication.
 
 ## Services
 

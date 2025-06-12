@@ -2,6 +2,7 @@ image:
   repository: schedule-backend
   tag: latest
   pullPolicy: IfNotPresent
+imagePullSecrets: []
 
 replicaCount: 3
 
@@ -23,6 +24,12 @@ autoscaling:
   minReplicas: 3
   maxReplicas: 10
   targetCPUUtilizationPercentage: 75
+
+startupProbe:
+  enabled: true
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 30
 
 resources:
   requests:

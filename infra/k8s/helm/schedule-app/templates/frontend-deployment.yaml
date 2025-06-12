@@ -13,6 +13,10 @@ spec:
       labels:
         app: {{ include "schedule-app.fullname" . }}-frontend
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       containers:
         - name: frontend
           image: {{ .Values.frontend.image }}:{{ .Values.frontend.tag }}

@@ -28,6 +28,8 @@ Values controlling credentials and connectivity:
 - `serviceMonitor.enabled` to expose Prometheus metrics
 - `pdb.*` for the PodDisruptionBudget
 - `serviceAccount.*` to create or reuse a Kubernetes ServiceAccount
+- `imagePullSecrets` to reference Kubernetes secrets for pulling images
+- `startupProbe.*` to tune the startup probe for the backend
 - `jwtSecret` used by the backend
 - `resources` for the backend container requests and limits
 - `migrations.enabled` to run Flyway migrations via a pre-install and pre-upgrade Job
