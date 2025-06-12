@@ -26,6 +26,9 @@ Values controlling credentials and connectivity:
 - `pdb.*` for the PodDisruptionBudget
 - `jwtSecret` used by the backend
 - `resources` for the backend container requests and limits
+- `migrations.enabled` to run Flyway migrations via a pre-install and pre-upgrade Job
+
+When `migrations.enabled` is `true`, a short-lived Job waits for the database using `wait-for-db.sh`, applies migrations and is removed automatically after completion.
 
 Default values assume a demo environment. Sensitive strings like database and
 RabbitMQ passwords are stored in a `Secret` generated from `values.yaml`.
