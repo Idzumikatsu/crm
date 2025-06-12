@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:1.1.0
+    depends_on:
+      - nginx
+    restart: unless-stopped
+    command:
+      - --nginx.scrape-uri=http://nginx/nginx_status
+    ports:
+      - "9114:9113"
+
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    restart: unless-stopped
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"

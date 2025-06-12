@@ -1,18 +1,22 @@
-COMPOSE_FILE ?= infra/docker-compose.yml
+DOCKER_COMPOSE ?= docker compose \
+    -f infra/docker-compose.yml \
+    -f infra/db.yml \
+    -f infra/app.yml \
+    -f infra/monitoring.yml
 
 .PHONY: build up down logs frontend k8s-deploy k8s-delete k8s-render
 
 build:
-	docker compose -f $(COMPOSE_FILE) build
+        $(DOCKER_COMPOSE) build
 
 up:
-	docker compose -f $(COMPOSE_FILE) up -d
+        $(DOCKER_COMPOSE) up -d
 
 down:
-	docker compose -f infra/docker-compose.yml down --remove-orphans
+        $(DOCKER_COMPOSE) down --remove-orphans
 
 logs:
-	docker compose -f $(COMPOSE_FILE) logs -f
+        $(DOCKER_COMPOSE) logs -f
 
 frontend:
 	npm --prefix frontend run build
