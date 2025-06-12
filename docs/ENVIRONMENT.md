@@ -30,6 +30,7 @@ development.
 | `MAIL_FROM` | `no-reply@example.com` | `backend/src/main/resources/application.yml` | `infra/.env` |
 | `TELEGRAM_BOT_TOKEN` | `123456:ABC` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
 | `JWT_SECRET` | `0123456789abcdef0123456789abcdef` | `backend/src/main/resources/application.yml`, `infra/docker-compose.yml` | `infra/.env` or secrets |
+| `ALLOWED_ORIGINS` | `http://localhost:5173` | `backend/src/main/java/com/example/scheduletracker/config/CorsConfig.java` | `infra/.env` |
 | `APP_HOST` | `app` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh`, `infra/nginx/docker-entrypoint.sh` | `infra/.env` |
 | `APP_PORT` | `8080` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh`, `infra/nginx/docker-entrypoint.sh` | `infra/.env` |
 | `SERVER_NAME` | `example.com` | `infra/nginx/nginx.conf.template`, `infra/docker-compose.yml`, `scripts/render-nginx.sh`, `scripts/letsencrypt.sh` | `infra/.env` |
