@@ -5,6 +5,7 @@ metadata:
   labels:
     app: {{ include "schedule-app.fullname" . }}-backend
     {{- include "schedule-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
 data:
   SPRING_PROFILES_ACTIVE: postgres
   DB_HOST: {{ if .Values.postgresql.enabled }}{{ include "schedule-app.fullname" . }}-postgresql{{ else }}{{ .Values.postgresql.host | quote }}{{- end }}

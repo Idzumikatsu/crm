@@ -3,6 +3,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "schedule-app.fullname" . }}-rabbitmq
+  labels:
+    {{- include "schedule-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: rabbitmq
 spec:
   serviceName: {{ include "schedule-app.fullname" . }}-rabbitmq
   replicas: 1
@@ -13,6 +16,8 @@ spec:
     metadata:
       labels:
         app: {{ include "schedule-app.fullname" . }}-rabbitmq
+        {{- include "schedule-app.labels" . | nindent 8 }}
+        app.kubernetes.io/component: rabbitmq
     spec:
       containers:
         - name: rabbitmq

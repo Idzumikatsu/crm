@@ -42,6 +42,10 @@ Values controlling credentials and connectivity:
 
 Environment variables consumed by the backend are stored in a ConfigMap
 generated from these values. Credentials remain in a Secret.
+All chart resources include a common set of labels using the
+`schedule-app.labels` helper. This follows the
+[Kubernetes recommended labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/)
+to simplify filtering and troubleshooting.
 
 When `migrations.enabled` is `true`, a short-lived Job waits for the database using `wait-for-db.sh`, applies migrations and is removed automatically after completion.
 

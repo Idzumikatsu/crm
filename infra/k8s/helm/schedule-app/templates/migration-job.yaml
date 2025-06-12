@@ -6,8 +6,15 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    {{- include "schedule-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: migrate
 spec:
   template:
+    metadata:
+      labels:
+        {{- include "schedule-app.labels" . | nindent 8 }}
+        app.kubernetes.io/component: migrate
     spec:
       serviceAccountName: {{ include "schedule-app.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.serviceAccount.automount }}

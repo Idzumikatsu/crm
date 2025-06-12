@@ -3,6 +3,8 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: {{ include "schedule-app.fullname" . }}-db
+  labels:
+    {{- include "schedule-app.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
@@ -28,6 +30,8 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: {{ include "schedule-app.fullname" . }}-rabbitmq
+  labels:
+    {{- include "schedule-app.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:

@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "schedule-app.fullname" . }}-backend
+  labels:
+    {{- include "schedule-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -11,6 +14,8 @@ spec:
     metadata:
       labels:
         app: {{ include "schedule-app.fullname" . }}-backend
+        {{- include "schedule-app.labels" . | nindent 8 }}
+        app.kubernetes.io/component: backend
     spec:
       serviceAccountName: {{ include "schedule-app.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
