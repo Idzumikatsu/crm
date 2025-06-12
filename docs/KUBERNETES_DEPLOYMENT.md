@@ -10,7 +10,7 @@ The pipeline builds Docker images, pushes them to a registry and runs `helm upgr
 2. On each push to `main` it builds the backend image using the provided Dockerfile.
 3. The image is tagged with the commit SHA and uploaded to the registry defined by `DOCKER_REPOSITORY`.
 4. Helm is configured using the kubeconfig stored in `KUBE_CONFIG_B64`.
-5. `helm upgrade --install` renders the chart from `infra/k8s/helm/schedule-app` with the new image tag.
+5. `helm upgrade --install` renders the chart from `infra/k8s/helm/schedule-app` with the new image tag. The command runs with `--atomic` and waits up to five minutes for rollout completion.
 
 ## Required secrets
 
@@ -19,3 +19,4 @@ The pipeline builds Docker images, pushes them to a registry and runs `helm upgr
 
 Adjust values in `infra/k8s/helm/schedule-app/values.yaml` for production before running the workflow.
 Set appropriate CPU and memory limits under the `resources` key so pods are scheduled with reserved capacity.
+A `Job` named `schedule-app-migrate` runs as a Helm hook before each installation or upgrade to apply database migrations. The job waits for the database and is cleaned up automatically after success.
