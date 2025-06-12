@@ -3,6 +3,9 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "schedule-app.fullname" . }}-backend
+  labels:
+    {{- include "schedule-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

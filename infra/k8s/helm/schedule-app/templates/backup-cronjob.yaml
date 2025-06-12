@@ -3,12 +3,19 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ include "schedule-app.fullname" . }}-backup
+  labels:
+    {{- include "schedule-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backup
 spec:
   schedule: {{ .Values.backup.schedule | quote }}
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            {{- include "schedule-app.labels" . | nindent 12 }}
+            app.kubernetes.io/component: backup
         spec:
           serviceAccountName: {{ include "schedule-app.serviceAccountName" . }}
           automountServiceAccountToken: {{ .Values.serviceAccount.automount }}

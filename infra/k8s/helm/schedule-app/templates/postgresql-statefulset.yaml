@@ -3,6 +3,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "schedule-app.fullname" . }}-postgresql
+  labels:
+    {{- include "schedule-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: postgresql
 spec:
   serviceName: {{ include "schedule-app.fullname" . }}-postgresql
   replicas: 1
@@ -13,6 +16,8 @@ spec:
     metadata:
       labels:
         app: {{ include "schedule-app.fullname" . }}-postgresql
+        {{- include "schedule-app.labels" . | nindent 8 }}
+        app.kubernetes.io/component: postgresql
     spec:
       containers:
         - name: postgres

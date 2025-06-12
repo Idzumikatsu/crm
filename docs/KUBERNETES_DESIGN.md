@@ -31,6 +31,9 @@ while keeping the deployment maintainable for the next 12–18 months.
   Kubernetes can detect slow or unhealthy instances.
 - Images are pulled using optional `imagePullSecrets` when the registry
   requires authentication.
+- Each manifest applies the [Kubernetes recommended labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/)
+  via the `schedule-app.labels` helper template so resources can be queried
+  consistently.
 
 ## Services
 

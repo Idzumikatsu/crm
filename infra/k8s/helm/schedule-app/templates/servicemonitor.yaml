@@ -5,6 +5,8 @@ metadata:
   name: {{ include "schedule-app.fullname" . }}-backend
   labels:
     release: prometheus
+    {{- include "schedule-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
 spec:
   selector:
     matchLabels:
