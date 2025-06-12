@@ -19,6 +19,18 @@ spec:
         spec:
           serviceAccountName: {{ include "schedule-app.serviceAccountName" . }}
           automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+          {{- end }}
           restartPolicy: OnFailure
           containers:
             - name: backup
