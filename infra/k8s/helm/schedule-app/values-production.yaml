@@ -124,16 +124,19 @@ migrations:
       memory: "512Mi"
       cpu: "400m"
 
-backup:
-  enabled: true
-  schedule: "0 3 * * *"
-  persistence:
+  backup:
     enabled: true
-    size: 10Gi
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "200m"
-    limits:
-      memory: "512Mi"
-      cpu: "400m"
+    schedule: "0 3 * * *"
+    persistence:
+      enabled: true
+      size: 10Gi
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "200m"
+      limits:
+        memory: "512Mi"
+        cpu: "400m"
+
+networkPolicy:
+  enabled: true

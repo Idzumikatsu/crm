@@ -23,6 +23,8 @@ while keeping the deployment maintainable for the next 12–18 months.
 - **GitHub Actions** to build OCI images and run `helm upgrade --install`.
 - Containers run as non-root wherever possible to satisfy Pod Security policies.
 - Each pod uses its own ServiceAccount with tokens disabled by default.
+- NetworkPolicies restrict access to PostgreSQL and RabbitMQ so only backend
+  and maintenance jobs can connect.
 - Stateful services such as PostgreSQL and RabbitMQ request dedicated CPU and
   memory resources to ensure reliable performance.
 - Application pods define startup, liveness and readiness probes so

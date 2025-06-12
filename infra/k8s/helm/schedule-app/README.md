@@ -38,6 +38,7 @@ Values controlling credentials and connectivity:
 - `backup.persistence.size` size of the PVC storing dumps
 - `migrations.resources` resource requests/limits for the Flyway Job
 - `backup.resources` resource requests/limits for the backup CronJob
+- `networkPolicy.enabled` to restrict database and RabbitMQ access to backend pods
 
 Environment variables consumed by the backend are stored in a ConfigMap
 generated from these values. Credentials remain in a Secret.
