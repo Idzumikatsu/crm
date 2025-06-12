@@ -170,11 +170,15 @@ docker ps -aq --filter "label=com.docker.compose.project=infra" | xargs -r docke
 
 ### Kubernetes Deployment
 Helm charts for the application reside in `infra/k8s/helm`. Use the
-`deploy-k8s.yml` workflow or run `helm upgrade --install` manually:
+`deploy-k8s.yml` workflow or run `helm upgrade --install` manually.
+Before each upgrade a Helm hook launches a short-lived Job to apply
+database migrations so the backend starts with the correct schema. The Job
+waits for the database via `wait-for-db.sh` and is removed once completed:
 
 ```bash
 helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
-  --values infra/k8s/helm/schedule-app/values.yaml
+  --values infra/k8s/helm/schedule-app/values.yaml \
+  --atomic --wait --timeout 5m
 ```
 The cluster credentials must be provided in `KUBE_CONFIG_B64` and Docker images
 are pulled from the registry defined by `DOCKER_REPOSITORY`.

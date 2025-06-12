@@ -64,3 +64,6 @@ serviceMonitor:
 pdb:
   enabled: true
   minAvailable: 1
+
+migrations:
+  enabled: true

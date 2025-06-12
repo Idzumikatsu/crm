@@ -42,7 +42,10 @@ ProvisionedVolumes.
 
 An initial Helm chart named `schedule-app` lives in
 `infra/k8s/helm/schedule-app` and deploys the monolith together with a
-PostgreSQL database and RabbitMQ broker.
+PostgreSQL database and RabbitMQ broker. Database migrations are executed by a
+`pre-install`/`pre-upgrade` Helm hook that waits for the database using the
+`wait-for-db.sh` script. Completed migration Jobs are deleted automatically so
+they do not clutter the namespace.
 
 ## Observability
 

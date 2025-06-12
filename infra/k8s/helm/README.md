@@ -6,5 +6,5 @@ runs `helm upgrade --install` against the target cluster.
 
 Available charts:
 
-- `schedule-app` – monolithic application with PostgreSQL, RabbitMQ and an ingress rule.
+- `schedule-app` – monolithic application with PostgreSQL, RabbitMQ and an ingress rule. Database migrations run as a Helm hook before each upgrade. The migration job waits for the database and is deleted after completion.
 
