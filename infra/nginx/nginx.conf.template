@@ -45,6 +45,14 @@ http {
         location / {
             return 301 https://$host$request_uri;
         }
+
+        # expose the status endpoint without TLS so healthchecks and
+        # monitoring tools don't need to deal with certificates
+        location /nginx_status {
+            stub_status;
+            access_log off;
+            allow all;
+        }
     }
 
     server {
