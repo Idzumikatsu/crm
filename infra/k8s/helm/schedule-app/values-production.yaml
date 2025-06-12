@@ -58,6 +58,13 @@ postgresql:
   database: schedule
   username: postgres
   password: postgres
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1"
 
 jwtSecret: CHANGEME
 
@@ -71,6 +78,13 @@ rabbitmq:
   persistence:
     enabled: true
     size: 10Gi
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1"
 
 serviceMonitor:
   enabled: true

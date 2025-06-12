@@ -30,6 +30,18 @@ spec:
                 secretKeyRef:
                   name: {{ include "schedule-app.fullname" . }}
                   key: rabbitmq-password
+          livenessProbe:
+            exec:
+              command: ["rabbitmq-diagnostics", "-q", "ping"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["rabbitmq-diagnostics", "-q", "ping"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.rabbitmq.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /var/lib/rabbitmq
               name: data
