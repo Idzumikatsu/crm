@@ -89,6 +89,7 @@ jobs:
 
           helm upgrade --install schedule-app-v2 infra/k8s/helm/schedule-app \
             -f infra/k8s/helm/schedule-app/values-production.yaml \
+            --set postgresql.service.port=5432 \
             --set-string global.imagePullSecrets[0].name=ghcr-secret \
             --create-namespace --namespace schedule-ns \
             --set image.tag=${GITHUB_SHA} \
