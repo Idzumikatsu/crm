@@ -69,19 +69,26 @@ jobs:
         env:
           KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG_B64 }}
 
+      - name: Create ghcr.io Image Pull Secret
+        run: |
+          kubectl create secret docker-registry ghcr-secret \
+            --namespace=schedule-ns \
+            --docker-server=ghcr.io \
+            --docker-username=${{ github.repository_owner }} \
+            --docker-password=${{ secrets.GITHUB_TOKEN }}
+
       - name: Lint Helm chart
         run: helm lint infra/k8s/helm/schedule-app
 
       - name: Deploy with Helm
         run: |
-          # Step 1: Force-remove the previous release if it exists.
           helm uninstall schedule-app --namespace default --no-hooks || echo "Release 'schedule-app' not found, continuing."
 
-          # Step 2: Install with a NEW release name in a NEW namespace.
-            helm upgrade --install schedule-app-v2 infra/k8s/helm/schedule-app \
-              -f infra/k8s/helm/schedule-app/values-production.yaml \
-              --create-namespace --namespace schedule-ns \
-              --set image.tag=${GITHUB_SHA} \
-              --set frontend.tag=${GITHUB_SHA} \
-              --kubeconfig kubeconfig \
-              --wait --timeout 10m
+          helm upgrade --install schedule-app-v2 infra/k8s/helm/schedule-app \
+            -f infra/k8s/helm/schedule-app/values-production.yaml \
+            --set-string global.imagePullSecrets[0].name=ghcr-secret \
+            --create-namespace --namespace schedule-ns \
+            --set image.tag=${GITHUB_SHA} \
+            --set frontend.tag=${GITHUB_SHA} \
+            --kubeconfig kubeconfig \
+            --wait --timeout 10m
