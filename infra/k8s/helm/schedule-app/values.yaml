@@ -145,3 +145,5 @@ networkPolicy:
 # Settings for database backups
 backup:
   enabled: false
+  persistence:
+    enabled: false
