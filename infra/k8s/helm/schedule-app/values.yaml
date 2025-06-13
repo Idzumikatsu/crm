@@ -75,34 +75,16 @@ ingress:
 
 # Deploy an internal PostgreSQL instance alongside the application
 postgresql:
+  # Включаем установку PostgreSQL как зависимости
   enabled: true
+
+  # Это самый важный параметр! Он заставит чарт назвать все свои ресурсы
+  # просто "postgresql", как и ожидает ваше приложение.
+  fullnameOverride: "postgresql"
+
+  # Явно указываем пароль, как того требует чарт Bitnami
   auth:
-    postgresPassword: "postgres"
-  host: postgresql
-  port: 5432
-  image:
-    repository: postgres
-    tag: 16.2-alpine
-    pullPolicy: IfNotPresent
-    pullSecrets: []
-  metrics:
-    image:
-      pullSecrets: []
-  volumePermissions:
-    image:
-      pullSecrets: []
-  persistence:
-    enabled: true
-    size: 1Gi
-  database: schedule
-  username: postgres
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "250m"
-    limits:
-      memory: "512Mi"
-      cpu: "500m"
+    postgresPassword: "YourSecurePassword123"
 
 jwtSecret: secret
 
