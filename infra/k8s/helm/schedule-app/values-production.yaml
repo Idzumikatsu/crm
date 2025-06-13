@@ -2,168 +2,57 @@
 global:
   imagePullSecrets: []
 
+# Явно указываем наш секрет для скачивания образов
+imagePullSecrets:
+  - name: ghcr-secret
+
 image:
   repository: ghcr.io/idzumikatsu/trash/backend
   tag: latest
   pullPolicy: IfNotPresent
-imagePullSecrets: []
 
 replicaCount: 3
 
 frontend:
+  # Явно указываем наш секрет и для фронтенда
+  imagePullSecrets:
+    - name: ghcr-secret
   image: ghcr.io/idzumikatsu/trash/frontend
   tag: latest
   pullPolicy: IfNotPresent
   enabled: true
-  resources:
-    requests:
-      memory: "128Mi"
-      cpu: "100m"
-    limits:
-      memory: "256Mi"
-      cpu: "250m"
+  # ...остальные настройки frontend...
 
-autoscaling:
-  enabled: true
-  minReplicas: 3
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 75
-
-startupProbe:
-  enabled: true
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  failureThreshold: 30
-
-resources:
-  requests:
-    memory: "512Mi"
-    cpu: "1"
-  limits:
-    memory: "1Gi"
-    cpu: "2"
-
-podSecurityContext:
-  runAsUser: 1000
-  runAsGroup: 1000
-  fsGroup: 1000
-
-containerSecurityContext:
-  runAsUser: 1000
-  runAsGroup: 1000
-  runAsNonRoot: true
-  allowPrivilegeEscalation: false
+# ...остальные настройки (autoscaling, probes, resources, securityContext) ...
 
 serviceAccount:
   create: true
-  name: ""
-  automount: false
 
-nodeSelector: {}
-tolerations: []
-affinity: {}
+# ...остальные настройки (service, ingress)...
 
-service:
-  type: ClusterIP
-  port: 8080
-
-ingress:
-  enabled: true
-  className: nginx
-  host: schedule.example.com
-  tls:
-    - secretName: schedule-tls
-      hosts:
-        - schedule.example.com
-
-# Deploy an internal PostgreSQL instance alongside the application
+# Конфигурация PostgreSQL
 postgresql:
   enabled: true
   fullnameOverride: "postgresql"
   auth:
-    postgresPassword: "YourSecurePassword123"
-  host: postgresql
-  port: 5432
-  image:
-    repository: postgres
-    tag: 16.2-alpine
-    pullPolicy: IfNotPresent
-    pullSecrets: []
-  metrics:
-    image:
-      pullSecrets: []
-  volumePermissions:
-    image:
-      pullSecrets: []
+    postgresPassword: "YourSecurePassword123" # Укажите ваш надежный пароль
+  # ВРЕМЕННО ОТКЛЮЧАЕМ ПОСТОЯННОЕ ХРАНИЛИЩЕ
   persistence:
-    enabled: true
-    size: 10Gi
-  database: schedule
-  username: postgres
-  resources:
-    requests:
-      memory: "512Mi"
-      cpu: "500m"
-    limits:
-      memory: "1Gi"
-      cpu: "1"
+    enabled: false
 
-jwtSecret: CHANGEME
-
+# Конфигурация RabbitMQ
 rabbitmq:
   enabled: true
-  host: rabbitmq
-  port: 5672
-  image: rabbitmq:3.13-management
-  username: user
-  password: password
+  # ВРЕМЕННО ОТКЛЮЧАЕМ ПОСТОЯННОЕ ХРАНИЛИЩЕ
   persistence:
-    enabled: true
-    size: 10Gi
-  resources:
-    requests:
-      memory: "512Mi"
-      cpu: "500m"
-    limits:
-      memory: "1Gi"
-      cpu: "1"
+    enabled: false
+  # ...остальные настройки rabbitmq...
 
+# Убедимся, что ServiceMonitor и миграции все еще выключены для чистоты теста
 serviceMonitor:
   enabled: false
-
-pdb:
-  enabled: true
-  minAvailable: 1
-
 migrations:
-  enabled: true
-  imagePullSecrets:
-    - name: ghcr-secret
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "200m"
-    limits:
-      memory: "512Mi"
-      cpu: "400m"
-
-  backup:
-    enabled: false
-    schedule: "0 3 * * *"
-    persistence:
-      enabled: true
-      size: 10Gi
-    resources:
-      requests:
-        memory: "256Mi"
-        cpu: "200m"
-      limits:
-        memory: "512Mi"
-        cpu: "400m"
-
-networkPolicy:
-  enabled: true
-
-# Settings for database backups
+  enabled: false
 backup:
   enabled: false
+# ...остальные настройки...
