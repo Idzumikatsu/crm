@@ -152,3 +152,7 @@ backup:
 # Создаем сервисный аккаунт для нашего приложения
 serviceAccount:
   create: true
+
+# Временно отключаем Job миграции для диагностики
+migrations:
+  enabled: false
