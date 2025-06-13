@@ -85,6 +85,9 @@ postgresql:
   # Явно указываем пароль, как того требует чарт Bitnami
   auth:
     postgresPassword: "YourSecurePassword123"
+  persistence:
+    enabled: true
+    size: 1Gi
 
 jwtSecret: secret
 
