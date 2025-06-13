@@ -148,3 +148,7 @@ backup:
   enabled: false
   persistence:
     enabled: false
+
+# Создаем сервисный аккаунт для нашего приложения
+serviceAccount:
+  create: true
