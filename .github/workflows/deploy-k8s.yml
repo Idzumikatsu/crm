@@ -69,16 +69,16 @@ jobs:
         env:
           KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG_B64 }}
 
-        - name: Lint Helm chart
-          run: helm lint infra/k8s/helm/schedule-app
+      - name: Lint Helm chart
+        run: helm lint infra/k8s/helm/schedule-app
 
-        - name: Deploy with Helm
-          run: |
-            helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
-              -f infra/k8s/helm/schedule-app/values.yaml \
-              --set image.repository=ghcr.io/idzumikatsu/trash/backend \
-              --set image.tag=${GITHUB_SHA} \
-              --set frontend.image=ghcr.io/idzumikatsu/trash/frontend \
-              --set frontend.tag=${GITHUB_SHA} \
-              --kubeconfig kubeconfig \
-              --wait --timeout 5m
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
+            -f infra/k8s/helm/schedule-app/values.yaml \
+            --set image.repository=ghcr.io/idzumikatsu/trash/backend \
+            --set image.tag=${GITHUB_SHA} \
+            --set frontend.image=ghcr.io/idzumikatsu/trash/frontend \
+            --set frontend.tag=${GITHUB_SHA} \
+            --kubeconfig kubeconfig \
+            --wait --timeout 5m
