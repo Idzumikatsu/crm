@@ -69,8 +69,8 @@ jobs:
         env:
           KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG_B64 }}
 
-      - name: Lint Helm chart
-        run: helm lint infra/k8s/helm/schedule-app
+        - name: Lint Helm chart
+          run: helm lint infra/k8s/helm/schedule-app
 
         - name: Deploy with Helm
           run: |
