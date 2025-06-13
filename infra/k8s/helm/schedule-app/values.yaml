@@ -1,3 +1,7 @@
+# Глобальные настройки
+global:
+  imagePullSecrets: []
+
 image:
   repository: ghcr.io/idzumikatsu/trash/backend
   tag: latest
