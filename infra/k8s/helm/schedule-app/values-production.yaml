@@ -129,7 +129,7 @@ migrations:
       cpu: "400m"
 
   backup:
-    enabled: true
+    enabled: false
     schedule: "0 3 * * *"
     persistence:
       enabled: true
