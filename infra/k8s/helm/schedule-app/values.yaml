@@ -76,6 +76,8 @@ ingress:
 # Deploy an internal PostgreSQL instance alongside the application
 postgresql:
   enabled: true
+  auth:
+    postgresPassword: "postgres"
   host: postgresql
   port: 5432
   image:
@@ -94,7 +96,6 @@ postgresql:
     size: 1Gi
   database: schedule
   username: postgres
-  password: postgres
   resources:
     requests:
       memory: "256Mi"
