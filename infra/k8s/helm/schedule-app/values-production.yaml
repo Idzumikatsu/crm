@@ -144,3 +144,7 @@ migrations:
 
 networkPolicy:
   enabled: true
+
+# Settings for database backups
+backup:
+  enabled: false
