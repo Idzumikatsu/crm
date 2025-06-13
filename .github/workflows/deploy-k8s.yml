@@ -75,7 +75,8 @@ jobs:
             --namespace=schedule-ns \
             --docker-server=ghcr.io \
             --docker-username=${{ github.repository_owner }} \
-            --docker-password=${{ secrets.GITHUB_TOKEN }}
+            --docker-password=${{ secrets.GITHUB_TOKEN }} \
+            --kubeconfig kubeconfig
 
       - name: Lint Helm chart
         run: helm lint infra/k8s/helm/schedule-app
