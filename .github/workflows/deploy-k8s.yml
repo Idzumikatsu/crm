@@ -80,6 +80,8 @@ jobs:
 
       - name: Lint Helm chart
         run: helm lint infra/k8s/helm/schedule-app
+      - name: DEBUG - Показать содержимое values-production.yaml
+        run: cat infra/k8s/helm/schedule-app/values-production.yaml
 
       - name: Deploy with Helm
         run: |
