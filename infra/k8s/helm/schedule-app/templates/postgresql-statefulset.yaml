@@ -37,7 +37,7 @@ spec:
       {{- end }}
       containers:
         - name: postgres
-          image: {{ .Values.postgresql.image }}
+          image: {{ printf "%s:%s" .Values.postgresql.image.repository .Values.postgresql.image.tag }}
           ports:
             - containerPort: {{ .Values.postgresql.port }}
           env:
