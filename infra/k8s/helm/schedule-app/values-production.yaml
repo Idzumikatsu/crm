@@ -36,6 +36,8 @@ postgresql:
   fullnameOverride: "postgresql"
   auth:
     postgresPassword: "YourSecurePassword123" # Укажите ваш надежный пароль
+  service:
+    port: 5432
   # ВРЕМЕННО ОТКЛЮЧАЕМ ПОСТОЯННОЕ ХРАНИЛИЩЕ
   persistence:
     enabled: false
