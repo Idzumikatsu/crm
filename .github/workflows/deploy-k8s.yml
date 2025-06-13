@@ -69,6 +69,9 @@ jobs:
         env:
           KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG_B64 }}
 
+      - name: Disable TLS verification in kubeconfig
+        run: sed -i 's/    certificate-authority-data:.*/    insecure-skip-tls-verify: true/' kubeconfig
+
       - name: Create ghcr.io Image Pull Secret
         run: |
           kubectl create secret docker-registry ghcr-secret \
