@@ -44,17 +44,19 @@ jobs:
         run: ./gradlew bootJar
         working-directory: backend
 
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build Docker images
         run: |
-          docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-          docker build -t "$DOCKER_REPOSITORY/schedule-backend:${GITHUB_SHA}" -f backend/Dockerfile .
-          docker push "$DOCKER_REPOSITORY/schedule-backend:${GITHUB_SHA}"
-          docker build -t "$DOCKER_REPOSITORY/schedule-frontend:${GITHUB_SHA}" -f frontend/Dockerfile frontend
-          docker push "$DOCKER_REPOSITORY/schedule-frontend:${GITHUB_SHA}"
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
+          docker build -t ghcr.io/${{ github.repository }}/backend:${GITHUB_SHA} -f backend/Dockerfile .
+          docker push ghcr.io/${{ github.repository }}/backend:${GITHUB_SHA}
+          docker build -t ghcr.io/${{ github.repository }}/frontend:${GITHUB_SHA} -f frontend/Dockerfile frontend
+          docker push ghcr.io/${{ github.repository }}/frontend:${GITHUB_SHA}
 
       - name: Install Helm
         uses: azure/setup-helm@v3
@@ -70,9 +72,9 @@ jobs:
       - name: Deploy with Helm
         run: |
           helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
-            --set image.repository=${{ secrets.DOCKER_REPOSITORY }}/schedule-backend \
+            --set image.repository=ghcr.io/${{ github.repository }}/backend \
             --set image.tag=${GITHUB_SHA} \
-            --set frontend.image=${{ secrets.DOCKER_REPOSITORY }}/schedule-frontend \
+            --set frontend.image=ghcr.io/${{ github.repository }}/frontend \
             --set frontend.tag=${GITHUB_SHA} \
             --kubeconfig kubeconfig \
             --atomic --wait --timeout 5m

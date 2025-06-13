@@ -1,5 +1,5 @@
 image:
-  repository: schedule-backend
+  repository: ghcr.io/idzumikatsu/trash/backend
   tag: latest
   pullPolicy: IfNotPresent
 imagePullSecrets: []
@@ -7,7 +7,7 @@ imagePullSecrets: []
 replicaCount: 1
 
 frontend:
-  image: schedule-frontend
+  image: ghcr.io/idzumikatsu/trash/frontend
   tag: latest
   pullPolicy: IfNotPresent
   enabled: true

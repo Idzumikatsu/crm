@@ -49,9 +49,6 @@ defaults (`8080` and `8443`) conflict with other services on the host. `NGINX_LO
 | `HTTPS_PROXY` | `http://proxy.example.com:8080` | `scripts/setup-proxy.sh` | shell |
 | `BACKUP_DIR` | `backups` | `scripts/backup-db.sh`, `infra/k8s/helm/schedule-app/templates/backup-cronjob.yaml` | shell |
 | `VITE_API_URL` |  | `frontend/src/api.ts` | `frontend/.env` |
-| `DOCKER_REPOSITORY` | `example/schedule` | `.github/workflows/deploy-k8s.yml` | secrets |
-| `DOCKER_USERNAME` | `dockeruser` | `.github/workflows/deploy-k8s.yml` | secrets |
-| `DOCKER_PASSWORD` | `secret` | `.github/workflows/deploy-k8s.yml` | secrets |
 | `KUBE_CONFIG_B64` | output of `base64 -w0 ~/.kube/config` | `.github/workflows/deploy-k8s.yml` | secrets |
 
 In production the frontend should leave `VITE_API_URL` empty because the base API path is already included in all fetch calls.
