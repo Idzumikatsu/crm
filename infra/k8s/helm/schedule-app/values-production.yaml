@@ -137,6 +137,8 @@ pdb:
 
 migrations:
   enabled: true
+  imagePullSecrets:
+    - name: ghcr-secret
   resources:
     requests:
       memory: "256Mi"
