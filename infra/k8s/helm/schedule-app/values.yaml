@@ -109,7 +109,7 @@ rabbitmq:
       cpu: "500m"
 
 serviceMonitor:
-  enabled: true
+  enabled: false
 
 pdb:
   enabled: true
