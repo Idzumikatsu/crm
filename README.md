@@ -112,7 +112,7 @@ helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
   --atomic --wait --timeout 5m
 ```
 The cluster credentials must be provided in `KUBE_CONFIG_B64` and Docker images
-are pulled from the registry defined by `DOCKER_REPOSITORY`.
+are pulled from GitHub Container Registry.
 Stateful components request CPU and memory limits via chart values so the
 cluster can schedule them with guaranteed resources.
 Each pod runs under its own ServiceAccount with tokens disabled by default
