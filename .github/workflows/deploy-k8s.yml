@@ -72,9 +72,10 @@ jobs:
       - name: Lint Helm chart
         run: helm lint infra/k8s/helm/schedule-app
 
-      - name: Deploy with Helm
-        run: |
+        - name: Deploy with Helm
+          run: |
             helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
+              -f infra/k8s/helm/schedule-app/values.yaml \
               --set image.repository=ghcr.io/idzumikatsu/trash/backend \
               --set image.tag=${GITHUB_SHA} \
               --set frontend.image=ghcr.io/idzumikatsu/trash/frontend \
