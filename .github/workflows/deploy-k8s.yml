@@ -76,7 +76,7 @@ jobs:
             --docker-server=ghcr.io \
             --docker-username=${{ github.repository_owner }} \
             --docker-password=${{ secrets.GITHUB_TOKEN }} \
-            --dry-run=client -o yaml | kubectl apply -f -
+            --dry-run=client -o yaml | kubectl apply -f - --kubeconfig kubeconfig
 
       - name: Lint Helm chart
         run: helm lint infra/k8s/helm/schedule-app
