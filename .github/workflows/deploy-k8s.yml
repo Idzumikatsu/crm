@@ -78,13 +78,12 @@ jobs:
           helm uninstall schedule-app --namespace default --no-hooks || echo "Release 'schedule-app' not found, continuing."
 
           # Step 2: Install with a NEW release name in a NEW namespace.
-            helm upgrade --install schedule-app-v2 infra/k8s/helm/schedule-app \
-              -f infra/k8s/helm/schedule-app/values.yaml \
-              --create-namespace --namespace schedule-ns \
-              --set image.repository=ghcr.io/idzumikatsu/trash/backend \
-              --set image.tag=${GITHUB_SHA} \
-              --set frontend.image=ghcr.io/idzumikatsu/trash/frontend \
-              --set postgresql.service.port=5432 \
-              --set frontend.tag=${GITHUB_SHA} \
-              --kubeconfig kubeconfig \
-              --wait --timeout 5m
+          helm upgrade --install schedule-app-v2 infra/k8s/helm/schedule-app \
+            -f infra/k8s/helm/schedule-app/values.yaml \
+            --create-namespace --namespace schedule-ns \
+            --set image.repository=ghcr.io/idzumikatsu/trash/backend \
+            --set image.tag=${GITHUB_SHA} \
+            --set frontend.image=ghcr.io/idzumikatsu/trash/frontend \
+            --set frontend.tag=${GITHUB_SHA} \
+            --kubeconfig kubeconfig \
+            --wait --timeout 5m
