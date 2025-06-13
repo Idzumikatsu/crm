@@ -282,6 +282,7 @@ scripts/backup-db.sh
 ```
 0 3 * * * /path/to/repo/scripts/backup-db.sh
 ```
+ //
 
 Under Kubernetes the Helm chart can enable an automated CronJob that runs the
 same script nightly. Dumps are stored on a PersistentVolume and rotated
