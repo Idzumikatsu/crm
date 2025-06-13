@@ -72,6 +72,7 @@ ingress:
       hosts:
         - schedule.example.com
 
+# Deploy an internal PostgreSQL instance alongside the application
 postgresql:
   enabled: true
   host: postgresql

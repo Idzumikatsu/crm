@@ -69,6 +69,7 @@ ingress:
   host: schedule.local
   tls: []
 
+# Deploy an internal PostgreSQL instance alongside the application
 postgresql:
   enabled: true
   host: postgresql
