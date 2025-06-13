@@ -79,8 +79,9 @@ ingress:
 # Deploy an internal PostgreSQL instance alongside the application
 postgresql:
   enabled: true
+  fullnameOverride: "postgresql"
   auth:
-    postgresPassword: "postgres"
+    postgresPassword: "YourSecurePassword123"
   host: postgresql
   port: 5432
   image:
