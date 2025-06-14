@@ -1,8 +1,8 @@
 # Provisioning PostgreSQL with Terraform
 
 This guide demonstrates how to create a production-grade PostgreSQL instance
-using reusable Terraform modules. The configuration assumes a Kubernetes
-cluster, but the same variables work for cloud providers as well.
+using reusable Terraform modules. The examples target a standard Linux host,
+but the same variables work for cloud providers as well.
 
 ## Required variables
 

@@ -9,10 +9,10 @@ This directory contains all NGINX related documents. Each file focuses on a spec
 - `VPS_DEPLOYMENT.md` – инструкции по развёртыванию на сервере `crm-cynergy.ru`.
 - `SECURITY_CHECKLIST.md` – release checklist covering security controls.
 
-Additional Kubernetes files are kept for historical reference:
+- `legacy/docs` содержит устаревшие материалы о предыдущем кластере:
 - `KUBERNETES_DESIGN.md` – original cluster architecture and stack.
-- `KUBERNETES_DEPLOYMENT.md` – legacy CI workflow using Helm.
-- `RUNBOOK_K8S.md` – troubleshooting steps for the deprecated cluster.
+- `KUBERNETES_DEPLOYMENT.md` – CI workflow для устаревшего кластера.
+- `RUNBOOK_K8S.md` – troubleshooting steps for the old cluster.
 - `NGINX_TRAINING.md` – training materials for developers and SREs.
 - `DNS_SETUP.md` – required DNS records for production deployment.
 - `SMTP_CONFIGURATION.md` – environment variables for outgoing email
