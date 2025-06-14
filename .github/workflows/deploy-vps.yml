@@ -39,7 +39,7 @@ jobs:
         run: npm run build
         working-directory: frontend
 
-      # ← Добавляем этот шаг для копирования готового фронтенда в статические ресурсы бэкенда
+      # Copy frontend build into backend static
       - name: Copy frontend build into backend static
         run: |
           mkdir -p backend/src/main/resources/static
@@ -72,9 +72,7 @@ jobs:
           passphrase: ${{ secrets.VPS_PASSPHRASE }}
           port: ${{ secrets.VPS_SSH_PORT }}
           script: |
-            # Удаляем старые файлы приложения
             sudo rm -rf /opt/schedule-app/*
-            # Проверяем наличие Java 21
             if ! java -version 2>&1 | grep '21'; then
               echo 'ERROR: Java 21 not found on VPS'
               exit 1
@@ -93,6 +91,20 @@ jobs:
           target: "/opt/schedule-app"
           strip_components: 3
           overwrite: true
+
+      # 7.1 Rename JAR to app.jar on VPS
+      - name: Rename JAR to app.jar on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            sudo mv /opt/schedule-app/*.jar /opt/schedule-app/app.jar
+            sudo chown root:root /opt/schedule-app/app.jar
+            sudo chmod 644 /opt/schedule-app/app.jar
 
       # 8. Copy systemd unit file
       - name: Upload systemd unit
