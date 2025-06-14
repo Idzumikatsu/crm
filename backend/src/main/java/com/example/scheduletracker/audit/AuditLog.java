@@ -1,6 +1,8 @@
 package com.example.scheduletracker.audit;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -15,8 +17,13 @@ public class AuditLog {
   private UUID entityId;
   private String action;
 
-  @Lob private String oldJson;
-  @Lob private String newJson;
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(columnDefinition = "jsonb")
+  private String oldJson;
+
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(columnDefinition = "jsonb")
+  private String newJson;
 
   private UUID actorId;
   private OffsetDateTime ts = OffsetDateTime.now();
