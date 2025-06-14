@@ -17,10 +17,10 @@ development.
 | `POSTGRES_DB` | `schedule` |  | `infra/.env` |
 | `POSTGRES_USER` | `postgres` |  | `infra/.env` |
 | `POSTGRES_PASSWORD` | `postgres` |  | `infra/.env` |
-| `RABBITMQ_HOST` | `rabbitmq` | `infra/k8s/helm/schedule-app/templates/backend-deployment.yaml` | chart values, `infra/.env` |
-| `RABBITMQ_PORT` | `5672` | `infra/k8s/helm/schedule-app/templates/backend-deployment.yaml` | chart values, `infra/.env` |
-| `RABBITMQ_USER` | `user` | `infra/k8s/helm/schedule-app/templates/rabbitmq-statefulset.yaml` | chart values, `infra/.env` |
-| `RABBITMQ_PASSWORD` | `secret` | `infra/k8s/helm/schedule-app/templates/rabbitmq-statefulset.yaml` | chart values, `infra/.env` |
+| `RABBITMQ_HOST` | `rabbitmq` | backend configuration | `infra/.env` |
+| `RABBITMQ_PORT` | `5672` | backend configuration | `infra/.env` |
+| `RABBITMQ_USER` | `user` | backend configuration | `infra/.env` |
+| `RABBITMQ_PASSWORD` | `secret` | backend configuration | `infra/.env` |
 | `SMTP_HOST` | `smtp.example.com` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
 | `SMTP_PORT` | `587` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
 | `SMTP_USERNAME` | `user@example.com` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
@@ -47,9 +47,9 @@ defaults (`8080` and `8443`) conflict with other services on the host. `NGINX_LO
 | `PROXY_PORT` | `8080` | `scripts/setup-proxy.sh` | secrets or shell |
 | `HTTP_PROXY` | `http://proxy.example.com:8080` | `scripts/setup-proxy.sh` | shell |
 | `HTTPS_PROXY` | `http://proxy.example.com:8080` | `scripts/setup-proxy.sh` | shell |
-| `BACKUP_DIR` | `backups` | `scripts/backup-db.sh`, `infra/k8s/helm/schedule-app/templates/backup-cronjob.yaml` | shell |
+| `BACKUP_DIR` | `backups` | `scripts/backup-db.sh` | shell |
 | `VITE_API_URL` |  | `frontend/src/api.ts` | `frontend/.env` |
-| `KUBE_CONFIG_B64` | output of `base64 -w0 ~/.kube/config` | `.github/workflows/deploy-k8s.yml` | secrets |
+| `KUBE_CONFIG_B64` | deprecated | n/a | n/a |
 
 In production the frontend should leave `VITE_API_URL` empty because the base API path is already included in all fetch calls.
 
