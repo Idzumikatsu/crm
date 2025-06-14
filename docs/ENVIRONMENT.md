@@ -9,11 +9,11 @@ defaults are applied.
 
 | Variable | Example | Consumed In | Location |
 | --- | --- | --- | --- |
-| `DB_HOST` | `db` | `backend/src/main/resources/application-postgres.yml`, `scripts/wait-for-db.sh`, `scripts/backup-db.sh` | `infra/.env` |
-| `DB_PORT` | `5432` | `backend/src/main/resources/application-postgres.yml`, `scripts/wait-for-db.sh`, `scripts/backup-db.sh` | `infra/.env` |
-| `DB_USER` | `postgres` | `backend/src/main/resources/application-postgres.yml`, `scripts/wait-for-db.sh`, `scripts/backup-db.sh` | `infra/.env` |
-| `DB_PASSWORD` | `postgres` | `backend/src/main/resources/application-postgres.yml`, `scripts/wait-for-db.sh`, `scripts/backup-db.sh` | `infra/.env` |
-| `DB_NAME` | `schedule` | `backend/src/main/resources/application-postgres.yml`, `scripts/wait-for-db.sh`, `scripts/backup-db.sh` | `infra/.env` |
+| `DB_HOST` | `db` | `backend/src/main/resources/application-postgres.yml`, `scripts/backup-db.sh` | `infra/.env` |
+| `DB_PORT` | `5432` | `backend/src/main/resources/application-postgres.yml`, `scripts/backup-db.sh` | `infra/.env` |
+| `DB_USER` | `postgres` | `backend/src/main/resources/application-postgres.yml`, `scripts/backup-db.sh` | `infra/.env` |
+| `DB_PASSWORD` | `postgres` | `backend/src/main/resources/application-postgres.yml`, `scripts/backup-db.sh` | `infra/.env` |
+| `DB_NAME` | `schedule` | `backend/src/main/resources/application-postgres.yml`, `scripts/backup-db.sh` | `infra/.env` |
 | `SMTP_HOST` | `smtp.example.com` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
 | `SMTP_PORT` | `587` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
 | `SMTP_USERNAME` | `user@example.com` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
