@@ -47,14 +47,7 @@
 7. **Запуск тестов**
    - Выполните `./backend/gradlew test`.
 
-8. **Сборка CSS**
-   - Выполните `npm install` (или `npm ci`) из корня репозитория.
-   - Для обновления стилей Tailwind запустите `npm run build` из корня
-     репозитория. Результат появится в `backend/src/main/resources/static`.
-   - При деплое workflow GitHub Actions автоматически выполняет эти
-     команды, поэтому вручную собирать CSS не требуется.
-
-9. **Прокси**
+8. **Прокси**
    - Для получения зависимостей может потребоваться сетевой прокси.
      Укажите его хост и порт в переменных окружения
      `PROXY_HOST` и `PROXY_PORT` (а также `HTTP_PROXY` и `HTTPS_PROXY`
@@ -144,6 +137,7 @@ cd frontend
 npm install
 npm run build
 ```
+Команда `npm --prefix frontend run build` из корня репозитория собирает SPA и генерирует все необходимые стили.
 
 Скрипт `postbuild` копирует содержимое каталога `dist` в
 `backend/src/main/resources/static`, поэтому бэкенд сразу использует
