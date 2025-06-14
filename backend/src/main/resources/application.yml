@@ -21,7 +21,7 @@ app:
     from: ${MAIL_FROM}
 
 telegram:
-  bot-token: ${TELEGRAM_BOT_TOKEN}
+  bot-token: ${TELEGRAM_BOT_TOKEN:}
 
 jwt:
   # Use a secure random key in production. Fallback string is suitable for local
