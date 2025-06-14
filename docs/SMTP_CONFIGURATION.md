@@ -12,4 +12,4 @@ The backend sends verification emails using the following environment variables:
 | `SMTP_STARTTLS` | `false` | Enable STARTTLS |
 | `MAIL_FROM` | `no-reply@example.com` | Sender address for outgoing mail |
 
-Place these variables in `infra/.env` for Docker Compose or export them in your shell before starting the service.
+Place these variables in `/etc/schedule-app.env` or export them in your shell before starting the service.

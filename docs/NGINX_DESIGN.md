@@ -2,7 +2,7 @@
 
 ## Target Architecture
 
-Initially the solution ran inside Docker Compose. Today traffic reaches the application through an NGINX reverse proxy.
+Traffic reaches the application through an NGINX reverse proxy.
 The Spring Boot backend communicates with PostgreSQL while NGINX exposes metrics via a Prometheus exporter sidecar.
 
 ```

@@ -3,7 +3,7 @@
 ## 8.1 Number of instances
 To meet the 99.9% availability target we run at least **two** NGINX
 instances. Traffic is distributed with an external load balancer or by
-scaling the containerized deployment.
+scaling the deployment.
 
 ## 8.2 Backend health checks
 Backends are configured in the `upstream` block with `max_fails=3` and
@@ -12,13 +12,14 @@ servers from rotation until they recover.
 
 ## 8.3 Configuration reload
 To reload configuration without dropping connections send the HUP signal to the
-running container:
+running process:
+
 
 ```bash
-docker kill -s HUP <nginx-container>
+sudo systemctl kill -s HUP nginx
 ```
 
-or inside the container execute `nginx -s reload`. Existing connections continue
+or execute `nginx -s reload`. Existing connections continue
 until complete while workers load the new config.
 
 ## 8.4 Disaster recovery
