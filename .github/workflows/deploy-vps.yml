@@ -42,7 +42,8 @@ jobs:
           passphrase: ${{ secrets.VPS_PASSPHRASE }}
           port: ${{ secrets.VPS_SSH_PORT }}
           source: "backend/build/libs/*.jar"
-          target: "/opt/schedule-app/app.jar"
+          target: "/opt/schedule-app"
+          strip_components: 3
 
       - name: Install systemd unit
         uses: appleboy/scp-action@v0.1.4
@@ -54,6 +55,8 @@ jobs:
           port: ${{ secrets.VPS_SSH_PORT }}
           source: "infra/systemd/schedule-app.service"
           target: "/etc/systemd/system"
+          strip_components: 2
+          overwrite: true
 
       - name: Restart service
         uses: appleboy/ssh-action@v1.0.0
@@ -64,6 +67,7 @@ jobs:
           passphrase: ${{ secrets.VPS_PASSPHRASE }}
           port: ${{ secrets.VPS_SSH_PORT }}
           script: |
+            sudo mv /opt/schedule-app/*.jar /opt/schedule-app/app.jar
             sudo systemctl daemon-reload
             sudo systemctl enable schedule-app
             sudo systemctl restart schedule-app
