@@ -16,8 +16,12 @@ Configuration lives in the `nginx/` directory of the main repository. All change
    ```bash
    scp infra/nginx/nginx.conf $VPS_USER@$VPS_HOST:/etc/nginx/nginx.conf
    scp backend/build/libs/*.jar $VPS_USER@$VPS_HOST:/opt/schedule-app/app.jar
+   scp infra/systemd/schedule-app.service \
+       $VPS_USER@$VPS_HOST:/etc/systemd/system/schedule-app.service
    ```
 2. Подключитесь по SSH и перезапустите сервисы:
    ```bash
-   ssh $VPS_USER@$VPS_HOST 'sudo systemctl restart nginx schedule-app'
+   ssh $VPS_USER@$VPS_HOST '\
+     sudo systemctl daemon-reload && \
+     sudo systemctl restart nginx schedule-app'
    ```
