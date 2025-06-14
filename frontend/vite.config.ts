@@ -6,5 +6,17 @@ export default defineConfig({
   plugins: [react()],
   base: '/',
   envPrefix: 'VITE_',
-  server: { proxy: { '/api': 'http://localhost:8080' } },
+  build: {
+    // куда складывать результат сборки
+    outDir: 'dist',
+    // перед сборкой очищать папку, чтобы не было старых файлов
+    emptyOutDir: true,
+    // опционально: включить source map для prod-билда
+    sourcemap: false,
+  },
+  server: {
+    proxy: {
+      '/api': 'http://localhost:8080',
+    },
+  },
 })
