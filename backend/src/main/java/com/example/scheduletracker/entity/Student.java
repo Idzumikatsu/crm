@@ -16,7 +16,10 @@ public class Student {
   @Column(columnDefinition = "uuid", updatable = false, nullable = false)
   private UUID id;
 
-  @Column(nullable = false)
+  // The initial database schema stores student names in the `first_name`
+  // column. JPA validation fails if we expect a column named `name`, so
+  // explicitly map the field to `first_name`.
+  @Column(name = "first_name", nullable = false)
   private String name;
 
   @Column(nullable = false, unique = true)
