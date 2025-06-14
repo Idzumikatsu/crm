@@ -1,11 +1,11 @@
 # Environment Variables
 
-All configuration is provided via environment variables. Create `infra/.env` and
-`frontend/.env` manually if you need to override the defaults—`.env.example` is
-no longer part of the workflow. The table below lists each variable, an example
-value, where it is used and the recommended storage location. When a variable is
-not defined, defaults are applied for local
-development.
+All configuration is provided via environment variables. `.env` files such as
+`infra/.env` and `frontend/.env` should exist only on the server when you need
+to override the defaults—`.env.example` is no longer part of the workflow. The
+table below lists each variable, an example value, where it is used and the
+recommended storage location. When a variable is not defined, production
+defaults are applied.
 
 | Variable | Example | Consumed In | Location |
 | --- | --- | --- | --- |
@@ -23,7 +23,7 @@ development.
 | `MAIL_FROM` | `no-reply@example.com` | `backend/src/main/resources/application.yml` | `infra/.env` |
 | `TELEGRAM_BOT_TOKEN` | `123456:ABC` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
 | `JWT_SECRET` | `0123456789abcdef0123456789abcdef` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
-| `ALLOWED_ORIGINS` | `http://localhost:5173` | `backend/src/main/java/com/example/scheduletracker/config/CorsConfig.java` | `infra/.env` |
+| `ALLOWED_ORIGINS` | `https://app.example.com` | `backend/src/main/java/com/example/scheduletracker/config/CorsConfig.java` | `infra/.env` |
 
 | `SPRING_PROFILES_ACTIVE` | `postgres` |  | `infra/.env` |
 | `VITE_API_URL` |  | `frontend/src/api.ts` | `frontend/.env` |
