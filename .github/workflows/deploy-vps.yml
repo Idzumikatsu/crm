@@ -79,6 +79,7 @@ jobs:
               exit 1
             fi
 
+
       # 7. Copy new JAR
       - name: Deploy JAR to VPS
         uses: appleboy/scp-action@v0.1.4
@@ -135,21 +136,8 @@ jobs:
           strip_components: 2
           overwrite: true
 
-      # 8.2 Deploy frontend
-      - name: Deploy frontend to VPS
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          passphrase: ${{ secrets.VPS_PASSPHRASE }}
-          port: ${{ secrets.VPS_SSH_PORT }}
-          source: "frontend/dist/*"
-          target: "/opt/schedule-app/frontend"
-          strip_components: 2
-          overwrite: true
 
-      # 8.3 Enable site and reload Nginx
+      # 8.2 Enable site and reload Nginx
       - name: Reload Nginx
         uses: appleboy/ssh-action@v1.0.0
         with:
