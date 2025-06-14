@@ -1,8 +1,6 @@
 spring:
   profiles:
-    default: h2
-    group:
-      dev: h2
+    default: postgres
   jpa:
     open-in-view: false
   mail:
