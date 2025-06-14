@@ -120,6 +120,48 @@ jobs:
           strip_components: 2
           overwrite: true
 
+      # 8.1 Upload Nginx config
+      - name: Upload Nginx config
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          source: "infra/nginx/crm-synergy.conf"
+          target: "/etc/nginx/sites-available"
+          strip_components: 2
+          overwrite: true
+
+      # 8.2 Deploy frontend
+      - name: Deploy frontend to VPS
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          source: "frontend/dist/*"
+          target: "/opt/schedule-app/frontend"
+          strip_components: 2
+          overwrite: true
+
+      # 8.3 Enable site and reload Nginx
+      - name: Reload Nginx
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            sudo ln -sf /etc/nginx/sites-available/crm-synergy.conf /etc/nginx/sites-enabled/crm-synergy.conf
+            sudo nginx -t
+            sudo systemctl reload nginx
+
       # 9. Configure environment variables on VPS (including Telegram token)
       - name: Configure environment file on VPS
         uses: appleboy/ssh-action@v1.0.0
