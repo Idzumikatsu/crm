@@ -1,4 +1,3 @@
-# .github/workflows/deploy-vps.yml
 name: Deploy to VPS
 
 on:
@@ -39,8 +38,33 @@ jobs:
         run: npm run build
         working-directory: frontend
 
+      # 3.x. Автоматически заливаем готовую сборку SPA на VPS
+      - name: Ensure frontend dir exists on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            sudo mkdir -p /opt/schedule-app/frontend
+            sudo rm -rf /opt/schedule-app/frontend/*
 
-      # 3.1 Copy built frontend into backend static resources
+      - name: Deploy frontend to VPS
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          source: "frontend/dist/*"
+          target: "/opt/schedule-app/frontend"
+          strip_components: 2
+          overwrite: true
+
+      # 3.1 Copy built frontend into backend static resources (опционально)
       - name: Copy frontend build into backend static
         run: |
           mkdir -p backend/src/main/resources/static
@@ -78,7 +102,6 @@ jobs:
               echo 'ERROR: Java 21 not found on VPS'
               exit 1
             fi
-
 
       # 7. Copy new JAR
       - name: Deploy JAR to VPS
@@ -122,7 +145,7 @@ jobs:
           strip_components: 2
           overwrite: true
 
-      # 8.1 Upload Nginx config
+      # 9. Upload Nginx config
       - name: Upload Nginx config
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -136,8 +159,7 @@ jobs:
           strip_components: 2
           overwrite: true
 
-
-      # 8.2 Enable site and reload Nginx
+      # 10. Enable site and reload Nginx
       - name: Reload Nginx
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -151,7 +173,7 @@ jobs:
             sudo nginx -t
             sudo systemctl reload nginx
 
-      # 9. Configure environment variables on VPS
+      # 11. Configure environment variables on VPS
       - name: Configure environment file on VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -169,19 +191,12 @@ jobs:
             DB_NAME=${{ secrets.DB_NAME }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
-            SMTP_HOST=${{ secrets.SMTP_HOST }}
-            SMTP_PORT=${{ secrets.SMTP_PORT }}
-            SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}
-            SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
-            SMTP_AUTH=${{ secrets.SMTP_AUTH }}
-            SMTP_STARTTLS=${{ secrets.SMTP_STARTTLS }}
-            MAIL_FROM=${{ secrets.MAIL_FROM }}
-            SPRING_AUTOCONFIGURE_EXCLUDE=io.opentelemetry.instrumentation.spring.autoconfigure.OpenTelemetryAutoConfiguration
+            # …другие переменные…
             EOF
             sudo chown root:root /etc/schedule-app.env
             sudo chmod 640 /etc/schedule-app.env
 
-      # 10. Restart the service
+      # 12. Restart the service
       - name: Restart schedule-app service
         uses: appleboy/ssh-action@v1.0.0
         with:
