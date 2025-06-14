@@ -22,7 +22,7 @@ public class AvailabilityTemplate {
   private Teacher teacher;
 
   @Column(name = "weekday", nullable = false)
-  @Enumerated(EnumType.STRING)
+  @Enumerated(EnumType.ORDINAL)
   private DayOfWeek weekDay;
 
   @Column(name = "start_time", nullable = false)
