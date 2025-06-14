@@ -1,6 +1,6 @@
 # Architecture Improvements
 
-This document collects future improvements for the overall project architecture and infrastructure. Items are reviewed quarterly and tracked via GitHub issues.
+This document outlines planned enhancements for running the service on a single VPS. Items are reviewed quarterly and tracked via GitHub issues.
 
 ## Short term
 
@@ -10,8 +10,8 @@ This document collects future improvements for the overall project architecture 
 
 ## Mid term
 
-- Package the application as OCI images for easier container deployment.
-- Introduce a message broker (RabbitMQ or Kafka) for asynchronous workflows.
+- Automate VPS provisioning with Ansible, including systemd units and NGINX configuration.
+- Configure daily backups and log rotation on the server.
 
 ## Long term
 
