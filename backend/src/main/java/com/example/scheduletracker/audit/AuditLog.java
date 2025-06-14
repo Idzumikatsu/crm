@@ -18,14 +18,14 @@ public class AuditLog {
   @Lob private String oldJson;
   @Lob private String newJson;
 
-  private Long actorId;
+  private UUID actorId;
   private OffsetDateTime ts = OffsetDateTime.now();
 
   // getters/setters omitted for brevity
   public AuditLog() {}
 
   public AuditLog(
-      String entity, UUID entityId, String action, String oldJson, String newJson, Long actorId) {
+      String entity, UUID entityId, String action, String oldJson, String newJson, UUID actorId) {
     this.entity = entity;
     this.entityId = entityId;
     this.action = action;
