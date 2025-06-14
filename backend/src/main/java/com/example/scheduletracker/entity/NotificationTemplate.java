@@ -21,10 +21,10 @@ public class NotificationTemplate {
   @Column(nullable = false)
   private String lang;
 
+  @Column(columnDefinition = "text")
   private String subject;
 
-  @Lob
-  @Column(name = "body_html")
+  @Column(name = "body_html", columnDefinition = "text")
   private String bodyHtml;
 
   public NotificationTemplate() {}
