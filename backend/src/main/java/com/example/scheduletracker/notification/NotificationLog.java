@@ -3,6 +3,8 @@ package com.example.scheduletracker.notification;
 import com.example.scheduletracker.entity.Lesson;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.UUID;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -10,8 +12,10 @@ import org.hibernate.type.SqlTypes;
 @Table(name = "notification_log")
 public class NotificationLog {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+  private UUID id;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "lesson_id")
@@ -36,7 +40,7 @@ public class NotificationLog {
     this.status = status;
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
