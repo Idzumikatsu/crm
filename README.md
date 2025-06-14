@@ -33,6 +33,9 @@
      `postgres` рассчитан на PostgreSQL. Для локальной разработки оставлен профиль `dev`, который использует встроенную базу H2.
    - Для миграций используется Flyway **11.9.1**, что обеспечивает поддержку
      PostgreSQL 16.2.
+   - Вся конфигурация хранится в `backend/src/main/resources/application.yml`
+     и профильных YAML‑файлах. Для сложных роутов в `SpaController` в этом
+     файле задана настройка `spring.mvc.pathmatch.matching-strategy=ant_path_matcher`.
 6. **Сборка и запуск backend**
    - Сборка: `./backend/gradlew build`
    - Запуск приложения: `./backend/gradlew bootRun`

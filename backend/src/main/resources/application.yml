@@ -1,6 +1,10 @@
 spring:
   profiles:
     default: postgres
+  mvc:
+    pathmatch:
+      # Use legacy Ant path matcher for complex patterns in SpaController
+      matching-strategy: ant_path_matcher
   jpa:
     open-in-view: false
   mail:
