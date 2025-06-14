@@ -1,3 +1,4 @@
+# .github/workflows/deploy-vps.yml
 name: Deploy to VPS
 
 on:
@@ -9,9 +10,11 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      # 1. Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Set up runtimes
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -23,6 +26,7 @@ jobs:
         with:
           node-version: '20'
 
+      # 3. Build frontend
       - name: Install frontend dependencies
         run: npm ci
         working-directory: frontend
@@ -35,6 +39,7 @@ jobs:
         run: npm run build
         working-directory: frontend
 
+      # 4. Build & test backend
       - name: Run backend tests
         run: ./gradlew test
         working-directory: backend
@@ -43,14 +48,15 @@ jobs:
         run: ./gradlew bootJar
         working-directory: backend
 
+      # 5. Archive artifact for debugging (optional)
       - name: Archive backend JAR
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: schedule-app-jar
           path: backend/build/libs/*.jar
 
-      # --- Деплой на VPS ---
-      - name: Clean old app on VPS
+      # 6. Deploy to VPS: cleanup & prerequisites
+      - name: Clean old app on VPS & check Java
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -59,12 +65,15 @@ jobs:
           passphrase: ${{ secrets.VPS_PASSPHRASE }}
           port: ${{ secrets.VPS_SSH_PORT }}
           script: |
+            # Удаляем старые файлы приложения
             sudo rm -rf /opt/schedule-app/*
-            # Убедимся, что установлен Java 21
+            # Проверяем наличие Java 21
             if ! java -version 2>&1 | grep '21'; then
-              echo 'ERROR: Java 21 not found on VPS'; exit 1;
+              echo 'ERROR: Java 21 not found on VPS'
+              exit 1
             fi
 
+      # 7. Copy new JAR
       - name: Deploy JAR to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -78,6 +87,7 @@ jobs:
           strip_components: 3
           overwrite: true
 
+      # 8. Copy systemd unit file
       - name: Upload systemd unit
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -91,6 +101,7 @@ jobs:
           strip_components: 2
           overwrite: true
 
+      # 9. Configure environment variables on VPS
       - name: Configure environment file on VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -107,12 +118,13 @@ jobs:
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             DB_NAME=${{ secrets.DB_NAME }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
-            # ... добавьте другие секреты по необходимости
+            # Добавьте другие переменные по необходимости
             EOF
             sudo chown root:root /etc/schedule-app.env
             sudo chmod 640 /etc/schedule-app.env
 
-      - name: Restart service
+      # 10. Restart the service
+      - name: Restart schedule-app service
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.VPS_HOST }}
