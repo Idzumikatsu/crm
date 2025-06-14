@@ -39,7 +39,7 @@ jobs:
         run: npm run build
         working-directory: frontend
 
-      # Copy frontend build into backend static
+      # 3.1 Copy built frontend into backend static resources
       - name: Copy frontend build into backend static
         run: |
           mkdir -p backend/src/main/resources/static
@@ -55,14 +55,14 @@ jobs:
         run: ./gradlew bootJar
         working-directory: backend
 
-      # 5. Archive artifact for debugging (optional)
+      # 5. Archive artifact (optional)
       - name: Archive backend JAR
         uses: actions/upload-artifact@v4
         with:
           name: schedule-app-jar
           path: backend/build/libs/*.jar
 
-      # 6. Deploy to VPS: cleanup & prerequisites
+      # 6. Deploy to VPS: cleanup & check Java
       - name: Clean old app on VPS & check Java
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -92,7 +92,7 @@ jobs:
           strip_components: 3
           overwrite: true
 
-      # 7.1 Rename JAR to app.jar on VPS
+      # 7.1 Rename to app.jar
       - name: Rename JAR to app.jar on VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -106,7 +106,7 @@ jobs:
             sudo chown root:root /opt/schedule-app/app.jar
             sudo chmod 644 /opt/schedule-app/app.jar
 
-      # 8. Copy systemd unit file
+      # 8. Upload systemd unit
       - name: Upload systemd unit
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -120,7 +120,7 @@ jobs:
           strip_components: 2
           overwrite: true
 
-      # 9. Configure environment variables on VPS
+      # 9. Configure environment variables on VPS (including Telegram token)
       - name: Configure environment file on VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -137,7 +137,7 @@ jobs:
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             DB_NAME=${{ secrets.DB_NAME }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
-            # Добавьте другие переменные по необходимости
+            TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
             EOF
             sudo chown root:root /etc/schedule-app.env
             sudo chmod 640 /etc/schedule-app.env
