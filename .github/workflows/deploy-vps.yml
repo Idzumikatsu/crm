@@ -53,7 +53,7 @@ jobs:
           passphrase: ${{ secrets.VPS_PASSPHRASE }}
           port: ${{ secrets.VPS_SSH_PORT }}
           source: "infra/systemd/schedule-app.service"
-          target: "/etc/systemd/system/schedule-app.service"
+          target: "/etc/systemd/system"
 
       - name: Restart service
         uses: appleboy/ssh-action@v1.0.0
