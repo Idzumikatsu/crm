@@ -23,17 +23,34 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install frontend dependencies and build
-        run: |
-          npm ci
-          npm run build
+      - name: Install frontend dependencies
+        run: npm ci
         working-directory: frontend
+
+      - name: Lint frontend
+        run: npm run lint
+        working-directory: frontend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: frontend
+
+      - name: Run backend tests
+        run: ./gradlew test
+        working-directory: backend
 
       - name: Build backend JAR
         run: ./gradlew bootJar
         working-directory: backend
 
-      - name: Prepare application directory
+      - name: Archive backend JAR
+        uses: actions/upload-artifact@v3
+        with:
+          name: schedule-app-jar
+          path: backend/build/libs/*.jar
+
+      # --- Деплой на VPS ---
+      - name: Clean old app on VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -42,10 +59,13 @@ jobs:
           passphrase: ${{ secrets.VPS_PASSPHRASE }}
           port: ${{ secrets.VPS_SSH_PORT }}
           script: |
-            sudo mkdir -p /opt/schedule-app
-            sudo rm -rf /opt/schedule-app/app.jar
+            sudo rm -rf /opt/schedule-app/*
+            # Убедимся, что установлен Java 21
+            if ! java -version 2>&1 | grep '21'; then
+              echo 'ERROR: Java 21 not found on VPS'; exit 1;
+            fi
 
-      - name: Copy JAR to server
+      - name: Deploy JAR to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -56,18 +76,9 @@ jobs:
           source: "backend/build/libs/*.jar"
           target: "/opt/schedule-app"
           strip_components: 3
+          overwrite: true
 
-      - name: Clean old unit file
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          passphrase: ${{ secrets.VPS_PASSPHRASE }}
-          port: ${{ secrets.VPS_SSH_PORT }}
-          script: sudo rm -rf /etc/systemd/system/schedule-app.service
-
-      - name: Install systemd unit
+      - name: Upload systemd unit
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -80,6 +91,26 @@ jobs:
           strip_components: 2
           overwrite: true
 
+      - name: Configure environment file on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            sudo tee /etc/schedule-app.env > /dev/null <<EOF
+            DB_HOST=${{ secrets.DB_HOST }}
+            DB_PORT=${{ secrets.DB_PORT }}
+            DB_USER=${{ secrets.DB_USER }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_NAME=${{ secrets.DB_NAME }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            # ... добавьте другие секреты по необходимости
+            EOF
+            sudo chown root:root /etc/schedule-app.env
+            sudo chmod 640 /etc/schedule-app.env
 
       - name: Restart service
         uses: appleboy/ssh-action@v1.0.0
@@ -90,7 +121,6 @@ jobs:
           passphrase: ${{ secrets.VPS_PASSPHRASE }}
           port: ${{ secrets.VPS_SSH_PORT }}
           script: |
-            sudo mv /opt/schedule-app/*.jar /opt/schedule-app/app.jar
             sudo systemctl daemon-reload
             sudo systemctl enable schedule-app
             sudo systemctl restart schedule-app
