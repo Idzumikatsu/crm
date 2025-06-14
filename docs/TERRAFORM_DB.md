@@ -16,7 +16,7 @@ but the same variables work for cloud providers as well.
 
 ```hcl
 module "postgresql" {
-  source       = "terraform-module/postgresql/kubernetes"
+  source       = "terraform-module/postgresql/server"
   version      = "1.0.0"
 
   name         = var.db_name
