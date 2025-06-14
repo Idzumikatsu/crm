@@ -32,8 +32,6 @@ Thumbs.db
 infra/.env
 frontend/.env
 
-# Generated NGINX config
-infra/nginx/nginx.conf
 
 # Ignore patch files
 *.diff

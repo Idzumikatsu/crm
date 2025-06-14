@@ -31,17 +31,9 @@ development.
 | `TELEGRAM_BOT_TOKEN` | `123456:ABC` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
 | `JWT_SECRET` | `0123456789abcdef0123456789abcdef` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
 | `ALLOWED_ORIGINS` | `http://localhost:5173` | `backend/src/main/java/com/example/scheduletracker/config/CorsConfig.java` | `infra/.env` |
-| `APP_HOST` | `app` | `infra/nginx/nginx.conf.template`, `infra/nginx/docker-entrypoint.sh` | `infra/.env` |
-| `APP_PORT` | `8080` | `infra/nginx/nginx.conf.template`, `infra/nginx/docker-entrypoint.sh` | `infra/.env` |
-| `SERVER_NAME` | `example.com` | `infra/nginx/nginx.conf.template` | `infra/.env` |
-| `NGINX_HTTP_PORT` | `8080` |  | `infra/.env` |
-| `NGINX_HTTPS_PORT` | `8443` |  | `infra/.env` |
-| `NGINX_LOG_PATH` | `infra/nginx/logs` | host path | n/a |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://otel-collector:4318` | `infra/app.yml` | `infra/.env` |
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` | `infra/app.yml` | `infra/.env` |
 
-`NGINX_HTTP_PORT` and `NGINX_HTTPS_PORT` configure host ports for the reverse proxy. Change them if the
-defaults (`8080` and `8443`) conflict with other services on the host. `NGINX_LOG_PATH` defines a directory on the host where access and error logs will be written so they persist across restarts.
 | `SPRING_PROFILES_ACTIVE` | `postgres` |  | `infra/.env` |
 | `PROXY_HOST` | `proxy.example.com` | `scripts/setup-proxy.sh` | secrets or shell |
 | `PROXY_PORT` | `8080` | `scripts/setup-proxy.sh` | secrets or shell |
