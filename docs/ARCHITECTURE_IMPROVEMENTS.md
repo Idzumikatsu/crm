@@ -2,7 +2,7 @@
 
 This document collects future improvements for the overall project architecture and infrastructure. Items are reviewed quarterly and tracked via GitHub issues.
 
--## Short term
+## Short term
 
 - Consolidate deployment scripts into a dedicated directory.
 - Configure an OpenTelemetry collector for tracing Spring Boot applications.
