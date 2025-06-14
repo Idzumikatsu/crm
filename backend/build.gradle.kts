@@ -48,8 +48,6 @@ dependencies {
     testImplementation(libs.com.h2database.h2)
     testImplementation(libs.org.springframework.boot.spring.boot.starter.test)
     testImplementation(libs.org.springframework.security.spring.security.test)
-    testImplementation(libs.org.seleniumhq.selenium.selenium.java)
-    testImplementation(libs.org.seleniumhq.selenium.htmlunit.driver)
 }
 
 group = "com.example"
