@@ -8,4 +8,4 @@ The following topics help developers and SREs operate NGINX effectively.
 4. **Troubleshooting** – reading logs, using `nginx -t`, and common errors.
 5. **Security practices** – OWASP CRS, HSTS, certificate management.
 
-New hires go through this material during onboarding. Practical exercises run on a dedicated test server.
+New hires go through this material during onboarding. Practical exercises are carried out directly on the production instance with all necessary safeguards.
