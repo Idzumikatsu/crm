@@ -91,10 +91,23 @@
    ./backend/gradlew clean bootJar
    ```
 
-### Развёртывание на VPS
-Актуальная инструкция находится в [docs/VPS_DEPLOYMENT.md](docs/VPS_DEPLOYMENT.md).
+## Развёртывание на сервере
+Краткая последовательность команд для ручного обновления приложения:
 
+```bash
+npm --prefix frontend ci
+npm --prefix frontend run build
+./backend/gradlew bootJar
 
+scp backend/build/libs/*.jar $VPS_USER@$VPS_HOST:/opt/schedule-app/app.jar
+# при первом запуске копируйте systemd‑юнит
+scp infra/systemd/schedule-app.service \
+  $VPS_USER@$VPS_HOST:/etc/systemd/system/schedule-app.service
+ssh $VPS_USER@$VPS_HOST 'sudo systemctl daemon-reload && sudo systemctl enable schedule-app'
+ssh $VPS_USER@$VPS_HOST 'sudo systemctl restart schedule-app'
+```
+
+Файл с переменными окружения должен находиться на сервере по пути `/etc/schedule-app.env`.
 
 ### Двухфакторная аутентификация
 
