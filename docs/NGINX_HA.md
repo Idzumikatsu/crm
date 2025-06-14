@@ -3,7 +3,7 @@
 ## 8.1 Number of instances
 To meet the 99.9% availability target we run at least **two** NGINX
 instances. Traffic is distributed with an external load balancer or by
-scaling the Kubernetes Deployment.
+scaling the containerized deployment.
 
 ## 8.2 Backend health checks
 Backends are configured in the `upstream` block with `max_fails=3` and

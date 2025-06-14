@@ -10,7 +10,7 @@ This document collects future improvements for the overall project architecture 
 
 ## Mid term
 
-- Package the application as OCI images and run them under Kubernetes.
+- Package the application as OCI images for easier container deployment.
 - Introduce a message broker (RabbitMQ or Kafka) for asynchronous workflows.
 
 ## Long term
