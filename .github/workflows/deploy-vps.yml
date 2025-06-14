@@ -145,6 +145,7 @@ jobs:
             SMTP_AUTH=${{ secrets.SMTP_AUTH }}
             SMTP_STARTTLS=${{ secrets.SMTP_STARTTLS }}
             MAIL_FROM=${{ secrets.MAIL_FROM }}
+            SPRING_AUTOCONFIGURE_EXCLUDE=io.opentelemetry.instrumentation.spring.autoconfigure.OpenTelemetryAutoConfiguration
             EOF
             sudo chown root:root /etc/schedule-app.env
             sudo chmod 640 /etc/schedule-app.env
