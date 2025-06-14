@@ -28,17 +28,12 @@
      через `cd frontend && npm run lint:fix`.
 5. **PostgreSQL**
    - Приложение ожидает базу `schedule` с пользователем `postgres` и паролем `postgres`.
-   - Чтобы быстро запустить базу через Docker, выполните:
-     ```bash
-     docker run --name schedule-db -p 5432:5432 -e POSTGRES_DB=schedule \
-      -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:16.2
-     ```
-    - В `application.yml` адрес БД задаётся через переменную окружения `DB_HOST`.
-      По умолчанию используется `db` (можно переопределить). Основной профиль
-      `postgres` рассчитан на PostgreSQL. Для тестов можно включить профиль
-      `dev`, который использует встроенную базу H2.
-    - Для миграций используется Flyway **11.9.1**, что обеспечивает поддержку
-      PostgreSQL 16.2.
+   - В `application.yml` адрес БД задаётся через переменную окружения `DB_HOST`.
+     По умолчанию используется `db` (можно переопределить). Основной профиль
+     `postgres` рассчитан на PostgreSQL. Для тестов можно включить профиль
+     `dev`, который использует встроенную базу H2.
+   - Для миграций используется Flyway **11.9.1**, что обеспечивает поддержку
+     PostgreSQL 16.2.
 6. **Сборка и запуск backend**
    - Сборка: `./backend/gradlew build`
    - Запуск приложения: `./backend/gradlew bootRun`
@@ -95,61 +90,8 @@
    ./backend/gradlew clean bootJar
    ```
 
-### Kubernetes Deployment
-Helm charts for the application reside in `infra/k8s/helm`. Use the
-`deploy-k8s.yml` workflow or run `helm upgrade --install` manually.
-Before each upgrade a Helm hook launches a short-lived Job to apply
-database migrations so the backend starts with the correct schema. The Job
-waits for the database via `wait-for-db.sh` and is removed once completed:
-
-```bash
-make k8s-deploy
-```
-The command uses `values.yaml` by default. For a production setup run:
-```bash
-helm upgrade --install schedule-app infra/k8s/helm/schedule-app \
-  --values infra/k8s/helm/schedule-app/values-production.yaml \
-  --atomic --wait --timeout 5m
-```
-The cluster credentials must be provided in `KUBE_CONFIG_B64` and Docker images
-are pulled from GitHub Container Registry.
-Stateful components request CPU and memory limits via chart values so the
-cluster can schedule them with guaranteed resources.
-Each pod runs under its own ServiceAccount with tokens disabled by default
-to follow the least-privilege principle.
-
-### Проверка сервиса
-После деплоя убедитесь, что все поды находятся в состоянии `Running` и
-готовы принимать трафик:
-```bash
-kubectl get pods -n schedule
-```
-Если приложение не стартует, изучите журналы выбранного пода:
-```bash
-kubectl logs -n schedule deployment/schedule-app-backend
-```
-Частая причина ошибки 502/503 — приложение не смогло подключиться к базе.
-При необходимости выполните `helm rollback schedule-app <revision>` или
-переустановите релиз командой `helm upgrade --install`.
-
-Проверить здоровье приложения можно запросом к эндпоинту `/actuator/health`:
-```bash
-curl -f http://localhost:8080/actuator/health
-```
-Метрики Spring Boot доступны на `/actuator/prometheus` и могут быть
-собраны Prometheus:
-```bash
-curl http://localhost:8080/actuator/prometheus
-```
-
-
-После запуска метрики Nginx доступны на `http://localhost:9114/metrics`.
-Экспортер считывает данные со страницы `/nginx_status` внутри контейнера.
-
-Инфраструктура включает сервис `prometheus`, который читает конфигурацию из
-файла `infra/prometheus/prometheus.yml` и автоматически опрашивает приложение и
-из корня проекта, чтобы Docker корректно смонтировал файлы. Веб‑интерфейс
-Prometheus доступен на `http://localhost:9090`.
+### Развёртывание на VPS
+Актуальная инструкция находится в [docs/VPS_DEPLOYMENT.md](docs/VPS_DEPLOYMENT.md).
 
 
 
@@ -216,7 +158,7 @@ npm run build
 
 ## CI/CD
 
-Репозиторий содержит workflow `.github/workflows/deploy.yml`, который автоматически деплоит приложение на выделенный VPS при пуше в ветку `main`. Для корректной работы необходимо создать следующие секреты репозитория:
+Репозиторий содержит workflow `.github/workflows/deploy-vps.yml`, который автоматически деплоит приложение на выделенный VPS при пуше в ветку `main`. Для корректной работы необходимо создать следующие секреты репозитория:
 
 - `VPS_HOST` – адрес сервера;
 - `VPS_USER` – имя пользователя для подключения;
@@ -227,7 +169,6 @@ npm run build
 - `SSL_CERT` и `SSL_KEY` – текст, полученный через `base64 -w0` из файлов сертификата и закрытого ключа для NGINX;
 - `SSL_CA_CERT` – содержимое промежуточного сертификата (если используется).
 
-Сервер должен иметь установленный Docker версии **27.5.1** или новее (API 1.47), так как деплой тестировался на этой версии.
 После успешного завершения всех проверок Pull Request в `main` автоматически сливается через auto-merge.
 
 Чтобы воспроизвести проверки CI локально, выполните:
@@ -283,7 +224,4 @@ scripts/backup-db.sh
 0 3 * * * /path/to/repo/scripts/backup-db.sh
 ```
 
-Under Kubernetes the Helm chart can enable an automated CronJob that runs the
-same script nightly. Dumps are stored on a PersistentVolume and rotated
-externally.
 
