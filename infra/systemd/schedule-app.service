@@ -1,0 +1,14 @@
+[Unit]
+Description=Schedule App Java Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/schedule-app
+EnvironmentFile=/etc/schedule-app.env
+ExecStart=/usr/bin/java -jar /opt/schedule-app/app.jar
+Restart=on-failure
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

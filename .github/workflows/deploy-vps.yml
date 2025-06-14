@@ -44,6 +44,17 @@ jobs:
           source: "backend/build/libs/*.jar"
           target: "/opt/schedule-app/app.jar"
 
+      - name: Install systemd unit
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          source: "infra/systemd/schedule-app.service"
+          target: "/etc/systemd/system/schedule-app.service"
+
       - name: Restart service
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -52,4 +63,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           passphrase: ${{ secrets.VPS_PASSPHRASE }}
           port: ${{ secrets.VPS_SSH_PORT }}
-          script: sudo systemctl restart schedule-app
+          script: |
+            sudo systemctl daemon-reload
+            sudo systemctl enable schedule-app
+            sudo systemctl restart schedule-app
