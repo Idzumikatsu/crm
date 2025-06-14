@@ -206,7 +206,7 @@ cd frontend && npm run lint:fix && npm run lint
 Для отправки писем настройте переменные окружения `SMTP_HOST`, `SMTP_PORT`,
 `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS` и `MAIL_FROM`.
 По умолчанию проверка почтового сервера отключена свойством
-`management.health.mail.enabled=false`, поэтому контейнер остаётся здоровым,
+`management.health.mail.enabled=false`, поэтому приложение остаётся работоспособным,
 даже если SMTP не настроен.
 
 
