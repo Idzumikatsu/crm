@@ -3,6 +3,8 @@ package com.example.scheduletracker.notification;
 import com.example.scheduletracker.entity.Lesson;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "notification_log")
@@ -22,7 +24,9 @@ public class NotificationLog {
   private String status;
   private OffsetDateTime readAt;
 
-  @Lob private String payloadJson;
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(columnDefinition = "jsonb")
+  private String payloadJson;
 
   public NotificationLog() {}
 
