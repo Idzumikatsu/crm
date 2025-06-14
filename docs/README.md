@@ -6,7 +6,7 @@ This directory contains all NGINX related documents. Each file focuses on a spec
 - `NGINX_DESIGN.md` – target architecture and deployment model.
 - `NGINX_HA.md` – high availability and disaster recovery plan.
 - `NGINX_DEPLOYMENT.md` – CI/CD pipeline and delivery process.
-- `VPS_DEPLOYMENT.md` – инструкции по развёртыванию на сервере `crm-cynergy.ru`.
+- `VPS_DEPLOYMENT.md` – инструкции по развёртыванию на сервере `crm-synergy.ru`.
 - `SECURITY_CHECKLIST.md` – release checklist covering security controls.
 
 - `legacy/docs` содержит устаревшие материалы о предыдущем кластере:
