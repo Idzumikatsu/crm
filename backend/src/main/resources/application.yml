@@ -8,17 +8,17 @@ spring:
   jpa:
     open-in-view: false
   mail:
-    host: ${SMTP_HOST}
-    port: ${SMTP_PORT}
-    username: ${SMTP_USERNAME}
-    password: ${SMTP_PASSWORD}
+    host: ${SMTP_HOST:}
+    port: ${SMTP_PORT:25}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
     properties:
-      mail.smtp.auth: ${SMTP_AUTH}
-      mail.smtp.starttls.enable: ${SMTP_STARTTLS}
+      mail.smtp.auth: ${SMTP_AUTH:false}
+      mail.smtp.starttls.enable: ${SMTP_STARTTLS:false}
 
 app:
   mail:
-    from: ${MAIL_FROM}
+    from: ${MAIL_FROM:no-reply@example.com}
 
 telegram:
   bot-token: ${TELEGRAM_BOT_TOKEN:}

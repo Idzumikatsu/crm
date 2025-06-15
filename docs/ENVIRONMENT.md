@@ -25,6 +25,8 @@ defaults are applied.
 | `JWT_SECRET` | `0123456789abcdef0123456789abcdef` | `backend/src/main/resources/application.yml` | `infra/.env` or secrets |
 | `ALLOWED_ORIGINS` | `https://app.example.com` | `backend/src/main/java/com/example/scheduletracker/config/CorsConfig.java` | `infra/.env` |
 
+Leaving `SMTP_HOST` undefined disables email sending while still logging the attempts.
+
 | `SPRING_PROFILES_ACTIVE` | `postgres` |  | `infra/.env` |
 | `VITE_API_URL` |  | `frontend/src/api.ts` | `frontend/.env` |
 

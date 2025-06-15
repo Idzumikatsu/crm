@@ -17,17 +17,25 @@ public class LoggingNotificationService implements NotificationService {
 
   private final JavaMailSender mailSender;
   private final String from;
+  private final String mailHost;
 
   @Autowired
   public LoggingNotificationService(
-      JavaMailSender mailSender, @Value("${app.mail.from:no-reply@example.com}") String from) {
+      JavaMailSender mailSender,
+      @Value("${app.mail.from:no-reply@example.com}") String from,
+      @Value("${spring.mail.host:}") String mailHost) {
     this.mailSender = mailSender;
     this.from = from;
+    this.mailHost = mailHost;
   }
 
   @Async
   @Override
   public void sendEmail(String to, String subject, String body) {
+    if (mailHost == null || mailHost.isBlank()) {
+      log.info("Skip email to {} subject {}: mail server not configured", to, subject);
+      return;
+    }
     try {
       MimeMessage message = mailSender.createMimeMessage();
       MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
