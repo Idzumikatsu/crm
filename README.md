@@ -109,6 +109,17 @@ ssh $VPS_USER@$VPS_HOST 'sudo systemctl daemon-reload && sudo systemctl enable s
 ssh $VPS_USER@$VPS_HOST 'sudo systemctl restart schedule-app'
 ```
 
+### Static files
+
+Сборка фронтенда (`npm run build`) создаёт каталог `frontend/dist`.
+При деплое workflow автоматически копирует его содержимое в
+`/opt/schedule-app/frontend` через `rsync`. Если нужно выполнить
+обновление вручную, используйте команду:
+
+```bash
+rsync -avz --delete frontend/dist/ $VPS_USER@$VPS_HOST:/opt/schedule-app/frontend/
+```
+
 Файл с переменными окружения должен находиться на сервере по пути `/etc/schedule-app.env`.
 
 ### Двухфакторная аутентификация
