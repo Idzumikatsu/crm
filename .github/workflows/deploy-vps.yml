@@ -140,6 +140,7 @@ jobs:
         run: |
           echo "${{ secrets.VPS_SSH_KEY }}" > private_key
           chmod 600 private_key
+          ssh-keygen -p -P "${{ secrets.VPS_PASSPHRASE }}" -N "" -f private_key >/dev/null
           rsync -avz --delete -e "ssh -i private_key -o StrictHostKeyChecking=no -p ${{ secrets.VPS_SSH_PORT }}" frontend/dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/schedule-app/frontend/
           rm -f private_key
 
