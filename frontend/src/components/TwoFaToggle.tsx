@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useApiFetch } from '../api';
 
 export const TwoFaToggle = () => {
-  const { token, user, setUser } = useAuth();
+  const { user, setUser } = useAuth();
   const [enabled, setEnabled] = useState(false);
   const [secret, setSecret] = useState<string | null>(null);
   const apiFetch = useApiFetch();
@@ -13,7 +13,6 @@ export const TwoFaToggle = () => {
   }, [user]);
 
   const toggle = async () => {
-    if (!token) return;
     if (enabled) {
       await apiFetch('/api/users/me/2fa/disable', {
         method: 'POST',
