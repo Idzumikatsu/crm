@@ -1,6 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useApiFetch } from './api';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 
 export interface UserInfo {
   id: string;
@@ -10,7 +8,6 @@ export interface UserInfo {
 }
 
 export interface AuthContextValue {
-  token: string | null;
   user: UserInfo | null;
   login: (t: string) => void;
   logout: () => void;
@@ -19,43 +16,15 @@ export interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export const AuthLoader = () => {
-  const { token, setUser } = useAuth();
-  const apiFetch = useApiFetch();
-
-  useEffect(() => {
-    if (!token) {
-      setUser(null);
-      return;
-    }
-    apiFetch('/api/users/me')
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((u: UserInfo) => setUser(u))
-      .catch(() => setUser(null));
-  }, [token, apiFetch, setUser]);
-
-  return null;
-};
+export const AuthLoader = () => null;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [user, setUser] = useState<UserInfo | null>(null);
-  const navigate = useNavigate();
 
-  const login = (t: string) => {
-    localStorage.setItem('token', t);
-    setToken(t);
-    navigate('/');
-  };
+  const login = () => {};
+  const logout = () => {};
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
-    setUser(null);
-    navigate('/login');
-  };
-
-  const value: AuthContextValue = { token, user, login, logout, setUser };
+  const value: AuthContextValue = { user, login, logout, setUser };
   return (
     <AuthContext.Provider value={value}>
       <AuthLoader />
