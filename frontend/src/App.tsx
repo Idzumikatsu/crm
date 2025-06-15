@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './auth';
 import { AuthGate } from './components/AuthGate';
@@ -20,7 +20,7 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <ErrorBoundary>
-      <BrowserRouter>
+      <HashRouter>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <Routes>
@@ -46,7 +46,7 @@ function App() {
         </Routes>
           </AuthProvider>
         </QueryClientProvider>
-      </BrowserRouter>
+      </HashRouter>
     </ErrorBoundary>
   );
 }
