@@ -31,21 +31,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
-  const fetchUser = useCallback(async (tok: string) => {
-    try {
-      const res = await fetch('/api/users/me', {
-        headers: { Authorization: `Bearer ${tok}` },
-      });
-      if (res.ok) {
-        const data: UserInfo = await res.json();
-        setUser(data);
-      } else {
+  const logout = useCallback(() => {
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+  }, []);
+
+  const fetchUser = useCallback(
+    async (tok: string) => {
+      try {
+        const res = await fetch('/api/users/me', {
+          headers: { Authorization: `Bearer ${tok}` },
+        });
+        if (res.ok) {
+          const data: UserInfo = await res.json();
+          setUser(data);
+        } else {
+          logout();
+        }
+      } catch {
         logout();
       }
-    } catch {
-      logout();
-    }
-  }, [logout]);
+    },
+    [logout],
+  );
 
   useEffect(() => {
     const stored = localStorage.getItem('token');
@@ -62,12 +71,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(t);
     await fetchUser(t);
   };
-
-  const logout = useCallback(() => {
-    localStorage.removeItem('token');
-    setToken(null);
-    setUser(null);
-  }, []);
 
   const value: AuthContextValue = { user, token, login, logout, setUser };
   return (
