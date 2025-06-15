@@ -135,6 +135,19 @@ jobs:
           strip_components: 2
           overwrite: true
 
+      # 9.1 Ensure frontend directory exists on VPS
+      - name: Prepare frontend directory
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            sudo mkdir -p /opt/schedule-app/frontend
+            sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /opt/schedule-app
+
       # 10. Deploy static frontend files
       - name: Deploy frontend to VPS
         run: |
@@ -194,3 +207,20 @@ jobs:
             sudo systemctl daemon-reload
             sudo systemctl enable schedule-app
             sudo systemctl restart schedule-app
+
+      # 14. Verify SPA files and endpoint
+      - name: Smoke test deployment
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            test -f /opt/schedule-app/frontend/index.html
+
+      - name: Check public endpoints
+        run: |
+          curl -I http://www.crm-synergy.ru/ | grep "200 OK"
+          curl -I http://www.crm-synergy.ru/assets/ | grep "200"

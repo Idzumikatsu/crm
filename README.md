@@ -113,8 +113,16 @@ ssh $VPS_USER@$VPS_HOST 'sudo systemctl restart schedule-app'
 
 Сборка фронтенда (`npm run build`) создаёт каталог `frontend/dist`.
 При деплое workflow автоматически копирует его содержимое в
-`/opt/schedule-app/frontend` через `rsync`. Если нужно выполнить
-обновление вручную, используйте команду:
+`/opt/schedule-app/frontend` через `rsync`. Перед копированием убедитесь,
+что каталог `/opt/schedule-app` принадлежит пользователю, под которым
+выполняется копирование:
+
+```bash
+sudo chown -R $USER:$USER /opt/schedule-app
+```
+
+При использовании `rsync` обязательно указывайте завершающий слэш у обоих
+путей, иначе будет скопирован сам каталог `dist`:
 
 ```bash
 rsync -avz --delete frontend/dist/ $VPS_USER@$VPS_HOST:/opt/schedule-app/frontend/
