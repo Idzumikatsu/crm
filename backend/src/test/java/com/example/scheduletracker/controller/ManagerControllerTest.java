@@ -29,7 +29,6 @@ class ManagerControllerTest {
   @MockitoBean private TeacherService teacherService;
   @MockitoBean private StudentService studentService;
   @MockitoBean private TeacherStudentService teacherStudentService;
-  @MockitoBean private com.example.scheduletracker.config.jwt.JwtUtils utils;
 
   @Test
   @DisplayName("GET /api/manager/teachers returns list")

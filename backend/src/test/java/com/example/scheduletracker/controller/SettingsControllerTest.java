@@ -26,7 +26,6 @@ class SettingsControllerTest {
 
   @MockitoBean private TeacherSettingsService service;
   @MockitoBean private UserService userService;
-  @MockitoBean private com.example.scheduletracker.config.jwt.JwtUtils utils;
 
   @Test
   void getReturnsSettings() throws Exception {

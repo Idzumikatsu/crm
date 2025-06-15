@@ -5,12 +5,10 @@ import com.example.scheduletracker.service.LessonService;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/teacher/lessons")
-@PreAuthorize("hasAnyRole('TEACHER','ADMIN')")
 public class TeacherLessonController {
   private final LessonService svc;
 

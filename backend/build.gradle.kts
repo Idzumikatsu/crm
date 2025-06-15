@@ -20,13 +20,11 @@ repositories {
 dependencies {
     implementation(libs.org.springframework.boot.spring.boot.starter.web)
     implementation(libs.org.springframework.boot.spring.boot.starter.thymeleaf)
-    implementation(libs.org.thymeleaf.extras.thymeleaf.extras.springsecurity6)
     implementation(libs.org.springframework.boot.spring.boot.starter.data.jpa)
     implementation(libs.org.postgresql.postgresql)
     implementation(libs.org.flywaydb.flyway.core)
     implementation(libs.org.flywaydb.flyway.database.postgresql)
     implementation(libs.org.springframework.boot.spring.boot.starter.jdbc)
-    implementation(libs.org.springframework.boot.spring.boot.starter.security)
     implementation(libs.org.springframework.boot.spring.boot.starter.validation)
     implementation(libs.org.springframework.boot.spring.boot.starter.quartz)
     implementation(libs.org.springframework.boot.spring.boot.starter.mail)
@@ -41,17 +39,11 @@ dependencies {
     // runtimeOnly(libs.io.opentelemetry.instrumentation.opentelemetry.spring.boot.autoconfigure)
     implementation(libs.org.apache.poi.poi.ooxml)
     implementation(libs.org.mapstruct.mapstruct)
-    implementation(libs.otp.java)
-    implementation(libs.aerogear.otp)
     annotationProcessor(libs.org.mapstruct.mapstruct.processor)
     testAnnotationProcessor(libs.org.mapstruct.mapstruct.processor)
-    implementation(libs.io.jsonwebtoken.jjwt.api)
     implementation(libs.org.springdoc.springdoc.openapi.starter.webmvc.ui)
-    runtimeOnly(libs.io.jsonwebtoken.jjwt.impl)
-    runtimeOnly(libs.io.jsonwebtoken.jjwt.jackson)
     testImplementation(libs.com.h2database.h2)
     testImplementation(libs.org.springframework.boot.spring.boot.starter.test)
-    testImplementation(libs.org.springframework.security.spring.security.test)
 }
 
 group = "com.example"

@@ -24,8 +24,6 @@ class GroupControllerTest {
 
   @MockitoBean private GroupService svc;
 
-  @MockitoBean private com.example.scheduletracker.config.jwt.JwtUtils utils;
-
   @Test
   @DisplayName("GET /api/groups возвращает список групп")
   void allReturnsGroups() throws Exception {

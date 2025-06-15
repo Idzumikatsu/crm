@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { TwoFaToggle } from '../components/TwoFaToggle';
 import { useApiFetch } from '../api';
 
 export const SettingsPage = () => {
@@ -44,7 +43,6 @@ export const SettingsPage = () => {
           onChange={(e) => setTemplate(e.target.value)}
         />
       </div>
-      <TwoFaToggle />
       <button className="border px-2" onClick={save}>
         Save
       </button>
