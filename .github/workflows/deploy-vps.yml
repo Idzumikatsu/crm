@@ -38,31 +38,7 @@ jobs:
         run: npm run build
         working-directory: frontend
 
-      # 3.x. Автоматически заливаем готовую сборку SPA на VPS
-      - name: Ensure frontend dir exists on VPS
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          passphrase: ${{ secrets.VPS_PASSPHRASE }}
-          port: ${{ secrets.VPS_SSH_PORT }}
-          script: |
-            sudo mkdir -p /opt/schedule-app/frontend
-            sudo rm -rf /opt/schedule-app/frontend/*
 
-      - name: Deploy frontend to VPS
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          passphrase: ${{ secrets.VPS_PASSPHRASE }}
-          port: ${{ secrets.VPS_SSH_PORT }}
-          source: "frontend/dist/*"
-          target: "/opt/schedule-app/frontend"
-          strip_components: 2
-          overwrite: true
 
       # 3.1 Copy built frontend into backend static resources (опционально)
       - name: Copy frontend build into backend static
@@ -159,7 +135,15 @@ jobs:
           strip_components: 2
           overwrite: true
 
-      # 10. Enable site and reload Nginx
+      # 10. Deploy static frontend files
+      - name: Deploy frontend to VPS
+        run: |
+          echo "${{ secrets.VPS_SSH_KEY }}" > private_key
+          chmod 600 private_key
+          rsync -avz --delete -e "ssh -i private_key -o StrictHostKeyChecking=no -p ${{ secrets.VPS_SSH_PORT }}" frontend/dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/schedule-app/frontend/
+          rm -f private_key
+
+      # 11. Enable site and reload Nginx
       - name: Reload Nginx
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -173,7 +157,7 @@ jobs:
             sudo nginx -t
             sudo systemctl reload nginx
 
-      # 11. Configure environment variables on VPS
+      # 12. Configure environment variables on VPS
       - name: Configure environment file on VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -196,7 +180,7 @@ jobs:
             sudo chown root:root /etc/schedule-app.env
             sudo chmod 640 /etc/schedule-app.env
 
-      # 12. Restart the service
+      # 13. Restart the service
       - name: Restart schedule-app service
         uses: appleboy/ssh-action@v1.0.0
         with:
