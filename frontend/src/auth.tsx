@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useCallback,
+  useState,
+  type ReactNode,
+} from 'react';
 
 export interface UserInfo {
   id: string;
@@ -9,7 +16,8 @@ export interface UserInfo {
 
 export interface AuthContextValue {
   user: UserInfo | null;
-  login: (t: string) => void;
+  token: string | null;
+  login: (t: string) => Promise<void>;
   logout: () => void;
   setUser: (u: UserInfo | null) => void;
 }
@@ -20,15 +28,51 @@ export const AuthLoader = () => null;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserInfo | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
-  const login = () => {};
-  const logout = () => {};
+  const fetchUser = useCallback(async (tok: string) => {
+    try {
+      const res = await fetch('/api/users/me', {
+        headers: { Authorization: `Bearer ${tok}` },
+      });
+      if (res.ok) {
+        const data: UserInfo = await res.json();
+        setUser(data);
+      } else {
+        logout();
+      }
+    } catch {
+      logout();
+    }
+  }, [logout]);
 
-  const value: AuthContextValue = { user, login, logout, setUser };
+  useEffect(() => {
+    const stored = localStorage.getItem('token');
+    if (stored) {
+      setToken(stored);
+      fetchUser(stored).finally(() => setLoaded(true));
+    } else {
+      setLoaded(true);
+    }
+  }, [fetchUser]);
+
+  const login = async (t: string) => {
+    localStorage.setItem('token', t);
+    setToken(t);
+    await fetchUser(t);
+  };
+
+  const logout = useCallback(() => {
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+  }, []);
+
+  const value: AuthContextValue = { user, token, login, logout, setUser };
   return (
     <AuthContext.Provider value={value}>
-      <AuthLoader />
-      {children}
+      {loaded ? children : <AuthLoader />}
     </AuthContext.Provider>
   );
 };
