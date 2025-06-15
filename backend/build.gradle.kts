@@ -32,9 +32,13 @@ dependencies {
     implementation(libs.org.springframework.boot.spring.boot.starter.mail)
     implementation(libs.org.springframework.boot.spring.boot.starter.actuator)
     implementation(libs.io.micrometer.micrometer.registry.prometheus)
-    implementation(libs.io.opentelemetry.opentelemetry.api)
-    runtimeOnly(libs.io.opentelemetry.opentelemetry.exporter.otlp)
-    runtimeOnly(libs.io.opentelemetry.instrumentation.opentelemetry.spring.boot.autoconfigure)
+    // Temporarily disable OpenTelemetry auto-configuration as it pulls in
+    // incompatible runtime dependencies and prevents the application from
+    // starting. Metrics are still exposed via Micrometer Prometheus registry.
+    // TODO: re-enable tracing once the collector setup is ready.
+    // implementation(libs.io.opentelemetry.opentelemetry.api)
+    // runtimeOnly(libs.io.opentelemetry.opentelemetry.exporter.otlp)
+    // runtimeOnly(libs.io.opentelemetry.instrumentation.opentelemetry.spring.boot.autoconfigure)
     implementation(libs.org.apache.poi.poi.ooxml)
     implementation(libs.org.mapstruct.mapstruct)
     implementation(libs.otp.java)
