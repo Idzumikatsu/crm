@@ -14,7 +14,7 @@ interface Lesson {
 }
 
 export const TeacherCalendar = () => {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const apiFetch = useApiFetch();
   const [events, setEvents] = useState<EventInput[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +38,7 @@ export const TeacherCalendar = () => {
         );
       })
       .catch(() => setError('Failed to load lessons'));
-  }, [user, token, apiFetch]);
+  }, [user, apiFetch]);
 
   if (!user) return <div>Loading...</div>;
   if (error) return <div className="text-red-600">{error}</div>;
