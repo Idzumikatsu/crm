@@ -35,6 +35,8 @@ public class SecurityConfig {
                         "/login",
                         "/index.html",
                         "/",
+                        "/assets/**",
+                        "/vite.svg",
                         "/api/auth/login",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
