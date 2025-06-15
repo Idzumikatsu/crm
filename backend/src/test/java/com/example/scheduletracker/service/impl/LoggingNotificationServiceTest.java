@@ -20,12 +20,19 @@ class LoggingNotificationServiceTest {
   void setup() {
     MockitoAnnotations.openMocks(this);
     when(mailSender.createMimeMessage()).thenReturn(message);
-    service = new LoggingNotificationService(mailSender, "from@example.com");
+    service = new LoggingNotificationService(mailSender, "from@example.com", "smtp");
   }
 
   @Test
   void sendEmailUsesMailSender() {
     service.sendEmail("to@example.com", "sub", "body");
     verify(mailSender).send(message);
+  }
+
+  @Test
+  void sendEmailSkippedWhenHostMissing() {
+    service = new LoggingNotificationService(mailSender, "from@example.com", "");
+    service.sendEmail("to@example.com", "sub", "body");
+    verifyNoInteractions(mailSender);
   }
 }
