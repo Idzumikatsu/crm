@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation, type Location } from 'react-router-dom';
 import { useAuth } from '../auth';
 import { useApiFetch } from '../api';
 
 export const LoginPage = () => {
   const { login } = useAuth();
   const apiFetch = useApiFetch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
@@ -20,8 +22,10 @@ export const LoginPage = () => {
       body: JSON.stringify({ username, password, code }),
     });
     if (res.ok) {
-      const data: { token: string } = await res.json();
-      login(data.token);
+      const data: { token: string; username: string; role: string } = await res.json();
+      await login(data.token);
+      const redirect = (location.state as { from?: Location })?.from?.pathname || '/';
+      navigate(redirect, { replace: true });
     } else {
       setError('Invalid credentials');
     }
