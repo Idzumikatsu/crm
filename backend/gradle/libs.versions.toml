@@ -27,9 +27,12 @@ otp-java = "2.1.0"
 aerogear-otp = "1.0.0"
 org-springframework-boot-spring-boot-starter-actuator = "3.5.0"
 io-micrometer-micrometer-registry-prometheus = "1.15.0"
-io-opentelemetry-opentelemetry-api = "1.51.0"
-io-opentelemetry-opentelemetry-exporter-otlp = "1.51.0"
-io-opentelemetry-instrumentation-opentelemetry-spring-boot-autoconfigure = "2.16.0"
+# OpenTelemetry libraries are temporarily disabled to simplify runtime
+# configuration and avoid classpath conflicts. Re-enable once tracing
+# infrastructure is deployed.
+# io-opentelemetry-opentelemetry-api = "1.51.0"
+# io-opentelemetry-opentelemetry-exporter-otlp = "1.51.0"
+# io-opentelemetry-instrumentation-opentelemetry-spring-boot-autoconfigure = "2.16.0"
 
 [libraries]
 com-h2database-h2 = { module = "com.h2database:h2", version.ref = "com-h2database-h2" }
@@ -58,6 +61,6 @@ otp-java = { module = "com.github.bastiaanjansen:otp-java", version.ref = "otp-j
 aerogear-otp = { module = "org.jboss.aerogear:aerogear-otp-java", version.ref = "aerogear-otp" }
 org-springframework-boot-spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "org-springframework-boot-spring-boot-starter-actuator" }
 io-micrometer-micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "io-micrometer-micrometer-registry-prometheus" }
-io-opentelemetry-opentelemetry-api = { module = "io.opentelemetry:opentelemetry-api", version.ref = "io-opentelemetry-opentelemetry-api" }
-io-opentelemetry-opentelemetry-exporter-otlp = { module = "io.opentelemetry:opentelemetry-exporter-otlp", version.ref = "io-opentelemetry-opentelemetry-exporter-otlp" }
-io-opentelemetry-instrumentation-opentelemetry-spring-boot-autoconfigure = { module = "io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure", version.ref = "io-opentelemetry-instrumentation-opentelemetry-spring-boot-autoconfigure" }
+# io-opentelemetry-opentelemetry-api = { module = "io.opentelemetry:opentelemetry-api", version.ref = "io-opentelemetry-opentelemetry-api" }
+# io-opentelemetry-opentelemetry-exporter-otlp = { module = "io.opentelemetry:opentelemetry-exporter-otlp", version.ref = "io-opentelemetry-opentelemetry-exporter-otlp" }
+# io-opentelemetry-instrumentation-opentelemetry-spring-boot-autoconfigure = { module = "io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure", version.ref = "io-opentelemetry-instrumentation-opentelemetry-spring-boot-autoconfigure" }
