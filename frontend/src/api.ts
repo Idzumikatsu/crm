@@ -12,7 +12,7 @@ export function useApiFetch() {
       const base = (import.meta.env.VITE_API_URL || '/').replace(/\/$/, '');
       const url = `${base}${path}`;
       const res = await fetch(url, { ...options, headers });
-      if (res.status === 401 || res.status === 403) {
+      if (token && (res.status === 401 || res.status === 403)) {
         logout();
       }
       return res;

@@ -21,20 +21,18 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthLoader = () => {
   const { token, setUser } = useAuth();
-  const navigate = useNavigate();
   const apiFetch = useApiFetch();
 
   useEffect(() => {
     if (!token) {
       setUser(null);
-      navigate('/login');
       return;
     }
     apiFetch('/api/users/me')
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((u: UserInfo) => setUser(u))
       .catch(() => setUser(null));
-  }, [token, navigate, apiFetch, setUser]);
+  }, [token, apiFetch, setUser]);
 
   return null;
 };
