@@ -174,6 +174,10 @@ npm run build
 Файл `.env.example` больше не используется, поэтому `.env` необходимо добавить вручную.
 По умолчанию запросы отправляются относительным путём. В production переменная должна быть пустой, так как путь `/api` уже прописан во всех запросах к бэкенду.
 
+### Why HashRouter
+
+Hash URLs (`/#/path`) guarantee zero 404 on refresh when the app is served as plain static files.
+
 ### REST API
 Основные эндпоинты:
 - `POST /api/auth/login` и `POST /api/auth/register`
