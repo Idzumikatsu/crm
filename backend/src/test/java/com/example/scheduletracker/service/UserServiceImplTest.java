@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -23,17 +22,16 @@ class UserServiceImplTest {
 
   @BeforeEach
   void setup() {
-    service = new UserServiceImpl(repo, new BCryptPasswordEncoder());
+    service = new UserServiceImpl(repo);
   }
 
   @Test
-  void saveEncodesPassword() {
+  void saveStoresPasswordAsIs() {
     when(repo.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
     User u = new User(null, "alice", "secret", User.Role.STUDENT, null, false, true);
 
     User saved = service.save(u);
 
-    assertNotEquals("secret", saved.getPassword());
-    assertTrue(new BCryptPasswordEncoder().matches("secret", saved.getPassword()));
+    assertEquals("secret", saved.getPassword());
   }
 }

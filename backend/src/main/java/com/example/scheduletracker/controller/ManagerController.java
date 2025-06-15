@@ -9,12 +9,10 @@ import com.example.scheduletracker.service.TeacherStudentService;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/manager")
-@PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
 public class ManagerController {
   private final TeacherService teacherService;
   private final StudentService studentService;

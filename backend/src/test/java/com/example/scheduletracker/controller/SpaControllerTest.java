@@ -18,7 +18,6 @@ class SpaControllerTest {
 
   @Autowired private MockMvc mvc;
 
-  @MockitoBean private com.example.scheduletracker.config.jwt.JwtUtils utils;
 
   @Test
   @DisplayName("SPA routes forward to index.html")

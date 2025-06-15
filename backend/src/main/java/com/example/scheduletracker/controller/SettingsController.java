@@ -7,13 +7,10 @@ import com.example.scheduletracker.service.UserService;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/settings")
-@PreAuthorize("hasAnyRole('TEACHER','MANAGER')")
 public class SettingsController {
   private final TeacherSettingsService service;
   private final UserService userService;
@@ -24,13 +21,7 @@ public class SettingsController {
   }
 
   @GetMapping
-  public ResponseEntity<TeacherSettings> get(Authentication auth) {
-    String username = auth.getName();
-    Optional<User> user = userService.findByUsername(username);
-    if (user.isEmpty()) {
-      return ResponseEntity.notFound().build();
-    }
-    UUID teacherId = user.get().getId();
+  public ResponseEntity<TeacherSettings> get(@RequestParam UUID teacherId) {
     return service
         .findByTeacherId(teacherId)
         .map(ResponseEntity::ok)
@@ -38,14 +29,7 @@ public class SettingsController {
   }
 
   @PutMapping
-  public ResponseEntity<TeacherSettings> put(
-      Authentication auth, @RequestBody TeacherSettings dto) {
-    String username = auth.getName();
-    Optional<User> user = userService.findByUsername(username);
-    if (user.isEmpty()) {
-      return ResponseEntity.notFound().build();
-    }
-    UUID teacherId = user.get().getId();
+  public ResponseEntity<TeacherSettings> put(@RequestParam UUID teacherId, @RequestBody TeacherSettings dto) {
     dto.setTeacherId(teacherId);
     TeacherSettings saved = service.save(dto);
     return ResponseEntity.ok(saved);
